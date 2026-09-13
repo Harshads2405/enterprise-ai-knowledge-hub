@@ -1,5 +1,7 @@
 from typing import List
 
+from app.db.session import SessionLocal
+from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
 from app.services.ingestion.document_loader import document_loader
 from app.services.ingestion.chunking.text_chunker import text_chunker
@@ -12,29 +14,67 @@ class IngestionService:
         document_id: int,
         file_path: str,
     ) -> List[DocumentChunk]:
-        # 1. Load document
-        text = document_loader.load(file_path)
+        db = SessionLocal()
 
-        if not text.strip():
-            raise ValueError(
-                "Document contains no extractable text."
+        try:
+            # 1. Get document
+            document = db.get(Document, document_id)
+
+            if document is None:
+                raise ValueError(
+                    f"Document not found: {document_id}"
+                )
+
+            # 2. Mark document as processing
+            document.status = "processing"
+            db.commit()
+
+            # 3. Load document
+            text = document_loader.load(file_path)
+
+            if not text.strip():
+                raise ValueError(
+                    "Document contains no extractable text."
+                )
+
+            # 4. Split text into chunks
+            chunks = text_chunker.split(text)
+
+            if not chunks:
+                raise ValueError(
+                    "Document produced no chunks."
+                )
+
+            # 5. Generate embeddings and store chunks
+            indexed_chunks = document_indexer.index_chunks(
+                document_id=document_id,
+                chunks=chunks,
             )
 
-        # 2. Split text into chunks
-        chunks = text_chunker.split(text)
+            # 6. Mark document as completed
+            document.status = "completed"
+            db.commit()
 
-        if not chunks:
-            raise ValueError(
-                "Document produced no chunks."
-            )
+            return indexed_chunks
 
-        # 3. Generate embeddings and store chunks
-        indexed_chunks = document_indexer.index_chunks(
-            document_id=document_id,
-            chunks=chunks,
-        )
+        except Exception:
+            db.rollback()
 
-        return indexed_chunks
+            # Try to mark the document as failed
+            try:
+                document = db.get(Document, document_id)
+
+                if document is not None:
+                    document.status = "failed"
+                    db.commit()
+
+            except Exception:
+                db.rollback()
+
+            raise
+
+        finally:
+            db.close()
 
 
 ingestion_service = IngestionService()
