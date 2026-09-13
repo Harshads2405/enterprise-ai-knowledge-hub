@@ -1,0 +1,52 @@
+# Core backend
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+sqlalchemy
+psycopg[binary]
+alembic
+python-multipart
+httpx
+
+# Authentication / security
+PyJWT
+passlib[bcrypt]
+
+# AI / RAG
+langchain
+langchain-community
+langchain-core
+langgraph
+sentence-transformers
+transformers
+torch
+
+# Document processing
+pypdf
+python-docx
+beautifulsoup4
+markdown
+pandas
+
+# Retrieval / ranking
+rank-bm25
+numpy
+scikit-learn
+
+# Async / workers / cache
+redis
+celery
+
+# Observability
+opentelemetry-api
+opentelemetry-sdk
+
+# Evaluation
+ragas
+
+# Development / testing
+pytest
+pytest-asyncio
+ruff
+mypy

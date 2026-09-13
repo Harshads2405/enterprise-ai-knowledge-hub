@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+ENV/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Runtime
+*.log
+tmp/
+temp/
+
+# Data / experiments
+evaluation/results/*
+finetuning/datasets/*
+finetuning/evaluation/*
+!evaluation/results/.gitkeep
+!finetuning/datasets/.gitkeep
+!finetuning/evaluation/.gitkeep
