@@ -8,9 +8,17 @@ class EmbeddingService:
             trust_remote_code=True,
         )
 
-    def embed(self, text: str) -> list:
+    def embed_document(self, text: str) -> list:
         embedding = self.model.encode(
-            text,
+            f"search_document: {text}",
+            normalize_embeddings=True,
+        )
+
+        return embedding.tolist()
+
+    def embed_query(self, text: str) -> list:
+        embedding = self.model.encode(
+            f"search_query: {text}",
             normalize_embeddings=True,
         )
 
