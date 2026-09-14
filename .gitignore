@@ -43,3 +43,5 @@ finetuning/evaluation/*
 !evaluation/results/.gitkeep
 !finetuning/datasets/.gitkeep
 !finetuning/evaluation/.gitkeep
+
+backend/storage/
