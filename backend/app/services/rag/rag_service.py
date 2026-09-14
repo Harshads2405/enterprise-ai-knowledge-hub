@@ -18,8 +18,9 @@ class RAGService:
     ) -> List[Tuple[DocumentChunk, float]]:
         query_embedding = embedding_service.embed_query(query)
 
-        return vector_search.search(
+        return vector_search.hybrid_search(
             query_embedding=query_embedding,
+            query=query,
             limit=limit,
             department=department,
         )
