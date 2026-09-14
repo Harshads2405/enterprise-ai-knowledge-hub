@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -13,4 +15,10 @@ class RAGQueryRequest(BaseModel):
         ge=1,
         le=20,
         description="Maximum number of knowledge chunks to retrieve.",
+    )
+
+    department: Optional[str] = Field(
+        default=None,
+        min_length=1,
+        description="Optional department filter for knowledge retrieval.",
     )

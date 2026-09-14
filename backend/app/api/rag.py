@@ -19,4 +19,5 @@ def query_rag(request: RAGQueryRequest) -> RAGResponse:
     return rag_service.generate(
         question=request.question,
         limit=request.limit,
+        department=request.department,
     )

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -13,19 +13,28 @@ class VectorSearch:
         self,
         query_embedding: List[float],
         limit: int = 5,
+        department: Optional[str] = None,
     ) -> List[Tuple[DocumentChunk, float]]:
         db = SessionLocal()
 
         try:
             distance = DocumentChunk.embedding.cosine_distance(query_embedding)
 
+            filters = [
+                DocumentChunk.embedding.is_not(None),
+                distance <= settings.rag_similarity_threshold,
+            ]
+
+            if department is not None:
+                filters.append(
+                    DocumentChunk.chunk_metadata["department"].as_string()
+                    == department
+                )
+
             statement = (
                 select(DocumentChunk, distance.label("distance"))
                 .options(joinedload(DocumentChunk.document))
-                .where(
-                    DocumentChunk.embedding.is_not(None),
-                    distance <= settings.rag_similarity_threshold,
-                )
+                .where(*filters)
                 .order_by(distance)
                 .limit(limit)
             )

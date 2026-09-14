@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from app.models.document_chunk import DocumentChunk
 from app.schemas.rag.response import RAGResponse
@@ -14,12 +14,14 @@ class RAGService:
         self,
         query: str,
         limit: int = 5,
+        department: Optional[str] = None,
     ) -> List[Tuple[DocumentChunk, float]]:
         query_embedding = embedding_service.embed_query(query)
 
         return vector_search.search(
             query_embedding=query_embedding,
             limit=limit,
+            department=department,
         )
 
     def build_context(
@@ -42,10 +44,12 @@ class RAGService:
         self,
         question: str,
         limit: int = 5,
+        department: Optional[str] = None,
     ) -> RAGResponse:
         results = self.retrieve(
             query=question,
             limit=limit,
+            department=department,
         )
 
         context = self.build_context(results)
