@@ -3,6 +3,7 @@ from typing import List, Tuple
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
 
+from app.core.config import settings
 from app.db.session import SessionLocal
 from app.models.document_chunk import DocumentChunk
 
@@ -21,7 +22,10 @@ class VectorSearch:
             statement = (
                 select(DocumentChunk, distance.label("distance"))
                 .options(joinedload(DocumentChunk.document))
-                .where(DocumentChunk.embedding.is_not(None))
+                .where(
+                    DocumentChunk.embedding.is_not(None),
+                    distance <= settings.rag_similarity_threshold,
+                )
                 .order_by(distance)
                 .limit(limit)
             )
