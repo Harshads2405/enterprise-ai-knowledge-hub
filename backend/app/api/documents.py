@@ -1,5 +1,6 @@
 from pathlib import Path
 from uuid import uuid4
+from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
@@ -7,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.document import Document
 from app.services.ingestion.ingestion_service import ingestion_service
+
 
 
 router = APIRouter(
@@ -30,6 +32,10 @@ def upload_document(
     file: UploadFile = File(...),
     organization_id: int = Form(...),
     uploaded_by: int = Form(...),
+    department: Optional[str] = Form(None),
+    document_type: Optional[str] = Form(None),
+    version: Optional[str] = Form(None),
+    access_level: Optional[str] = Form(None),
     db: Session = Depends(get_db),
 ):
     # 1. Validate file name
@@ -72,7 +78,17 @@ def upload_document(
 
                 destination.write(chunk)
 
-        # 6. Create document record
+        # 6. Build document metadata
+        document_metadata = {
+            "original_filename": file.filename,
+            "stored_filename": stored_filename,
+            "department": department,
+            "document_type": document_type,
+            "version": version,
+            "access_level": access_level,
+        }
+
+        # 7. Create document record
         document = Document(
             organization_id=organization_id,
             uploaded_by=uploaded_by,
@@ -80,23 +96,20 @@ def upload_document(
             source_type=extension.lstrip("."),
             source_name=file.filename,
             status="pending",
-            document_metadata={
-                "original_filename": file.filename,
-                "stored_filename": stored_filename,
-            },
+            document_metadata=document_metadata,
         )
 
         db.add(document)
         db.commit()
         db.refresh(document)
 
-        # 7. Run ingestion pipeline
+        # 8. Run ingestion pipeline
         ingestion_service.ingest(
             document_id=document.id,
             file_path=str(stored_path),
         )
 
-        # 8. Refresh document status
+        # 9. Refresh document status
         db.refresh(document)
 
         return {

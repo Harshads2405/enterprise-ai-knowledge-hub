@@ -17,7 +17,6 @@ class IngestionService:
         db = SessionLocal()
 
         try:
-            # 1. Get document
             document = db.get(Document, document_id)
 
             if document is None:
@@ -25,11 +24,9 @@ class IngestionService:
                     f"Document not found: {document_id}"
                 )
 
-            # 2. Mark document as processing
             document.status = "processing"
             db.commit()
 
-            # 3. Load document
             text = document_loader.load(file_path)
 
             if not text.strip():
@@ -37,7 +34,6 @@ class IngestionService:
                     "Document contains no extractable text."
                 )
 
-            # 4. Split text into chunks
             chunks = text_chunker.split(text)
 
             if not chunks:
@@ -45,13 +41,12 @@ class IngestionService:
                     "Document produced no chunks."
                 )
 
-            # 5. Generate embeddings and store chunks
             indexed_chunks = document_indexer.index_chunks(
                 document_id=document_id,
                 chunks=chunks,
+                document_metadata=document.document_metadata,
             )
 
-            # 6. Mark document as completed
             document.status = "completed"
             db.commit()
 
@@ -60,7 +55,6 @@ class IngestionService:
         except Exception:
             db.rollback()
 
-            # Try to mark the document as failed
             try:
                 document = db.get(Document, document_id)
 
