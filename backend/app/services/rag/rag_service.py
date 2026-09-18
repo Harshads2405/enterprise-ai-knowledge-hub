@@ -83,8 +83,8 @@ class RAGService:
         )
 
     def build_context(
-        self,
-        results: List[RetrievalResult],
+            self,
+            results: List[RetrievalResult],
     ) -> str:
         if not results:
             return ""
@@ -92,8 +92,10 @@ class RAGService:
         context_parts = []
 
         for rank, result in enumerate(results, start=1):
+            content = result.compressed_content or result.chunk.content
+
             context_parts.append(
-                f"[Context {rank}]\n{result.chunk.content}"
+                f"[Context {rank}]\n{content}"
             )
 
         return "\n\n".join(context_parts)
