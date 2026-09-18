@@ -6,6 +6,9 @@ from app.services.embeddings.embedding_service import embedding_service
 from app.services.retrieval.vector_search import vector_search
 from app.services.retrieval.retrieval_result import RetrievalResult
 from app.services.reranking.reranker_service import reranker_service
+from app.services.query_rewriting.query_rewriter_service import (
+    query_rewriter_service,
+)
 from app.services.rag.citation_builder import citation_builder
 from app.services.rag.prompts.rag_prompt import rag_prompt_builder
 from app.services.llm.groq_client import groq_client
@@ -18,16 +21,30 @@ class RAGService:
         limit: int = 5,
         department: Optional[str] = None,
     ) -> List[RetrievalResult]:
-        query_embedding = embedding_service.embed_query(query)
+        rewritten_query = query_rewriter_service.rewrite(query)
+
+        search_query = rewritten_query or query
+
+        query_embedding = embedding_service.embed_query(search_query)
 
         candidate_limit = max(limit * 2, 10)
 
         candidates = vector_search.hybrid_search(
             query_embedding=query_embedding,
-            query=query,
+            query=search_query,
             limit=candidate_limit,
             department=department,
         )
+
+        if not candidates and search_query != query:
+            query_embedding = embedding_service.embed_query(query)
+
+            candidates = vector_search.hybrid_search(
+                query_embedding=query_embedding,
+                query=query,
+                limit=candidate_limit,
+                department=department,
+            )
 
         return reranker_service.rerank(
             query=query,
