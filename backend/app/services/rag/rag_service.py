@@ -9,6 +9,9 @@ from app.services.reranking.reranker_service import reranker_service
 from app.services.query_rewriting.query_rewriter_service import (
     query_rewriter_service,
 )
+from app.services.context_compression.context_compressor import (
+    context_compressor,
+)
 from app.services.rag.citation_builder import citation_builder
 from app.services.rag.prompts.rag_prompt import rag_prompt_builder
 from app.services.llm.groq_client import groq_client
@@ -80,7 +83,12 @@ class RAGService:
             department=department,
         )
 
-        context = self.build_context(results)
+        compressed_results = context_compressor.compress(
+            query=question,
+            results=results,
+        )
+
+        context = self.build_context(compressed_results)
 
         if not context:
             return RAGResponse(

@@ -9,3 +9,4 @@ class RetrievalResult:
     chunk: DocumentChunk
     retrieval_score: float
     reranker_score: Optional[float] = None
+    compressed_content: Optional[str] = None
