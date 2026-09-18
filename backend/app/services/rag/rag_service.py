@@ -12,6 +12,9 @@ from app.services.query_rewriting.query_rewriter_service import (
 from app.services.context_compression.context_compressor import (
     context_compressor,
 )
+from app.services.multi_query.multi_query_service import (
+    multi_query_service,
+)
 from app.services.rag.citation_builder import citation_builder
 from app.services.rag.prompts.rag_prompt import rag_prompt_builder
 from app.services.llm.groq_client import groq_client
@@ -19,27 +22,46 @@ from app.services.llm.groq_client import groq_client
 
 class RAGService:
     def retrieve(
-        self,
-        query: str,
-        limit: int = 5,
-        department: Optional[str] = None,
+            self,
+            query: str,
+            limit: int = 5,
+            department: Optional[str] = None,
     ) -> List[RetrievalResult]:
         rewritten_query = query_rewriter_service.rewrite(query)
 
         search_query = rewritten_query or query
 
-        query_embedding = embedding_service.embed_query(search_query)
+        generated_queries = multi_query_service.generate(
+            query=search_query,
+            num_queries=3,
+        )
+
+        search_queries = [search_query]
+
+        for generated_query in generated_queries:
+            if generated_query.strip().lower() != search_query.strip().lower():
+                search_queries.append(generated_query)
 
         candidate_limit = max(limit * 2, 10)
 
-        candidates = vector_search.hybrid_search(
-            query_embedding=query_embedding,
-            query=search_query,
-            limit=candidate_limit,
-            department=department,
-        )
+        unique_results = {}
 
-        if not candidates and search_query != query:
+        for search_query_item in search_queries:
+            query_embedding = embedding_service.embed_query(
+                search_query_item
+            )
+
+            candidates = vector_search.hybrid_search(
+                query_embedding=query_embedding,
+                query=search_query_item,
+                limit=candidate_limit,
+                department=department,
+            )
+
+            for result in candidates:
+                unique_results[result.chunk.id] = result
+
+        if not unique_results and search_query != query:
             query_embedding = embedding_service.embed_query(query)
 
             candidates = vector_search.hybrid_search(
@@ -48,6 +70,11 @@ class RAGService:
                 limit=candidate_limit,
                 department=department,
             )
+
+            for result in candidates:
+                unique_results[result.chunk.id] = result
+
+        candidates = list(unique_results.values())
 
         return reranker_service.rerank(
             query=query,
