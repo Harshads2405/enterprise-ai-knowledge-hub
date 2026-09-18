@@ -1,0 +1,42 @@
+[
+  {
+    "id": "hr_leave_001",
+    "question": "How many annual leave days do employees get?",
+    "expected_answer": "Employees are entitled to 20 days of annual leave per year.",
+    "department": "HR",
+    "relevant_document_ids": [12, 13, 14],
+    "relevant_chunk_ids": [17, 18, 19]
+  },
+  {
+    "id": "hr_leave_002",
+    "question": "What is the annual leave policy?",
+    "expected_answer": "Employees are entitled to 20 days of annual leave per year, and annual leave must be requested through the approved leave process.",
+    "department": "HR",
+    "relevant_document_ids": [12, 13, 14],
+    "relevant_chunk_ids": [17, 18, 19]
+  },
+  {
+    "id": "hr_leave_003",
+    "question": "How should annual leave be requested?",
+    "expected_answer": "Annual leave must be requested through the approved leave process.",
+    "department": "HR",
+    "relevant_document_ids": [12, 13, 14],
+    "relevant_chunk_ids": [17, 18, 19]
+  },
+  {
+    "id": "hr_leave_004",
+    "question": "What is the employee annual leave entitlement?",
+    "expected_answer": "Employees are entitled to 20 days of annual leave per year.",
+    "department": "HR",
+    "relevant_document_ids": [12, 13, 14],
+    "relevant_chunk_ids": [17, 18, 19]
+  },
+  {
+    "id": "hr_leave_005",
+    "question": "What about leave?",
+    "expected_answer": "Employees are entitled to 20 days of annual leave per year, and annual leave must be requested through the approved leave process.",
+    "department": "HR",
+    "relevant_document_ids": [12, 13, 14],
+    "relevant_chunk_ids": [17, 18, 19]
+  }
+]
