@@ -1,9 +1,11 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional
 
 from app.models.document_chunk import DocumentChunk
 from app.schemas.rag.response import RAGResponse
 from app.services.embeddings.embedding_service import embedding_service
 from app.services.retrieval.vector_search import vector_search
+from app.services.retrieval.retrieval_result import RetrievalResult
+from app.services.reranking.reranker_service import reranker_service
 from app.services.rag.citation_builder import citation_builder
 from app.services.rag.prompts.rag_prompt import rag_prompt_builder
 from app.services.llm.groq_client import groq_client
@@ -15,28 +17,36 @@ class RAGService:
         query: str,
         limit: int = 5,
         department: Optional[str] = None,
-    ) -> List[Tuple[DocumentChunk, float]]:
+    ) -> List[RetrievalResult]:
         query_embedding = embedding_service.embed_query(query)
 
-        return vector_search.hybrid_search(
+        candidate_limit = max(limit * 2, 10)
+
+        candidates = vector_search.hybrid_search(
             query_embedding=query_embedding,
             query=query,
-            limit=limit,
+            limit=candidate_limit,
             department=department,
+        )
+
+        return reranker_service.rerank(
+            query=query,
+            results=candidates,
+            top_k=limit,
         )
 
     def build_context(
         self,
-        results: List[Tuple[DocumentChunk, float]],
+        results: List[RetrievalResult],
     ) -> str:
         if not results:
             return ""
 
         context_parts = []
 
-        for rank, (chunk, distance) in enumerate(results, start=1):
+        for rank, result in enumerate(results, start=1):
             context_parts.append(
-                f"[Context {rank}]\n{chunk.content}"
+                f"[Context {rank}]\n{result.chunk.content}"
             )
 
         return "\n\n".join(context_parts)

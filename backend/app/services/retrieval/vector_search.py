@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 from sqlalchemy import select, text
 from sqlalchemy.orm import joinedload
@@ -6,6 +6,7 @@ from sqlalchemy.orm import joinedload
 from app.core.config import settings
 from app.db.session import SessionLocal
 from app.models.document_chunk import DocumentChunk
+from app.services.retrieval.retrieval_result import RetrievalResult
 
 
 class VectorSearch:
@@ -14,11 +15,13 @@ class VectorSearch:
         query_embedding: List[float],
         limit: int = 5,
         department: Optional[str] = None,
-    ) -> List[Tuple[DocumentChunk, float]]:
+    ) -> List[RetrievalResult]:
         db = SessionLocal()
 
         try:
-            distance = DocumentChunk.embedding.cosine_distance(query_embedding)
+            distance = DocumentChunk.embedding.cosine_distance(
+                query_embedding
+            )
 
             filters = [
                 DocumentChunk.embedding.is_not(None),
@@ -42,7 +45,10 @@ class VectorSearch:
             results = db.execute(statement).all()
 
             return [
-                (chunk, float(distance_value))
+                RetrievalResult(
+                    chunk=chunk,
+                    retrieval_score=float(distance_value),
+                )
                 for chunk, distance_value in results
             ]
 
@@ -54,18 +60,25 @@ class VectorSearch:
         query: str,
         limit: int = 5,
         department: Optional[str] = None,
-    ) -> List[Tuple[DocumentChunk, float]]:
+    ) -> List[RetrievalResult]:
         db = SessionLocal()
 
         try:
-            params = {"query": query}
+            params = {
+                "query": query,
+                "limit": limit,
+            }
+
+            department_filter = ""
 
             if department is not None:
                 params["department"] = department
-
+                department_filter = """
+                    AND document_chunks.metadata->>'department' = :department
+                """
 
             ranked_query = text(
-                """
+                f"""
                 SELECT
                     document_chunks.id,
                     ts_rank_cd(
@@ -75,34 +88,11 @@ class VectorSearch:
                 FROM document_chunks
                 WHERE document_chunks.search_vector @@
                     plainto_tsquery('english', :query)
-                """
-            )
-
-            if department is not None:
-                ranked_query = text(
-                    """
-                    SELECT
-                        document_chunks.id,
-                        ts_rank_cd(
-                            document_chunks.search_vector,
-                            plainto_tsquery('english', :query)
-                        ) AS rank
-                    FROM document_chunks
-                    WHERE document_chunks.search_vector @@
-                        plainto_tsquery('english', :query)
-                    AND document_chunks.metadata->>'department' = :department
-                    """
-                )
-
-            ranked_query = text(
-                ranked_query.text
-                + """
+                {department_filter}
                 ORDER BY rank DESC
                 LIMIT :limit
                 """
             )
-
-            params["limit"] = limit
 
             rows = db.execute(ranked_query, params).all()
 
@@ -110,7 +100,10 @@ class VectorSearch:
                 return []
 
             chunk_ids = [row.id for row in rows]
-            rank_map = {row.id: float(row.rank) for row in rows}
+            rank_map = {
+                row.id: float(row.rank)
+                for row in rows
+            }
 
             statement = (
                 select(DocumentChunk)
@@ -119,10 +112,17 @@ class VectorSearch:
             )
 
             chunks = db.execute(statement).scalars().all()
-            chunk_map = {chunk.id: chunk for chunk in chunks}
+
+            chunk_map = {
+                chunk.id: chunk
+                for chunk in chunks
+            }
 
             return [
-                (chunk_map[chunk_id], rank_map[chunk_id])
+                RetrievalResult(
+                    chunk=chunk_map[chunk_id],
+                    retrieval_score=rank_map[chunk_id],
+                )
                 for chunk_id in chunk_ids
                 if chunk_id in chunk_map
             ]
@@ -139,7 +139,7 @@ class VectorSearch:
         vector_limit: int = 10,
         keyword_limit: int = 10,
         rrf_k: int = 60,
-    ) -> List[Tuple[DocumentChunk, float]]:
+    ) -> List[RetrievalResult]:
         vector_results = self.search(
             query_embedding=query_embedding,
             limit=vector_limit,
@@ -155,17 +155,25 @@ class VectorSearch:
         scores: Dict[int, float] = {}
         chunks: Dict[int, DocumentChunk] = {}
 
-        for rank, (chunk, _) in enumerate(vector_results, start=1):
-            chunks[chunk.id] = chunk
-            scores[chunk.id] = scores.get(chunk.id, 0.0) + (
-                1.0 / (rrf_k + rank)
-            )
+        for rank, result in enumerate(vector_results, start=1):
+            chunk_id = result.chunk.id
 
-        for rank, (chunk, _) in enumerate(keyword_results, start=1):
-            chunks[chunk.id] = chunk
-            scores[chunk.id] = scores.get(chunk.id, 0.0) + (
-                1.0 / (rrf_k + rank)
-            )
+            chunks[chunk_id] = result.chunk
+
+            scores[chunk_id] = scores.get(
+                chunk_id,
+                0.0,
+            ) + (1.0 / (rrf_k + rank))
+
+        for rank, result in enumerate(keyword_results, start=1):
+            chunk_id = result.chunk.id
+
+            chunks[chunk_id] = result.chunk
+
+            scores[chunk_id] = scores.get(
+                chunk_id,
+                0.0,
+            ) + (1.0 / (rrf_k + rank))
 
         ranked_chunks = sorted(
             chunks.values(),
@@ -174,7 +182,10 @@ class VectorSearch:
         )
 
         return [
-            (chunk, scores[chunk.id])
+            RetrievalResult(
+                chunk=chunk,
+                retrieval_score=scores[chunk.id],
+            )
             for chunk in ranked_chunks[:limit]
         ]
 
