@@ -23,5 +23,6 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+    rag_multi_query_v2_enabled: bool = False
 
 settings = Settings()

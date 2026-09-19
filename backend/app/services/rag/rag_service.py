@@ -36,20 +36,42 @@ class RAGService:
             num_queries=3,
         )
 
-        search_queries = [search_query]
+        search_queries = [query]
+
+        if search_query.strip().lower() != query.strip().lower():
+            search_queries.append(search_query)
 
         for generated_query in generated_queries:
             if generated_query.strip().lower() != search_query.strip().lower():
                 search_queries.append(generated_query)
 
+        # Remove duplicate search formulations while preserving order.
+        unique_search_queries = []
+        seen_queries = set()
+
+
+        for search_query_item in search_queries:
+            normalized_query = search_query_item.strip().lower()
+
+            if not normalized_query:
+                continue
+
+            if normalized_query in seen_queries:
+                continue
+
+            seen_queries.add(normalized_query)
+            unique_search_queries.append(search_query_item)
+
+
         candidate_limit = max(limit * 2, 10)
 
         unique_results = {}
 
-        for search_query_item in search_queries:
+        for search_query_item in unique_search_queries:
             query_embedding = embedding_service.embed_query(
                 search_query_item
             )
+
 
             candidates = vector_search.hybrid_search(
                 query_embedding=query_embedding,
@@ -58,29 +80,103 @@ class RAGService:
                 department=department,
             )
 
-            for result in candidates:
-                unique_results[result.chunk.id] = result
+            if not candidates:
+                continue
 
-        if not unique_results and search_query != query:
-            query_embedding = embedding_service.embed_query(query)
-
-            candidates = vector_search.hybrid_search(
-                query_embedding=query_embedding,
-                query=query,
-                limit=candidate_limit,
-                department=department,
+            # Rerank candidates against this specific search formulation.
+            query_reranked = reranker_service.rerank(
+                query=search_query_item,
+                results=candidates,
+                top_k=candidate_limit,
             )
 
-            for result in candidates:
-                unique_results[result.chunk.id] = result
+            for rank, result in enumerate(query_reranked, start=1):
+                chunk_id = result.chunk.id
+
+                current_score = result.reranker_score
+
+                if chunk_id not in unique_results:
+                    result.retrieval_queries = [search_query_item]
+                    result.retrieval_ranks = [rank]
+                    result.retrieval_count = 1
+                    result.best_retrieval_rank = rank
+
+                    result.reranker_scores = []
+
+                    if current_score is not None:
+                        result.reranker_scores.append(
+                            float(current_score)
+                        )
+
+                    result.reranker_queries = [search_query_item]
+
+                    result.best_reranker_score = (
+                        float(current_score)
+                        if current_score is not None
+                        else None
+                    )
+
+                    result.best_reranker_query = (
+                        search_query_item
+                        if current_score is not None
+                        else None
+                    )
+
+                    unique_results[chunk_id] = result
+
+                else:
+                    existing = unique_results[chunk_id]
+
+                    existing.retrieval_queries.append(
+                        search_query_item
+                    )
+
+                    existing.retrieval_ranks.append(rank)
+                    existing.retrieval_count += 1
+
+                    if (
+                            existing.best_retrieval_rank is None
+                            or rank < existing.best_retrieval_rank
+                    ):
+                        existing.best_retrieval_rank = rank
+
+                    if current_score is not None:
+                        score = float(current_score)
+
+                        existing.reranker_scores.append(score)
+                        existing.reranker_queries.append(
+                            search_query_item
+                        )
+
+                        if (
+                                existing.best_reranker_score is None
+                                or score > existing.best_reranker_score
+                        ):
+                            existing.best_reranker_score = score
+                            existing.best_reranker_query = (
+                                search_query_item
+                            )
+
+        if not unique_results:
+            return []
 
         candidates = list(unique_results.values())
 
-        return reranker_service.rerank(
-            query=query,
-            results=candidates,
-            top_k=limit,
+        # Keep the strongest reranker score available as the
+        # backward-compatible primary reranker score.
+        for result in candidates:
+            result.reranker_score = result.best_reranker_score
+
+        candidates.sort(
+            key=lambda result: (
+                result.best_reranker_score
+                if result.best_reranker_score is not None
+                else float("-inf")
+            ),
+            reverse=True,
         )
+
+        return candidates[:limit]
 
     def build_context(
             self,

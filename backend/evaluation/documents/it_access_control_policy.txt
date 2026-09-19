@@ -1,0 +1,11 @@
+Enterprise IT Access Control Policy
+
+Access to company applications and systems must be granted according to an employee's job responsibilities.
+
+Managers should request access for employees through the approved access request process.
+
+The IT team is responsible for reviewing and provisioning approved access requests.
+
+Employees must not attempt to access systems or information that they are not authorized to use.
+
+Access permissions should be reviewed periodically to ensure that they remain appropriate.

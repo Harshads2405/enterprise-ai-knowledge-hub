@@ -1,0 +1,11 @@
+Enterprise IT Incident Response Policy
+
+Employees must report suspected security incidents to the IT security team as soon as possible.
+
+Security incidents may include unauthorized access, suspected data exposure, malware activity, or compromised accounts.
+
+The IT security team is responsible for investigating reported security incidents.
+
+Employees should provide relevant information about the incident when requested by the IT security team.
+
+Incident response activities should be documented according to the organization's security procedures.

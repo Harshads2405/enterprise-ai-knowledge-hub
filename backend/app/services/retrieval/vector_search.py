@@ -25,7 +25,6 @@ class VectorSearch:
 
             filters = [
                 DocumentChunk.embedding.is_not(None),
-                distance <= settings.rag_similarity_threshold,
             ]
 
             if department is not None:

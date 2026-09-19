@@ -1,0 +1,11 @@
+Enterprise IT Security Policy
+
+Employees must protect company systems, applications, and data from unauthorized access.
+
+Employees must use strong passwords and must not share their passwords with other individuals.
+
+Company systems should only be accessed using authorized accounts and approved devices.
+
+Employees must report suspected security incidents to the IT security team as soon as possible.
+
+Access to sensitive company information should be limited to authorized employees based on business requirements.

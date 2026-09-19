@@ -2,41 +2,269 @@
   {
     "id": "hr_leave_001",
     "question": "How many annual leave days do employees get?",
-    "expected_answer": "Employees are entitled to 20 days of annual leave per year.",
+    "expected_answer": "Employees are entitled to 20 days of annual leave per calendar year.",
     "department": "HR",
-    "relevant_document_ids": [12, 13, 14],
-    "relevant_chunk_ids": [17, 18, 19]
+    "relevant_chunk_ids": [26],
+    "relevance_type": "any"
   },
   {
     "id": "hr_leave_002",
-    "question": "What is the annual leave policy?",
-    "expected_answer": "Employees are entitled to 20 days of annual leave per year, and annual leave must be requested through the approved leave process.",
+    "question": "How should annual leave be requested?",
+    "expected_answer": "Annual leave must be requested through the approved leave request process.",
     "department": "HR",
-    "relevant_document_ids": [12, 13, 14],
-    "relevant_chunk_ids": [17, 18, 19]
+    "relevant_chunk_ids": [26],
+    "relevance_type": "any"
   },
   {
     "id": "hr_leave_003",
-    "question": "How should annual leave be requested?",
-    "expected_answer": "Annual leave must be requested through the approved leave process.",
+    "question": "What is the employee annual leave entitlement?",
+    "expected_answer": "Employees are entitled to 20 days of annual leave per calendar year.",
     "department": "HR",
-    "relevant_document_ids": [12, 13, 14],
-    "relevant_chunk_ids": [17, 18, 19]
+    "relevant_chunk_ids": [26],
+    "relevance_type": "any"
   },
   {
     "id": "hr_leave_004",
-    "question": "What is the employee annual leave entitlement?",
-    "expected_answer": "Employees are entitled to 20 days of annual leave per year.",
+    "question": "Who should approve an annual leave request?",
+    "expected_answer": "Reporting managers are responsible for reviewing leave requests and approving them according to team requirements.",
     "department": "HR",
-    "relevant_document_ids": [12, 13, 14],
-    "relevant_chunk_ids": [17, 18, 19]
+    "relevant_chunk_ids": [26],
+    "relevance_type": "any"
   },
   {
-    "id": "hr_leave_005",
-    "question": "What about leave?",
-    "expected_answer": "Employees are entitled to 20 days of annual leave per year, and annual leave must be requested through the approved leave process.",
+    "id": "hr_remote_001",
+    "question": "Can employees work remotely?",
+    "expected_answer": "Employees may work remotely when their role and business requirements permit remote work.",
     "department": "HR",
-    "relevant_document_ids": [12, 13, 14],
-    "relevant_chunk_ids": [17, 18, 19]
-  }
+    "relevant_chunk_ids": [27],
+    "relevance_type": "any"
+  },
+  {
+    "id": "hr_remote_002",
+    "question": "What approval is required for remote work?",
+    "expected_answer": "Employees should obtain manager approval before working remotely.",
+    "department": "HR",
+    "relevant_chunk_ids": [27],
+    "relevance_type": "any"
+  },
+  {
+    "id": "hr_remote_003",
+    "question": "What factors are considered when reviewing remote work requests?",
+    "expected_answer": "Managers may consider business needs, team collaboration, employee responsibilities, and operational requirements.",
+    "department": "HR",
+    "relevant_chunk_ids": [27],
+    "relevance_type": "any"
+  },
+  {
+    "id": "hr_attendance_001",
+    "question": "How should employees record their attendance?",
+    "expected_answer": "Employees should record their attendance using the organization's approved attendance system.",
+    "department": "HR",
+    "relevant_chunk_ids": [25],
+    "relevance_type": "any"
+  },
+  {
+    "id": "hr_attendance_002",
+    "question": "What should an employee do if they cannot attend work?",
+    "expected_answer": "The employee should inform their manager according to the applicable absence reporting process.",
+    "department": "HR",
+    "relevant_chunk_ids": [25],
+    "relevance_type": "any"
+  },
+  {
+    "id": "hr_attendance_003",
+    "question": "Who may review repeated attendance issues?",
+    "expected_answer": "Repeated attendance issues may be reviewed by the employee's manager and the appropriate HR team.",
+    "department": "HR",
+    "relevant_chunk_ids": [25],
+    "relevance_type": "any"
+  },
+  {
+    "id": "hr_mixed_001",
+    "question": "What is the remote work policy?",
+    "expected_answer": "Employees may work remotely when their role and business requirements permit remote work, and they should obtain manager approval before working remotely.",
+    "department": "HR",
+    "relevant_chunk_ids": [27],
+    "relevance_type": "any"
+  },
+  {
+    "id": "hr_mixed_002",
+    "question": "What is the attendance policy?",
+    "expected_answer": "Employees are expected to follow their assigned working schedule, maintain regular attendance, and record attendance using the approved attendance system.",
+    "department": "HR",
+    "relevant_chunk_ids": [25],
+    "relevance_type": "any"
+  },
+
+  {
+  "id": "finance_expense_001",
+  "question": "How should employees submit business expense claims?",
+  "expected_answer": "Employees must submit business expense claims through the approved expense management system.",
+  "department": "Finance",
+  "relevant_chunk_ids": [28],
+  "relevance_type": "any"
+},
+{
+  "id": "finance_expense_002",
+  "question": "What documents are required for an expense claim?",
+  "expected_answer": "Expense claims should include valid receipts and supporting documentation.",
+  "department": "Finance",
+  "relevant_chunk_ids": [28],
+  "relevance_type": "any"
+},
+{
+  "id": "finance_reimbursement_001",
+  "question": "Which business expenses can be reimbursed?",
+  "expected_answer": "Eligible business expenses may be reimbursed when they are submitted according to the approved reimbursement process.",
+  "department": "Finance",
+  "relevant_chunk_ids": [29],
+  "relevance_type": "any"
+},
+{
+  "id": "finance_reimbursement_002",
+  "question": "Who reviews reimbursement requests?",
+  "expected_answer": "Reimbursement requests are reviewed by the appropriate manager or finance team.",
+  "department": "Finance",
+  "relevant_chunk_ids": [29],
+  "relevance_type": "any"
+},
+{
+  "id": "finance_travel_001",
+  "question": "Does business travel require approval?",
+  "expected_answer": "Business travel must be approved before an employee makes travel arrangements.",
+  "department": "Finance",
+  "relevant_chunk_ids": [30],
+  "relevance_type": "any"
+},
+{
+  "id": "finance_travel_002",
+  "question": "How should employees book business travel?",
+  "expected_answer": "Employees should use the company's approved travel booking process for business trips.",
+  "department": "Finance",
+  "relevant_chunk_ids": [30],
+  "relevance_type": "any"
+},
+
+  {
+  "id": "it_security_001",
+  "question": "How should employees protect company systems and data?",
+  "expected_answer": "Employees must protect company systems, applications, and data from unauthorized access.",
+  "department": "IT",
+  "relevant_chunk_ids": [31],
+  "relevance_type": "any"
+},
+{
+  "id": "it_security_002",
+  "question": "Can employees share their passwords?",
+  "expected_answer": "Employees must use strong passwords and must not share their passwords with other individuals.",
+  "department": "IT",
+  "relevant_chunk_ids": [31],
+  "relevance_type": "any"
+},
+{
+  "id": "it_security_003",
+  "question": "What should employees do if they suspect a security incident?",
+  "expected_answer": "Employees must report suspected security incidents to the IT security team as soon as possible.",
+  "department": "IT",
+  "relevant_chunk_ids": [31],
+  "relevance_type": "any"
+},
+{
+  "id": "it_access_001",
+  "question": "How is access to company systems granted?",
+  "expected_answer": "Access to company applications and systems must be granted according to an employee's job responsibilities.",
+  "department": "IT",
+  "relevant_chunk_ids": [32],
+  "relevance_type": "any"
+},
+{
+  "id": "it_access_002",
+  "question": "Who requests system access for employees?",
+  "expected_answer": "Managers should request access for employees through the approved access request process.",
+  "department": "IT",
+  "relevant_chunk_ids": [32],
+  "relevance_type": "any"
+},
+{
+  "id": "it_access_003",
+  "question": "Who provisions approved access requests?",
+  "expected_answer": "The IT team is responsible for reviewing and provisioning approved access requests.",
+  "department": "IT",
+  "relevant_chunk_ids": [32],
+  "relevance_type": "any"
+},
+{
+  "id": "it_incident_001",
+  "question": "What are examples of security incidents?",
+  "expected_answer": "Security incidents may include unauthorized access, suspected data exposure, malware activity, or compromised accounts.",
+  "department": "IT",
+  "relevant_chunk_ids": [33],
+  "relevance_type": "any"
+},
+{
+  "id": "it_incident_002",
+  "question": "Who investigates reported security incidents?",
+  "expected_answer": "The IT security team is responsible for investigating reported security incidents.",
+  "department": "IT",
+  "relevant_chunk_ids": [33],
+  "relevance_type": "any"
+},
+{
+  "id": "it_incident_003",
+  "question": "What information should employees provide during an incident investigation?",
+  "expected_answer": "Employees should provide relevant information about the incident when requested by the IT security team.",
+  "department": "IT",
+  "relevant_chunk_ids": [33],
+  "relevance_type": "any"
+},
+
+  {
+  "id": "ambiguous_001",
+  "question": "What approval is required for remote work?",
+  "expected_answer": "Employees should obtain manager approval before working remotely.",
+  "department": "HR",
+  "relevant_chunk_ids": [27],
+  "relevance_type": "any"
+},
+{
+  "id": "ambiguous_002",
+  "question": "Who reviews remote work requests?",
+  "expected_answer": "Managers may consider business needs, team collaboration, employee responsibilities, and operational requirements when reviewing remote work requests.",
+  "department": "HR",
+  "relevant_chunk_ids": [27],
+  "relevance_type": "any"
+},
+{
+  "id": "ambiguous_003",
+  "question": "What should employees submit with their request?",
+  "expected_answer": "The required information depends on the request type. Expense claims require valid receipts and supporting documentation, while reimbursement requests require receipts and supporting documents.",
+  "department": null,
+  "relevant_chunk_ids": [28, 29],
+  "relevance_type": "all"
+},
+{
+  "id": "ambiguous_004",
+  "question": "Who is responsible for security-related issues?",
+  "expected_answer": "The IT security team is responsible for investigating reported security incidents, while employees are responsible for reporting suspected security incidents.",
+  "department": null,
+  "relevant_chunk_ids": [31, 33],
+  "relevance_type": "all"
+},
+{
+  "id": "ambiguous_005",
+  "question": "What happens when access is not authorized?",
+  "expected_answer": "Employees must not attempt to access systems or information that they are not authorized to use.",
+  "department": "IT",
+  "relevant_chunk_ids": [32],
+  "relevance_type": "any"
+},
+{
+  "id": "ambiguous_006",
+  "question": "What approval requirements apply to remote work, travel, and expenses?",
+  "expected_answer": "Remote work requires manager approval, business travel must be approved before arrangements are made, and expense claims are reviewed and approved according to company policy.",
+  "department": null,
+  "relevant_chunk_ids": [27, 30, 28],
+  "relevance_type": "all"
+}
 ]
+
