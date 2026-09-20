@@ -14,6 +14,10 @@ class GroqClient:
         message: str,
         model: str = "openai/gpt-oss-20b",
     ) -> str:
+
+        if settings.llm_mode == "mock":
+            return self._mock_response(message)
+
         response = self.client.chat.completions.create(
             model=model,
             messages=[
@@ -25,6 +29,9 @@ class GroqClient:
         )
 
         return response.choices[0].message.content
+
+    def _mock_response(self, message: str) -> str:
+        return ""
 
 
 groq_client = GroqClient()

@@ -2,7 +2,6 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 # Project root:
 # enterprise-ai-copilot/
 BASE_DIR = Path(__file__).resolve().parents[3]
@@ -13,16 +12,21 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     app_env: str = "development"
     debug: bool = True
+
     database_url: str
     redis_url: str
     groq_api_key: str
+
+    llm_mode: str = "mock"
+
     rag_similarity_threshold: float = 0.30
+    rag_multi_query_v2_enabled: bool = False
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
         env_file_encoding="utf-8",
         extra="ignore",
+        case_sensitive=False,
     )
-    rag_multi_query_v2_enabled: bool = False
 
 settings = Settings()
