@@ -8,8 +8,8 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(BASE_DIR))
 
 
-from app.services.rag.rag_service import rag_service
-
+# from app.services.rag.rag_service import rag_service
+from app.services.retrieval.retrieval_pipeline import retrieval_pipeline
 
 DATASET_PATH = BASE_DIR / "evaluation" / "datasets" / "rag_evaluation.json"
 
@@ -23,8 +23,8 @@ def evaluate_retrieval(case):
     question = case["question"]
     department = case.get("department")
 
-    retrieved = rag_service.retrieve(
-        query=question,
+    retrieved = retrieval_pipeline.retrieve(
+        search_queries=[question],
         limit=5,
         department=department,
     )

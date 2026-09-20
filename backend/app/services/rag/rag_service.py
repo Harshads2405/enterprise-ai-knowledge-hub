@@ -1,11 +1,7 @@
 from typing import List, Optional
 
-from app.models.document_chunk import DocumentChunk
 from app.schemas.rag.response import RAGResponse
-from app.services.embeddings.embedding_service import embedding_service
-from app.services.retrieval.vector_search import vector_search
 from app.services.retrieval.retrieval_result import RetrievalResult
-from app.services.reranking.reranker_service import reranker_service
 from app.services.query_rewriting.query_rewriter_service import (
     query_rewriter_service,
 )
@@ -18,17 +14,33 @@ from app.services.multi_query.multi_query_service import (
 from app.services.rag.citation_builder import citation_builder
 from app.services.rag.prompts.rag_prompt import rag_prompt_builder
 from app.services.llm.groq_client import groq_client
+from app.services.retrieval.retrieval_pipeline import retrieval_pipeline
+from app.services.retrieval.decomposed_retrieval_service import (
+    decomposed_retrieval_service,
+)
+from app.services.query_decomposition.decomposition_decision_service import (
+    decomposition_decision_service,
+)
+
 
 
 class RAGService:
+
     def retrieve(
             self,
             query: str,
             limit: int = 5,
             department: Optional[str] = None,
     ) -> List[RetrievalResult]:
-        rewritten_query = query_rewriter_service.rewrite(query)
 
+        if decomposition_decision_service.should_decompose(query):
+            return self.retrieve_with_decomposition(
+                query=query,
+                limit=limit,
+                department=department,
+            )
+
+        rewritten_query = query_rewriter_service.rewrite(query)
         search_query = rewritten_query or query
 
         generated_queries = multi_query_service.generate(
@@ -45,138 +57,25 @@ class RAGService:
             if generated_query.strip().lower() != search_query.strip().lower():
                 search_queries.append(generated_query)
 
-        # Remove duplicate search formulations while preserving order.
-        unique_search_queries = []
-        seen_queries = set()
-
-
-        for search_query_item in search_queries:
-            normalized_query = search_query_item.strip().lower()
-
-            if not normalized_query:
-                continue
-
-            if normalized_query in seen_queries:
-                continue
-
-            seen_queries.add(normalized_query)
-            unique_search_queries.append(search_query_item)
-
-
-        candidate_limit = max(limit * 2, 10)
-
-        unique_results = {}
-
-        for search_query_item in unique_search_queries:
-            query_embedding = embedding_service.embed_query(
-                search_query_item
-            )
-
-
-            candidates = vector_search.hybrid_search(
-                query_embedding=query_embedding,
-                query=search_query_item,
-                limit=candidate_limit,
-                department=department,
-            )
-
-            if not candidates:
-                continue
-
-            # Rerank candidates against this specific search formulation.
-            query_reranked = reranker_service.rerank(
-                query=search_query_item,
-                results=candidates,
-                top_k=candidate_limit,
-            )
-
-            for rank, result in enumerate(query_reranked, start=1):
-                chunk_id = result.chunk.id
-
-                current_score = result.reranker_score
-
-                if chunk_id not in unique_results:
-                    result.retrieval_queries = [search_query_item]
-                    result.retrieval_ranks = [rank]
-                    result.retrieval_count = 1
-                    result.best_retrieval_rank = rank
-
-                    result.reranker_scores = []
-
-                    if current_score is not None:
-                        result.reranker_scores.append(
-                            float(current_score)
-                        )
-
-                    result.reranker_queries = [search_query_item]
-
-                    result.best_reranker_score = (
-                        float(current_score)
-                        if current_score is not None
-                        else None
-                    )
-
-                    result.best_reranker_query = (
-                        search_query_item
-                        if current_score is not None
-                        else None
-                    )
-
-                    unique_results[chunk_id] = result
-
-                else:
-                    existing = unique_results[chunk_id]
-
-                    existing.retrieval_queries.append(
-                        search_query_item
-                    )
-
-                    existing.retrieval_ranks.append(rank)
-                    existing.retrieval_count += 1
-
-                    if (
-                            existing.best_retrieval_rank is None
-                            or rank < existing.best_retrieval_rank
-                    ):
-                        existing.best_retrieval_rank = rank
-
-                    if current_score is not None:
-                        score = float(current_score)
-
-                        existing.reranker_scores.append(score)
-                        existing.reranker_queries.append(
-                            search_query_item
-                        )
-
-                        if (
-                                existing.best_reranker_score is None
-                                or score > existing.best_reranker_score
-                        ):
-                            existing.best_reranker_score = score
-                            existing.best_reranker_query = (
-                                search_query_item
-                            )
-
-        if not unique_results:
-            return []
-
-        candidates = list(unique_results.values())
-
-        # Keep the strongest reranker score available as the
-        # backward-compatible primary reranker score.
-        for result in candidates:
-            result.reranker_score = result.best_reranker_score
-
-        candidates.sort(
-            key=lambda result: (
-                result.best_reranker_score
-                if result.best_reranker_score is not None
-                else float("-inf")
-            ),
-            reverse=True,
+        return retrieval_pipeline.retrieve(
+            search_queries=search_queries,
+            limit=limit,
+            department=department,
         )
 
-        return candidates[:limit]
+    def retrieve_with_decomposition(
+            self,
+            query: str,
+            limit: int = 5,
+            department: Optional[str] = None,
+    ) -> List[RetrievalResult]:
+
+        return decomposed_retrieval_service.retrieve(
+            query=query,
+            limit=limit,
+            department=department,
+        )
+
 
     def build_context(
             self,
