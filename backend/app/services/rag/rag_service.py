@@ -57,6 +57,8 @@ from app.services.ambiguity.clarification_service import (
 from app.services.ambiguity.clarification_resolver import (
     clarification_resolver,
 )
+from app.services.rag.citation_validator import citation_validator
+
 
 class RAGService:
 
@@ -128,8 +130,8 @@ class RAGService:
         )
 
     def build_context(
-        self,
-        results: List[RetrievalResult],
+            self,
+            results: List[RetrievalResult],
     ) -> str:
 
         if not results:
@@ -138,22 +140,35 @@ class RAGService:
         context_parts = []
 
         for rank, result in enumerate(
-            results,
-            start=1,
+                results,
+                start=1,
         ):
+            chunk = result.chunk
+
+            source_name = (
+                chunk.document.source_name
+                if chunk.document
+                else "Unknown"
+            )
 
             content = (
-                result.compressed_content
-                or result.chunk.content
+                    result.compressed_content
+                    or chunk.content
             )
 
             context_parts.append(
-                f"[Context {rank}]\n{content}"
+                f"""[Source {rank}]
+    Document: {source_name}
+    Document ID: {chunk.document_id}
+    Chunk ID: {chunk.id}
+    Chunk Index: {chunk.chunk_index}
+
+    Content:
+    {content}"""
             )
 
-        return "\n\n".join(
-            context_parts
-        )
+        return "\n\n".join(context_parts)
+
 
     def _build_clarification_response(
         self,
@@ -248,13 +263,20 @@ class RAGService:
             context=context,
         )
 
-        answer = groq_client.chat(
-            prompt
+        answer = groq_client.chat(prompt)
+
+        citation_validation = citation_validator.validate(
+            answer=answer,
+            results=results,
         )
 
-        citations = citation_builder.build(
-            results
-        )
+        if not citation_validation.is_valid:
+            answer = (
+                "I couldn't safely verify the source citations for this answer. "
+                "Please try the question again."
+            )
+
+        citations = citation_builder.build(results)
 
         return RAGResponse(
             answer=answer,

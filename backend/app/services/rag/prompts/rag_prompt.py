@@ -22,14 +22,24 @@ Grounding rules:
    must, must not, required, should, may, only, unless, and except.
 9. Never claim that a policy, procedure, or requirement exists unless the
    provided context supports that claim.
+
+Citation rules:
+10. Each knowledge-base context block is identified by a source number such as
+    [Source 1], [Source 2], or [Source 3].
+11. Cite factual claims using the source number that supports the claim.
+12. Only use source numbers that actually appear in the provided context.
+13. Never invent, modify, or create source numbers.
+14. If a factual statement is supported by multiple sources, cite all relevant
+    sources.
+15. Do not cite a source that does not support the claim.
+16. Every substantive factual claim based on the knowledge base should have
+    a source citation.
+17. If the knowledge base does not support the requested information, use the
+    exact insufficient-information response from rule 5 instead of guessing.
+18. Keep citations close to the claims they support.
 """.strip()
 
-    def build(
-        self,
-        question: str,
-        context: str,
-    ) -> str:
-
+    def build(self, question: str, context: str) -> str:
         return f"""\
 {self.SYSTEM_INSTRUCTIONS}
 
@@ -43,7 +53,10 @@ USER QUESTION
 
 ANSWER
 ======
-Provide the answer using only the knowledge-base context above.
+Provide a concise answer using only the knowledge-base context above.
+
+Include source references such as [Source 1] immediately after the factual
+statement they support.
 """.strip()
 
 
