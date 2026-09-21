@@ -1,36 +1,70 @@
 from typing import List, Optional
 
-from app.schemas.rag.response import RAGResponse
+from app.schemas.rag.response import (
+    RAGResponse,
+    ClarificationOption as RAGClarificationOption,
+)
+
 from app.services.retrieval.retrieval_result import RetrievalResult
+
 from app.services.query_rewriting.query_rewriter_service import (
     query_rewriter_service,
 )
+
 from app.services.context_compression.context_compressor import (
     context_compressor,
 )
+
 from app.services.multi_query.multi_query_service import (
     multi_query_service,
 )
-from app.services.rag.citation_builder import citation_builder
-from app.services.rag.prompts.rag_prompt import rag_prompt_builder
-from app.services.llm.groq_client import groq_client
-from app.services.retrieval.retrieval_pipeline import retrieval_pipeline
+
+from app.services.rag.citation_builder import (
+    citation_builder,
+)
+
+from app.services.rag.prompts.rag_prompt import (
+    rag_prompt_builder,
+)
+
+from app.services.llm.groq_client import (
+    groq_client,
+)
+
+from app.services.retrieval.retrieval_pipeline import (
+    retrieval_pipeline,
+)
+
 from app.services.retrieval.decomposed_retrieval_service import (
     decomposed_retrieval_service,
 )
+
 from app.services.query_decomposition.decomposition_decision_service import (
     decomposition_decision_service,
 )
 
+from app.services.ambiguity.ambiguity_detector import (
+    ambiguity_detector,
+)
 
+from app.services.ambiguity.ambiguity_analysis_service import (
+    ambiguity_analysis_service,
+)
+
+from app.services.ambiguity.clarification_service import (
+    clarification_service,
+)
+from app.services.ambiguity.clarification_resolver import (
+    clarification_resolver,
+)
 
 class RAGService:
 
     def retrieve(
-            self,
-            query: str,
-            limit: int = 5,
-            department: Optional[str] = None,
+        self,
+        query: str,
+        limit: int = 5,
+        department: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
         if decomposition_decision_service.should_decompose(query):
@@ -40,8 +74,14 @@ class RAGService:
                 department=department,
             )
 
-        rewritten_query = query_rewriter_service.rewrite(query)
-        search_query = rewritten_query or query
+        rewritten_query = query_rewriter_service.rewrite(
+            query
+        )
+
+        search_query = (
+            rewritten_query
+            or query
+        )
 
         generated_queries = multi_query_service.generate(
             query=search_query,
@@ -50,12 +90,23 @@ class RAGService:
 
         search_queries = [query]
 
-        if search_query.strip().lower() != query.strip().lower():
-            search_queries.append(search_query)
+        if (
+            search_query.strip().lower()
+            != query.strip().lower()
+        ):
+            search_queries.append(
+                search_query
+            )
 
         for generated_query in generated_queries:
-            if generated_query.strip().lower() != search_query.strip().lower():
-                search_queries.append(generated_query)
+
+            if (
+                generated_query.strip().lower()
+                != search_query.strip().lower()
+            ):
+                search_queries.append(
+                    generated_query
+                )
 
         return retrieval_pipeline.retrieve(
             search_queries=search_queries,
@@ -64,10 +115,10 @@ class RAGService:
         )
 
     def retrieve_with_decomposition(
-            self,
-            query: str,
-            limit: int = 5,
-            department: Optional[str] = None,
+        self,
+        query: str,
+        limit: int = 5,
+        department: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
         return decomposed_retrieval_service.retrieve(
@@ -76,24 +127,56 @@ class RAGService:
             department=department,
         )
 
-
     def build_context(
-            self,
-            results: List[RetrievalResult],
+        self,
+        results: List[RetrievalResult],
     ) -> str:
+
         if not results:
             return ""
 
         context_parts = []
 
-        for rank, result in enumerate(results, start=1):
-            content = result.compressed_content or result.chunk.content
+        for rank, result in enumerate(
+            results,
+            start=1,
+        ):
+
+            content = (
+                result.compressed_content
+                or result.chunk.content
+            )
 
             context_parts.append(
                 f"[Context {rank}]\n{content}"
             )
 
-        return "\n\n".join(context_parts)
+        return "\n\n".join(
+            context_parts
+        )
+
+    def _build_clarification_response(
+        self,
+        clarification,
+    ) -> RAGResponse:
+
+        options = [
+            RAGClarificationOption(
+                label=option.label,
+                topic=option.topic,
+            )
+            for option in clarification.options
+        ]
+
+        return RAGResponse(
+            answer="",
+            sources=[],
+            should_clarify=True,
+            clarification_question=(
+                clarification.question
+            ),
+            clarification_options=options,
+        )
 
     def generate(
         self,
@@ -101,24 +184,61 @@ class RAGService:
         limit: int = 5,
         department: Optional[str] = None,
     ) -> RAGResponse:
+
         results = self.retrieve(
             query=question,
             limit=limit,
             department=department,
         )
 
-        compressed_results = context_compressor.compress(
-            query=question,
-            results=results,
+        explicit_topic = (
+            ambiguity_detector.has_explicit_topic(
+                question
+            )
         )
 
-        context = self.build_context(compressed_results)
+        ambiguity_analysis = (
+            ambiguity_analysis_service.analyze(
+                results=results,
+                explicit_topic=explicit_topic,
+                query=question,
+            )
+        )
+
+        if ambiguity_analysis.is_ambiguous:
+
+            clarification = (
+                clarification_service.build_clarification(
+                    query=question,
+                    analysis=ambiguity_analysis,
+                    results=results,
+                )
+            )
+
+            if clarification.should_clarify:
+
+                return self._build_clarification_response(
+                    clarification
+                )
+
+        compressed_results = (
+            context_compressor.compress(
+                query=question,
+                results=results,
+            )
+        )
+
+        context = self.build_context(
+            compressed_results
+        )
 
         if not context:
+
             return RAGResponse(
                 answer=(
-                    "I don't have enough information in the provided "
-                    "knowledge base to answer that."
+                    "I don't have enough information "
+                    "in the provided knowledge base "
+                    "to answer that."
                 ),
                 sources=[],
             )
@@ -128,13 +248,36 @@ class RAGService:
             context=context,
         )
 
-        answer = groq_client.chat(prompt)
+        answer = groq_client.chat(
+            prompt
+        )
 
-        citations = citation_builder.build(results)
+        citations = citation_builder.build(
+            results
+        )
 
         return RAGResponse(
             answer=answer,
             sources=citations,
+        )
+
+    def generate_with_clarification(
+            self,
+            original_question: str,
+            selected_topic: str,
+            limit: int = 5,
+            department: Optional[str] = None,
+    ) -> RAGResponse:
+
+        resolution = clarification_resolver.resolve(
+            original_query=original_question,
+            selected_topic=selected_topic,
+        )
+
+        return self.generate(
+            question=resolution.resolved_query,
+            limit=limit,
+            department=department,
         )
 
 
