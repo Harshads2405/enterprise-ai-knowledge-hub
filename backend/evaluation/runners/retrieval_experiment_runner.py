@@ -52,6 +52,7 @@ def retrieve_hybrid(
     query: str,
     department: Optional[str],
     limit: int = TOP_K,
+    candidate_limit: int = CANDIDATE_LIMIT,
 ):
     query_embedding = embedding_service.embed_query(query)
 
@@ -60,8 +61,8 @@ def retrieve_hybrid(
         query=query,
         limit=limit,
         department=department,
-        vector_limit=CANDIDATE_LIMIT,
-        keyword_limit=CANDIDATE_LIMIT,
+        vector_limit=candidate_limit,
+        keyword_limit=candidate_limit,
     )
 
 
@@ -77,6 +78,25 @@ def rerank_results(
         query=query,
         results=results,
         top_k=limit,
+    )
+
+def retrieve_hybrid_rerank_candidate_depth(
+    query: str,
+    department: Optional[str],
+    candidate_limit: int,
+    limit: int = TOP_K,
+):
+    candidates = retrieve_hybrid(
+        query=query,
+        department=department,
+        limit=candidate_limit,
+        candidate_limit=candidate_limit,
+    )
+
+    return rerank_results(
+        query=query,
+        results=candidates,
+        limit=limit,
     )
 
 def generate_deterministic_multi_queries(query: str) -> List[str]:
@@ -250,6 +270,220 @@ def retrieve_experiment(
         f"Unknown experiment: {experiment}"
     )
 
+def evaluate_candidate_depth(
+    candidate_limit: int,
+    dataset,
+):
+    results = []
+    total_latency = 0.0
+
+    for case in dataset:
+        start = time.perf_counter()
+
+        retrieved = retrieve_hybrid_rerank_candidate_depth(
+            query=case["question"],
+            department=case.get("department"),
+            candidate_limit=candidate_limit,
+            limit=TOP_K,
+        )
+
+        elapsed = time.perf_counter() - start
+        total_latency += elapsed
+
+        retrieved_chunk_ids = [
+            result.chunk.id
+            for result in retrieved
+        ]
+
+        relevant_retrieved = [
+            chunk_id
+            for chunk_id in retrieved_chunk_ids
+            if chunk_id in case["relevant_chunk_ids"]
+        ]
+
+        results.append(
+            {
+                "id": case["id"],
+                "question": case["question"],
+                "expected_chunk_ids": case[
+                    "relevant_chunk_ids"
+                ],
+                "retrieved_chunk_ids": retrieved_chunk_ids,
+                "relevant_retrieved_chunk_ids": (
+                    relevant_retrieved
+                ),
+                "relevance_type": case.get(
+                    "relevance_type",
+                    "all",
+                ),
+            }
+        )
+
+    return {
+        "experiment": f"hybrid_rerank_candidates_{candidate_limit}",
+        "candidate_limit": candidate_limit,
+        "results": results,
+        "average_latency_ms": (
+            total_latency / len(dataset) * 1000
+            if dataset
+            else 0.0
+        ),
+    }
+
+def evaluate_final_top_k(
+    final_top_k: int,
+    dataset,
+):
+    results = []
+    total_latency = 0.0
+
+    for case in dataset:
+        start = time.perf_counter()
+
+        candidates = retrieve_hybrid(
+            query=case["question"],
+            department=case.get("department"),
+            limit=CANDIDATE_LIMIT,
+            candidate_limit=CANDIDATE_LIMIT,
+        )
+
+        retrieved = rerank_results(
+            query=case["question"],
+            results=candidates,
+            limit=final_top_k,
+        )
+
+        elapsed = time.perf_counter() - start
+        total_latency += elapsed
+
+        retrieved_chunk_ids = [
+            result.chunk.id
+            for result in retrieved
+        ]
+
+        relevant_retrieved = [
+            chunk_id
+            for chunk_id in retrieved_chunk_ids
+            if chunk_id in case["relevant_chunk_ids"]
+        ]
+
+        results.append(
+            {
+                "id": case["id"],
+                "question": case["question"],
+                "expected_chunk_ids": case[
+                    "relevant_chunk_ids"
+                ],
+                "retrieved_chunk_ids": retrieved_chunk_ids,
+                "relevant_retrieved_chunk_ids": (
+                    relevant_retrieved
+                ),
+                "relevance_type": case.get(
+                    "relevance_type",
+                    "all",
+                ),
+            }
+        )
+
+    return {
+        "experiment": f"hybrid_rerank_top_k_{final_top_k}",
+        "final_top_k": final_top_k,
+        "results": results,
+        "average_latency_ms": (
+            total_latency / len(dataset) * 1000
+            if dataset
+            else 0.0
+        ),
+    }
+
+def analyze_top_k_failures(
+    final_top_k: int,
+    dataset,
+):
+    failures = []
+
+    for case in dataset:
+        candidates = retrieve_hybrid(
+            query=case["question"],
+            department=case.get("department"),
+            limit=CANDIDATE_LIMIT,
+            candidate_limit=CANDIDATE_LIMIT,
+        )
+
+        retrieved = rerank_results(
+            query=case["question"],
+            results=candidates,
+            limit=final_top_k,
+        )
+
+        retrieved_chunk_ids = [
+            result.chunk.id
+            for result in retrieved
+        ]
+
+        if not is_relevant(
+            retrieved_chunk_ids,
+            case["relevant_chunk_ids"],
+            case.get("relevance_type", "all"),
+        ):
+            failures.append(
+                {
+                    "id": case["id"],
+                    "question": case["question"],
+                    "expected_chunk_ids": case[
+                        "relevant_chunk_ids"
+                    ],
+                    "retrieved_chunk_ids": retrieved_chunk_ids,
+                    "relevance_type": case.get(
+                        "relevance_type",
+                        "all",
+                    ),
+                }
+            )
+
+    return failures
+
+
+def print_top_k_failure_analysis(
+    dataset,
+):
+    print()
+    print("=" * 70)
+    print("E8: TOP-K FAILURE ANALYSIS")
+    print("=" * 70)
+
+    for final_top_k in [1, 2, 3]:
+        failures = analyze_top_k_failures(
+            final_top_k=final_top_k,
+            dataset=dataset,
+        )
+
+        print()
+        print(
+            f"Top-K = {final_top_k} | "
+            f"Failures = {len(failures)}"
+        )
+
+        if not failures:
+            print("No failures.")
+            continue
+
+        for failure in failures:
+            print("-" * 70)
+            print(f"ID:        {failure['id']}")
+            print(f"Question:  {failure['question']}")
+            print(
+                f"Expected:  "
+                f"{failure['expected_chunk_ids']}"
+            )
+            print(
+                f"Retrieved: "
+                f"{failure['retrieved_chunk_ids']}"
+            )
+            print(
+                f"Relevance: "
+                f"{failure['relevance_type']}"
+            )
 
 def is_relevant(
     retrieved_chunk_ids: List[int],
@@ -530,6 +764,39 @@ def main():
 
         print_summary(evaluation)
 
+    candidate_depths = [5, 10, 15, 20]
+
+    print()
+    print("=" * 70)
+    print("E6: RERANKER CANDIDATE DEPTH")
+    print("=" * 70)
+
+    for candidate_limit in candidate_depths:
+        evaluation = evaluate_candidate_depth(
+            candidate_limit=candidate_limit,
+            dataset=dataset,
+        )
+
+        print_summary(evaluation)
+
+    final_top_ks = [1, 2, 3, 4, 5]
+
+    print()
+    print("=" * 70)
+    print("E7: FINAL RAG TOP-K")
+    print("=" * 70)
+
+    for final_top_k in final_top_ks:
+        evaluation = evaluate_final_top_k(
+            final_top_k=final_top_k,
+            dataset=dataset,
+        )
+
+        print_summary(evaluation)
+
+    print_top_k_failure_analysis(
+        dataset=dataset,
+    )
 
 if __name__ == "__main__":
     main()

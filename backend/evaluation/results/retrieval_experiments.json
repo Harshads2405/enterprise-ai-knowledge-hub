@@ -72,5 +72,198 @@
       "ndcg_at_5": 0.9771,
       "average_latency_ms": 203.72
     }
-  ]
+  ],
+  "candidate_depth_experiments": [
+    {
+      "candidate_limit": 5,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 1.0,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3455,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9843,
+      "average_latency_ms": 154.67
+    },
+    {
+      "candidate_limit": 10,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3394,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 153.76
+    },
+    {
+      "candidate_limit": 15,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3394,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 151.52
+    },
+    {
+      "candidate_limit": 20,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3394,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 163.26
+    }
+  ],
+  "final_top_k_experiments": [
+    {
+      "final_top_k": 1,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.8788,
+      "recall_at_5": 0.8788,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.9697,
+      "precision_at_5": 0.9697,
+      "mrr": 0.9697,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9302,
+      "ndcg_at_5": 0.9302,
+      "average_latency_ms": 293.20
+    },
+    {
+      "final_top_k": 2,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9394,
+      "recall_at_5": 0.9394,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.5303,
+      "precision_at_5": 0.5303,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9700,
+      "ndcg_at_5": 0.9700,
+      "average_latency_ms": 336.61
+    },
+    {
+      "final_top_k": 3,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3636,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 174.04
+    },
+    {
+      "final_top_k": 4,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3485,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 289.47
+    },
+    {
+      "final_top_k": 5,
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3394,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 269.76
+    }
+  ],
+  "failure_analysis": {
+    "top_k_1": [
+      {
+        "id": "it_security_003",
+        "question": "What should employees do if they suspect a security incident?",
+        "expected_chunk_ids": [31],
+        "retrieved_chunk_ids": [33],
+        "relevance_type": "any"
+      },
+      {
+        "id": "ambiguous_003",
+        "question": "What should employees submit with their request?",
+        "expected_chunk_ids": [28, 29],
+        "retrieved_chunk_ids": [29],
+        "relevance_type": "all"
+      },
+      {
+        "id": "ambiguous_004",
+        "question": "Who is responsible for security-related issues?",
+        "expected_chunk_ids": [31, 33],
+        "retrieved_chunk_ids": [33],
+        "relevance_type": "all"
+      },
+      {
+        "id": "ambiguous_006",
+        "question": "What approval requirements apply to remote work, travel, and expenses?",
+        "expected_chunk_ids": [27, 30, 28],
+        "retrieved_chunk_ids": [27],
+        "relevance_type": "all"
+      }
+    ],
+    "top_k_2": [
+      {
+        "id": "ambiguous_003",
+        "question": "What should employees submit with their request?",
+        "expected_chunk_ids": [28, 29],
+        "retrieved_chunk_ids": [29, 27],
+        "relevance_type": "all"
+      },
+      {
+        "id": "ambiguous_006",
+        "question": "What approval requirements apply to remote work, travel, and expenses?",
+        "expected_chunk_ids": [27, 30, 28],
+        "retrieved_chunk_ids": [27, 30],
+        "relevance_type": "all"
+      }
+    ],
+    "top_k_3": [
+      {
+        "id": "ambiguous_003",
+        "question": "What should employees submit with their request?",
+        "expected_chunk_ids": [28, 29],
+        "retrieved_chunk_ids": [29, 27, 26],
+        "relevance_type": "all"
+      }
+    ]
+  },
+  "observations": {
+    "multi_query": "The deterministic multi-query experiment produced the same measured retrieval metrics as hybrid_rerank while increasing measured latency.",
+    "candidate_depth": "Candidate depth 5 achieved Recall@5 1.0000 and NDCG@5 0.9843 on the current 33-case benchmark; depths 10, 15, and 20 did not improve measured ranking metrics.",
+    "final_top_k": "Top-3 preserved the measured Recall@3/5, MRR, and NDCG@3/5 of Top-5 while producing higher Precision@3/5 than Top-5.",
+    "failure_analysis": "At Top-3, the only remaining benchmark failure was ambiguous_003, an intentionally ambiguous request requiring both chunks 28 and 29."
+  }
 }
