@@ -1,0 +1,76 @@
+{
+  "evaluation_dataset": "rag_evaluation.json",
+  "evaluation_cases": 33,
+  "experiments": [
+    {
+      "name": "vector",
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 1.0,
+      "precision_at_1": 0.9394,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3455,
+      "mrr": 0.9697,
+      "ndcg_at_1": 0.9394,
+      "ndcg_at_3": 0.9702,
+      "ndcg_at_5": 0.9782,
+      "average_latency_ms": 120.07
+    },
+    {
+      "name": "keyword",
+      "recall_at_1": 0.7576,
+      "recall_at_3": 0.7879,
+      "recall_at_5": 0.7879,
+      "precision_at_1": 0.7576,
+      "precision_at_3": 0.7677,
+      "precision_at_5": 0.7652,
+      "mrr": 0.7879,
+      "ndcg_at_1": 0.7576,
+      "ndcg_at_3": 0.7884,
+      "ndcg_at_5": 0.7884,
+      "average_latency_ms": 3.62
+    },
+    {
+      "name": "hybrid",
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 1.0,
+      "precision_at_1": 0.9394,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3455,
+      "mrr": 0.9697,
+      "ndcg_at_1": 0.9394,
+      "ndcg_at_3": 0.9702,
+      "ndcg_at_5": 0.9774,
+      "average_latency_ms": 99.79
+    },
+    {
+      "name": "hybrid_rerank",
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3394,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 148.09
+    },
+    {
+      "name": "hybrid_rerank_multi_query",
+      "recall_at_1": 0.8788,
+      "recall_at_3": 0.9697,
+      "recall_at_5": 0.9697,
+      "precision_at_1": 0.9697,
+      "precision_at_3": 0.3636,
+      "precision_at_5": 0.3394,
+      "mrr": 0.9848,
+      "ndcg_at_1": 0.9697,
+      "ndcg_at_3": 0.9771,
+      "ndcg_at_5": 0.9771,
+      "average_latency_ms": 203.72
+    }
+  ]
+}
