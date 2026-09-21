@@ -24,7 +24,9 @@ from app.services.rag.rag_service import (
 from app.services.conversation.conversation_state_service import (
     conversation_state_service,
 )
-
+from app.services.conversation.conversation_context_service import (
+    conversation_context_service,
+)
 
 router = APIRouter(
     prefix="/api/v1/conversations",
@@ -176,12 +178,29 @@ def send_message(
                     )
                 )
 
+
     else:
 
+        contextual_query = (
+
+            conversation_context_service.build_contextual_query(
+
+                current_query=request.content,
+
+                messages=messages,
+
+            )
+
+        )
+
         rag_response = rag_service.generate(
-            question=request.content,
+
+            question=contextual_query,
+
             limit=request.limit,
+
             department=request.department,
+
         )
 
     # ---------------------------------------------------------

@@ -1,8 +1,17 @@
+from app.core.config import settings
 from app.services.llm.groq_client import groq_client
 
 
 class QueryRewriterService:
+
     def rewrite(self, query: str) -> str:
+
+        if not query or not query.strip():
+            return query
+
+        if settings.llm_mode.lower() == "mock":
+            return query.strip()
+
         prompt = f"""
 Rewrite the following user query into a concise search query
 for an enterprise knowledge base.
