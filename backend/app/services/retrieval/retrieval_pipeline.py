@@ -12,6 +12,7 @@ class RetrievalPipeline:
         self,
         search_queries: List[str],
         limit: int = 5,
+        candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
@@ -34,7 +35,8 @@ class RetrievalPipeline:
         if not unique_search_queries:
             return []
 
-        candidate_limit = max(limit * 2, 10)
+        if candidate_limit is None:
+            candidate_limit = max(limit * 2, 10)
 
         unique_results = {}
 
