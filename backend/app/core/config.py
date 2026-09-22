@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     rag_similarity_threshold: float = 0.30
     rag_multi_query_v2_enabled: bool = False
 
+    rag_candidate_limit: int = 5
+    rag_top_k: int = 3
+
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",
         env_file_encoding="utf-8",

@@ -10,11 +10,11 @@ class RAGQueryRequest(BaseModel):
         description="Question to ask the enterprise knowledge base.",
     )
 
-    limit: int = Field(
-        default=5,
+    limit: Optional[int] = Field(
+        default=None,
         ge=1,
         le=20,
-        description="Maximum number of knowledge chunks to retrieve.",
+        description="Optional maximum number of knowledge chunks to retrieve.",
     )
 
     department: Optional[str] = Field(

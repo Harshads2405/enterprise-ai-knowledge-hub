@@ -58,6 +58,7 @@ from app.services.ambiguity.clarification_resolver import (
     clarification_resolver,
 )
 from app.services.rag.citation_validator import citation_validator
+from app.core.config import settings
 
 
 class RAGService:
@@ -65,14 +66,18 @@ class RAGService:
     def retrieve(
         self,
         query: str,
-        limit: int = 5,
+        limit: Optional[int] = None,
         department: Optional[str] = None,
     ) -> List[RetrievalResult]:
+
+        final_top_k = limit if limit is not None else settings.rag_top_k
+        candidate_limit = settings.rag_candidate_limit
 
         if decomposition_decision_service.should_decompose(query):
             return self.retrieve_with_decomposition(
                 query=query,
-                limit=limit,
+                limit=final_top_k,
+                candidate_limit=candidate_limit,
                 department=department,
             )
 
@@ -112,7 +117,8 @@ class RAGService:
 
         return retrieval_pipeline.retrieve(
             search_queries=search_queries,
-            limit=limit,
+            limit=final_top_k,
+            candidate_limit=candidate_limit,
             department=department,
         )
 
@@ -196,7 +202,7 @@ class RAGService:
     def generate(
         self,
         question: str,
-        limit: int = 5,
+        limit: Optional[int] = None,
         department: Optional[str] = None,
     ) -> RAGResponse:
 

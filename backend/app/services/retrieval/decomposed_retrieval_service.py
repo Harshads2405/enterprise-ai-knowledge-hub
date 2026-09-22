@@ -13,6 +13,7 @@ class DecomposedRetrievalService:
         self,
         query: str,
         limit: int = 5,
+        candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
@@ -30,6 +31,7 @@ class DecomposedRetrievalService:
             return retrieval_pipeline.retrieve(
                 search_queries=decomposed_queries,
                 limit=limit,
+                candidate_limit=candidate_limit,
                 department=department,
             )
 
@@ -42,6 +44,7 @@ class DecomposedRetrievalService:
             results = retrieval_pipeline.retrieve(
                 search_queries=[subquery],
                 limit=limit,
+                candidate_limit=candidate_limit,
                 department=department,
             )
 

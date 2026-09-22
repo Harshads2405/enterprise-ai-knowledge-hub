@@ -30,11 +30,11 @@ class ConversationMessageRequest(BaseModel):
         description="User message.",
     )
 
-    limit: int = Field(
-        default=5,
+    limit: Optional[int] = Field(
+        default=None,
         ge=1,
         le=20,
-        description="Maximum number of knowledge chunks to retrieve.",
+        description="Optional maximum number of knowledge chunks to retrieve.",
     )
 
     department: Optional[str] = Field(
