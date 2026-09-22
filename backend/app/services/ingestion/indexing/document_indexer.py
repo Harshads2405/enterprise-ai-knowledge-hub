@@ -1,15 +1,16 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from app.db.session import SessionLocal
 from app.models.document_chunk import DocumentChunk
 from app.services.embeddings.embedding_service import embedding_service
+from app.services.ingestion.document_unit import DocumentUnit
 
 
 class DocumentIndexer:
     def index_chunks(
         self,
         document_id: int,
-        chunks: List[str],
+        chunks: List[Union[str, DocumentUnit]],
         document_metadata: Dict,
     ) -> List[DocumentChunk]:
         db = SessionLocal()
@@ -17,14 +18,24 @@ class DocumentIndexer:
         try:
             indexed_chunks = []
 
-            chunk_metadata = {
+            base_metadata = {
                 "department": document_metadata.get("department"),
                 "document_type": document_metadata.get("document_type"),
                 "version": document_metadata.get("version"),
                 "access_level": document_metadata.get("access_level"),
             }
 
-            for index, content in enumerate(chunks):
+            for index, chunk_item in enumerate(chunks):
+                if isinstance(chunk_item, DocumentUnit):
+                    content = chunk_item.content
+                    chunk_metadata = {
+                        **base_metadata,
+                        **chunk_item.metadata,
+                    }
+                else:
+                    content = chunk_item
+                    chunk_metadata = base_metadata.copy()
+
                 embedding = embedding_service.embed_document(content)
 
                 chunk = DocumentChunk(
@@ -32,7 +43,7 @@ class DocumentIndexer:
                     chunk_index=index,
                     content=content,
                     token_count=len(content.split()),
-                    chunk_metadata=chunk_metadata.copy(),
+                    chunk_metadata=chunk_metadata,
                     embedding=embedding,
                 )
 

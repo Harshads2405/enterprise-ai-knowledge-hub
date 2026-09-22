@@ -1,5 +1,7 @@
 from typing import List
 
+from app.services.ingestion.document_unit import DocumentUnit
+
 
 class TextChunker:
     def __init__(
@@ -46,6 +48,25 @@ class TextChunker:
                 break
 
             start = end - self.chunk_overlap
+
+        return chunks
+
+    def split_units(
+        self,
+        units: List[DocumentUnit],
+    ) -> List[DocumentUnit]:
+        chunks = []
+
+        for unit in units:
+            unit_chunks = self.split(unit.content)
+
+            for chunk in unit_chunks:
+                chunks.append(
+                    DocumentUnit(
+                        content=chunk,
+                        metadata=unit.metadata.copy(),
+                    )
+                )
 
         return chunks
 

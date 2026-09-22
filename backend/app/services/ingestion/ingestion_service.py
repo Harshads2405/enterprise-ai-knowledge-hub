@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 from app.db.session import SessionLocal
@@ -27,14 +28,27 @@ class IngestionService:
             document.status = "processing"
             db.commit()
 
-            text = document_loader.load(file_path)
+            extension = Path(file_path).suffix.lower()
 
-            if not text.strip():
-                raise ValueError(
-                    "Document contains no extractable text."
-                )
+            if extension == ".pdf":
+                units = document_loader.load_with_metadata(file_path)
 
-            chunks = text_chunker.split(text)
+                if not units:
+                    raise ValueError(
+                        "Document contains no extractable text."
+                    )
+
+                chunks = text_chunker.split_units(units)
+
+            else:
+                text = document_loader.load(file_path)
+
+                if not text.strip():
+                    raise ValueError(
+                        "Document contains no extractable text."
+                    )
+
+                chunks = text_chunker.split(text)
 
             if not chunks:
                 raise ValueError(

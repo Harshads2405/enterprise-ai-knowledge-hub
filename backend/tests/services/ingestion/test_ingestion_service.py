@@ -2,6 +2,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from app.services.ingestion.document_unit import DocumentUnit
 from app.services.ingestion.ingestion_service import IngestionService
 
 
@@ -50,15 +51,26 @@ def test_ingest_success_updates_document_status(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.document_loader.load",
-        lambda file_path: "Employee leave policy content.",
+        "app.services.ingestion.ingestion_service.document_loader.load_with_metadata",
+        lambda file_path: [
+            DocumentUnit(
+                content="Employee leave policy content.",
+                metadata={"page": 3},
+            )
+        ],
     )
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.text_chunker.split",
-        lambda text: [
-            "Employee leave policy chunk 1.",
-            "Employee leave policy chunk 2.",
+        "app.services.ingestion.ingestion_service.text_chunker.split_units",
+        lambda units: [
+            DocumentUnit(
+                content="Employee leave policy chunk 1.",
+                metadata={"page": 3},
+            ),
+            DocumentUnit(
+                content="Employee leave policy chunk 2.",
+                metadata={"page": 3},
+            ),
         ],
     )
 
@@ -98,10 +110,18 @@ def test_ingest_success_updates_document_status(monkeypatch):
     assert fake_session.closed is True
 
     assert captured["document_id"] == 42
-    assert captured["chunks"] == [
-        "Employee leave policy chunk 1.",
-        "Employee leave policy chunk 2.",
-    ]
+    assert len(captured["chunks"]) == 2
+
+    assert captured["chunks"][0].content == (
+        "Employee leave policy chunk 1."
+    )
+    assert captured["chunks"][0].metadata == {"page": 3}
+
+    assert captured["chunks"][1].content == (
+        "Employee leave policy chunk 2."
+    )
+    assert captured["chunks"][1].metadata == {"page": 3}
+
     assert captured["metadata"] == document.document_metadata
 
 
@@ -137,8 +157,8 @@ def test_ingest_empty_document_marks_failed(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.document_loader.load",
-        lambda file_path: "   ",
+        "app.services.ingestion.ingestion_service.document_loader.load_with_metadata",
+        lambda file_path: [],
     )
 
     service = IngestionService()
@@ -167,13 +187,18 @@ def test_ingest_no_chunks_marks_failed(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.document_loader.load",
-        lambda file_path: "Some document text.",
+        "app.services.ingestion.ingestion_service.document_loader.load_with_metadata",
+        lambda file_path: [
+            DocumentUnit(
+                content="Some document text.",
+                metadata={"page": 1},
+            )
+        ],
     )
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.text_chunker.split",
-        lambda text: [],
+        "app.services.ingestion.ingestion_service.text_chunker.split_units",
+        lambda units: [],
     )
 
     service = IngestionService()
@@ -202,13 +227,23 @@ def test_ingest_indexing_failure_marks_failed(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.document_loader.load",
-        lambda file_path: "Some document text.",
+        "app.services.ingestion.ingestion_service.document_loader.load_with_metadata",
+        lambda file_path: [
+            DocumentUnit(
+                content="Some document text.",
+                metadata={"page": 1},
+            )
+        ],
     )
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.text_chunker.split",
-        lambda text: ["Some document chunk."],
+        "app.services.ingestion.ingestion_service.text_chunker.split_units",
+        lambda units: [
+            DocumentUnit(
+                content="Some document chunk.",
+                metadata={"page": 1},
+            )
+        ],
     )
 
     def failing_indexer(**kwargs):

@@ -2,7 +2,7 @@ import pytest
 
 from app.services.ingestion.chunking.text_chunker import TextChunker
 
-
+from app.services.ingestion.document_unit import DocumentUnit
 def test_empty_text_returns_no_chunks():
     chunker = TextChunker()
 
@@ -94,3 +94,85 @@ def test_overlap_must_be_smaller_than_chunk_size():
             chunk_size=100,
             chunk_overlap=100,
         )
+
+
+def test_split_units_empty_list_returns_no_chunks():
+    chunker = TextChunker()
+
+    result = chunker.split_units([])
+
+    assert result == []
+
+
+def test_split_units_preserves_metadata():
+    chunker = TextChunker(
+        chunk_size=10,
+        chunk_overlap=2,
+    )
+
+    units = [
+        DocumentUnit(
+            content="abcdefghijklmnopqrstuvwxyz",
+            metadata={
+                "page": 3,
+                "document_type": "policy",
+            },
+        )
+    ]
+
+    result = chunker.split_units(units)
+
+    assert len(result) > 1
+
+    for chunk in result:
+        assert chunk.metadata == {
+            "page": 3,
+            "document_type": "policy",
+        }
+
+
+def test_split_units_preserves_page_metadata():
+    chunker = TextChunker(
+        chunk_size=10,
+        chunk_overlap=2,
+    )
+
+    units = [
+        DocumentUnit(
+            content="page three content that is long enough to split",
+            metadata={"page": 3},
+        ),
+        DocumentUnit(
+            content="page four content that is long enough to split",
+            metadata={"page": 4},
+        ),
+    ]
+
+    result = chunker.split_units(units)
+
+    page_values = [chunk.metadata["page"] for chunk in result]
+
+    assert 3 in page_values
+    assert 4 in page_values
+
+
+def test_split_units_does_not_share_metadata_dictionary():
+    chunker = TextChunker(
+        chunk_size=10,
+        chunk_overlap=2,
+    )
+
+    original_metadata = {"page": 3}
+
+    units = [
+        DocumentUnit(
+            content="abcdefghijklmnopqrstuvwxyz",
+            metadata=original_metadata,
+        )
+    ]
+
+    result = chunker.split_units(units)
+
+    assert len(result) > 1
+
+    assert result[0].metadata is not result[1].metadata

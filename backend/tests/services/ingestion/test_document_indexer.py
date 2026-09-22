@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
 from app.services.ingestion.indexing.document_indexer import DocumentIndexer
-
+from app.services.ingestion.document_unit import DocumentUnit
 
 class FakeQuery:
     def __init__(self, document_chunks):
@@ -157,3 +157,104 @@ def test_index_chunks_rolls_back_on_embedding_failure(monkeypatch):
     assert fake_session.rolled_back is True
     assert fake_session.committed is False
     assert fake_session.closed is True
+
+
+def test_index_chunks_preserves_document_unit_metadata(monkeypatch):
+    fake_session = FakeSession()
+
+    monkeypatch.setattr(
+        "app.services.ingestion.indexing.document_indexer.SessionLocal",
+        lambda: fake_session,
+    )
+
+    monkeypatch.setattr(
+        "app.services.ingestion.indexing.document_indexer.embedding_service.embed_document",
+        lambda content: [0.1, 0.2, 0.3],
+    )
+
+    indexer = DocumentIndexer()
+
+    chunks = [
+        DocumentUnit(
+            content="Employee policy page three.",
+            metadata={"page": 3},
+        ),
+        DocumentUnit(
+            content="Employee policy page four.",
+            metadata={"page": 4},
+        ),
+    ]
+
+    metadata = {
+        "department": "HR",
+        "document_type": "policy",
+        "version": "1.0",
+        "access_level": "internal",
+    }
+
+    result = indexer.index_chunks(
+        document_id=42,
+        chunks=chunks,
+        document_metadata=metadata,
+    )
+
+    assert len(result) == 2
+
+    assert result[0].content == "Employee policy page three."
+    assert result[0].chunk_metadata == {
+        "department": "HR",
+        "document_type": "policy",
+        "version": "1.0",
+        "access_level": "internal",
+        "page": 3,
+    }
+
+    assert result[1].content == "Employee policy page four."
+    assert result[1].chunk_metadata == {
+        "department": "HR",
+        "document_type": "policy",
+        "version": "1.0",
+        "access_level": "internal",
+        "page": 4,
+    }
+
+
+def test_index_chunks_copies_document_unit_metadata(monkeypatch):
+    fake_session = FakeSession()
+
+    monkeypatch.setattr(
+        "app.services.ingestion.indexing.document_indexer.SessionLocal",
+        lambda: fake_session,
+    )
+
+    monkeypatch.setattr(
+        "app.services.ingestion.indexing.document_indexer.embedding_service.embed_document",
+        lambda content: [0.1, 0.2, 0.3],
+    )
+
+    indexer = DocumentIndexer()
+
+    chunks = [
+        DocumentUnit(
+            content="First chunk",
+            metadata={"page": 3},
+        ),
+        DocumentUnit(
+            content="Second chunk",
+            metadata={"page": 3},
+        ),
+    ]
+
+    result = indexer.index_chunks(
+        document_id=42,
+        chunks=chunks,
+        document_metadata={},
+    )
+
+    assert result[0].chunk_metadata is not result[1].chunk_metadata
+    assert result[0].chunk_metadata == {"department": None,
+                                        "document_type": None,
+                                        "version": None,
+                                        "access_level": None,
+                                        "page": 3}
+    assert result[1].chunk_metadata == result[0].chunk_metadata
