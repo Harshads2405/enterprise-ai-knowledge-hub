@@ -8,5 +8,6 @@ class Citation(BaseModel):
     chunk_id: int
     chunk_index: int
     source_name: str
+    page: Optional[int] = None
     retrieval_score: float
     reranker_score: Optional[float] = None

@@ -21,12 +21,18 @@ class CitationBuilder:
                 else "Unknown"
             )
 
+            page = None
+
+            if chunk.chunk_metadata:
+                page = chunk.chunk_metadata.get("page")
+
             citations.append(
                 Citation(
                     document_id=chunk.document_id,
                     chunk_id=chunk.id,
                     chunk_index=chunk.chunk_index,
                     source_name=source_name,
+                    page=page,
                     retrieval_score=float(
                         result.retrieval_score
                     ),
