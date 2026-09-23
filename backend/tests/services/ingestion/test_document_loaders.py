@@ -7,6 +7,8 @@ from app.services.ingestion.loaders.docx_loader import DOCXLoader
 from app.services.ingestion.loaders.pdf_loader import PDFLoader
 from app.services.ingestion.loaders.csv_loader import CSVLoader
 from app.services.ingestion.document_loader import DocumentLoader
+from app.services.ingestion.loaders.html_loader import HTMLLoader
+
 
 def test_docx_loader_extracts_paragraphs(tmp_path: Path):
     file_path = tmp_path / "policy.docx"
@@ -116,3 +118,91 @@ def test_document_loader_routes_csv(tmp_path: Path):
     assert "Name | Department | Role" in result
     assert "John | IT | Developer" in result
     assert "Sarah | HR | Manager" in result
+
+def test_html_loader_extracts_visible_text(tmp_path: Path):
+    file_path = tmp_path / "policy.html"
+
+    file_path.write_text(
+        """
+        <html>
+            <head>
+                <title>Employee Policy</title>
+                <style>.hidden { display: none; }</style>
+            </head>
+            <body>
+                <h1>Employee Leave Policy</h1>
+                <p>Employees must submit leave requests.</p>
+                <script>
+                    console.log("ignored");
+                </script>
+            </body>
+        </html>
+        """,
+        encoding="utf-8",
+    )
+
+    loader = HTMLLoader()
+
+    result = loader.load(str(file_path))
+
+    assert "Employee Policy" in result
+    assert "Employee Leave Policy" in result
+    assert "Employees must submit leave requests." in result
+    assert "console.log" not in result
+    assert ".hidden" not in result
+
+
+def test_html_loader_accepts_htm(tmp_path: Path):
+    file_path = tmp_path / "policy.htm"
+
+    file_path.write_text(
+        "<h1>Employee Leave Policy</h1>",
+        encoding="utf-8",
+    )
+
+    loader = HTMLLoader()
+
+    result = loader.load(str(file_path))
+
+    assert result == "Employee Leave Policy"
+
+
+def test_html_loader_rejects_non_html(tmp_path: Path):
+    file_path = tmp_path / "policy.txt"
+    file_path.write_text("test", encoding="utf-8")
+
+    loader = HTMLLoader()
+
+    with pytest.raises(ValueError, match="Expected an HTML file"):
+        loader.load(str(file_path))
+
+
+def test_html_loader_missing_file(tmp_path: Path):
+    file_path = tmp_path / "missing.html"
+
+    loader = HTMLLoader()
+
+    with pytest.raises(FileNotFoundError, match="File not found"):
+        loader.load(str(file_path))
+
+def test_document_loader_routes_html(tmp_path: Path):
+    file_path = tmp_path / "policy.html"
+
+    file_path.write_text(
+        """
+        <html>
+            <body>
+                <h1>Employee Leave Policy</h1>
+                <p>Employees must submit leave requests.</p>
+            </body>
+        </html>
+        """,
+        encoding="utf-8",
+    )
+
+    loader = DocumentLoader()
+
+    result = loader.load(str(file_path))
+
+    assert "Employee Leave Policy" in result
+    assert "Employees must submit leave requests." in result
