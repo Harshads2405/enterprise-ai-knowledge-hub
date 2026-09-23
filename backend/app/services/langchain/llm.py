@@ -36,10 +36,7 @@ class EnterpriseChatModel(BaseChatModel):
 
         prompt = "\n\n".join(prompt_parts)
 
-        response = groq_client.chat(
-            message=prompt,
-            model=self.model_name,
-        )
+        response = groq_client.chat(prompt)
 
         generation = ChatGeneration(
             message=AIMessage(content=response)
