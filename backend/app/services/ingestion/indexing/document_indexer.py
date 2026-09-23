@@ -4,7 +4,9 @@ from app.db.session import SessionLocal
 from app.models.document_chunk import DocumentChunk
 from app.services.embeddings.embedding_service import embedding_service
 from app.services.ingestion.document_unit import DocumentUnit
-
+from app.services.metadata.metadata_validator import (
+    metadata_validator,
+)
 
 class DocumentIndexer:
     def index_chunks(
@@ -18,12 +20,9 @@ class DocumentIndexer:
         try:
             indexed_chunks = []
 
-            base_metadata = {
-                "department": document_metadata.get("department"),
-                "document_type": document_metadata.get("document_type"),
-                "version": document_metadata.get("version"),
-                "access_level": document_metadata.get("access_level"),
-            }
+            base_metadata = metadata_validator.validate(
+                document_metadata
+            )
 
             for index, chunk_item in enumerate(chunks):
                 if isinstance(chunk_item, DocumentUnit):

@@ -1,17 +1,5 @@
-from types import SimpleNamespace
-
 from app.services.ingestion.indexing.document_indexer import DocumentIndexer
 from app.services.ingestion.document_unit import DocumentUnit
-
-class FakeQuery:
-    def __init__(self, document_chunks):
-        self.document_chunks = document_chunks
-
-    def filter(self, *args, **kwargs):
-        return self
-
-    def all(self):
-        return self.document_chunks
 
 
 class FakeSession:
@@ -144,11 +132,18 @@ def test_index_chunks_rolls_back_on_embedding_failure(monkeypatch):
 
     indexer = DocumentIndexer()
 
+    metadata = {
+        "department": "HR",
+        "document_type": "policy",
+        "version": "1.0",
+        "access_level": "internal",
+    }
+
     try:
         indexer.index_chunks(
             document_id=42,
             chunks=["Test chunk"],
-            document_metadata={},
+            document_metadata=metadata,
         )
         assert False, "Expected RuntimeError"
     except RuntimeError as exc:
@@ -245,16 +240,59 @@ def test_index_chunks_copies_document_unit_metadata(monkeypatch):
         ),
     ]
 
+    metadata = {
+        "department": "HR",
+        "document_type": "policy",
+        "version": "1.0",
+        "access_level": "internal",
+    }
+
     result = indexer.index_chunks(
         document_id=42,
         chunks=chunks,
-        document_metadata={},
+        document_metadata=metadata,
     )
 
     assert result[0].chunk_metadata is not result[1].chunk_metadata
-    assert result[0].chunk_metadata == {"department": None,
-                                        "document_type": None,
-                                        "version": None,
-                                        "access_level": None,
-                                        "page": 3}
+
+    assert result[0].chunk_metadata == {
+        "department": "HR",
+        "document_type": "policy",
+        "version": "1.0",
+        "access_level": "internal",
+        "page": 3,
+    }
+
     assert result[1].chunk_metadata == result[0].chunk_metadata
+
+
+def test_index_chunks_rejects_invalid_document_metadata(monkeypatch):
+    fake_session = FakeSession()
+
+    monkeypatch.setattr(
+        "app.services.ingestion.indexing.document_indexer.SessionLocal",
+        lambda: fake_session,
+    )
+
+    indexer = DocumentIndexer()
+
+    invalid_metadata = {
+        "department": "HR",
+        "document_type": "policy",
+        "version": "1.0",
+        "access_level": "secret",
+    }
+
+    try:
+        indexer.index_chunks(
+            document_id=42,
+            chunks=["Employee policy"],
+            document_metadata=invalid_metadata,
+        )
+        assert False, "Expected ValueError"
+    except ValueError as exc:
+        assert "Invalid access_level" in str(exc)
+
+    assert fake_session.rolled_back is True
+    assert fake_session.committed is False
+    assert fake_session.closed is True
