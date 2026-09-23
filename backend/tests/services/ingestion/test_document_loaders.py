@@ -369,6 +369,7 @@ def test_document_loader_routes_docx_with_metadata(tmp_path: Path):
     assert "Employees must submit leave requests." in units[0].content
     assert units[0].metadata == {}
 
+
 def test_csv_loader_load_with_metadata(tmp_path: Path):
     file_path = tmp_path / "employees.csv"
 
