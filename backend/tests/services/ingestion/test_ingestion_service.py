@@ -273,7 +273,7 @@ def test_ingest_indexing_failure_marks_failed(monkeypatch):
     assert fake_session.rolled_back is True
     assert fake_session.closed is True
 
-def test_ingest_csv_uses_standard_text_pipeline(monkeypatch):
+def test_ingest_csv_uses_metadata_text_pipeline(monkeypatch):
     document = make_document()
     fake_session = FakeSession(document)
 
@@ -284,30 +284,43 @@ def test_ingest_csv_uses_standard_text_pipeline(monkeypatch):
 
     captured = {}
 
-    def fake_load(file_path):
+    def fake_load_with_metadata(file_path):
         captured["file_path"] = file_path
-        return (
-            "Name | Department | Role\n"
-            "John | IT | Developer\n"
-            "Sarah | HR | Manager"
-        )
-
-    monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.document_loader.load",
-        fake_load,
-    )
-
-    def fake_split(text):
-        captured["text"] = text
         return [
-            "Name | Department | Role\n"
-            "John | IT | Developer",
-            "Sarah | HR | Manager",
+            DocumentUnit(
+                content=(
+                    "Name | Department | Role\n"
+                    "John | IT | Developer\n"
+                    "Sarah | HR | Manager"
+                ),
+                metadata={},
+            )
         ]
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.text_chunker.split",
-        fake_split,
+        "app.services.ingestion.ingestion_service.document_loader.load_with_metadata",
+        fake_load_with_metadata,
+    )
+
+    def fake_split_units(units):
+        captured["units"] = units
+        return [
+            DocumentUnit(
+                content=(
+                    "Name | Department | Role\n"
+                    "John | IT | Developer"
+                ),
+                metadata={},
+            ),
+            DocumentUnit(
+                content="Sarah | HR | Manager",
+                metadata={},
+            ),
+        ]
+
+    monkeypatch.setattr(
+        "app.services.ingestion.ingestion_service.text_chunker.split_units",
+        fake_split_units,
     )
 
     indexed_chunks = [
@@ -345,18 +358,13 @@ def test_ingest_csv_uses_standard_text_pipeline(monkeypatch):
 
     assert captured["file_path"] == "employees.csv"
 
-    assert captured["text"] == (
-        "Name | Department | Role\n"
-        "John | IT | Developer\n"
-        "Sarah | HR | Manager"
+    assert len(captured["units"]) == 1
+    assert captured["units"][0].content.startswith(
+        "Name | Department | Role"
     )
+    assert captured["units"][0].metadata == {}
 
-    assert captured["chunks"] == [
-        "Name | Department | Role\n"
-        "John | IT | Developer",
-        "Sarah | HR | Manager",
-    ]
-
+    assert len(captured["chunks"]) == 2
     assert captured["document_id"] == 42
     assert captured["metadata"] == document.document_metadata
 

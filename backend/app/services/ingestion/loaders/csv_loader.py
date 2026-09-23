@@ -1,5 +1,8 @@
 import csv
 from pathlib import Path
+from typing import List
+
+from app.services.ingestion.document_unit import DocumentUnit
 
 
 class CSVLoader:
@@ -34,6 +37,19 @@ class CSVLoader:
                 rows.append(" | ".join(cell.strip() for cell in row))
 
         return "\n".join(rows)
+
+    def load_with_metadata(
+        self,
+        file_path: str,
+    ) -> List[DocumentUnit]:
+        content = self.load(file_path)
+
+        return [
+            DocumentUnit(
+                content=content,
+                metadata={},
+            )
+        ]
 
 
 csv_loader = CSVLoader()

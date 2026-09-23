@@ -368,3 +368,23 @@ def test_document_loader_routes_docx_with_metadata(tmp_path: Path):
     assert "Employee Leave Policy" in units[0].content
     assert "Employees must submit leave requests." in units[0].content
     assert units[0].metadata == {}
+
+def test_csv_loader_load_with_metadata(tmp_path: Path):
+    file_path = tmp_path / "employees.csv"
+
+    file_path.write_text(
+        "Name,Department,Role\n"
+        "John,IT,Developer\n"
+        "Sarah,HR,Manager\n",
+        encoding="utf-8",
+    )
+
+    loader = CSVLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert "Name | Department | Role" in units[0].content
+    assert "John | IT | Developer" in units[0].content
+    assert "Sarah | HR | Manager" in units[0].content
+    assert units[0].metadata == {}
