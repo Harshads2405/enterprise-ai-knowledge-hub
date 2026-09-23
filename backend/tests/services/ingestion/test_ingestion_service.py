@@ -471,7 +471,7 @@ def test_ingest_html_uses_metadata_text_pipeline(monkeypatch):
     assert captured["document_id"] == 42
     assert captured["metadata"] == document.document_metadata
 
-def test_ingest_markdown_uses_standard_text_pipeline(tmp_path: Path):
+def test_ingest_markdown_uses_metadata_text_pipeline(tmp_path: Path):
     file_path = tmp_path / "policy.md"
 
     file_path.write_text(
@@ -523,7 +523,14 @@ def test_ingest_markdown_uses_standard_text_pipeline(tmp_path: Path):
 
     assert "Employee Leave Policy" in combined_content
     assert "Employees must submit leave requests." in combined_content
+    assert "Leave requests require manager approval." in combined_content
     assert "# " not in combined_content
+
+    for chunk in chunks:
+        assert chunk.chunk_metadata["department"] == "HR"
+        assert chunk.chunk_metadata["document_type"] == "policy"
+        assert chunk.chunk_metadata["version"] == "1.0"
+        assert chunk.chunk_metadata["access_level"] == "internal"
 
     db = SessionLocal()
 

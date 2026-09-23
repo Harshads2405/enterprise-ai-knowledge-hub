@@ -1,6 +1,8 @@
 import re
 from pathlib import Path
+from typing import List
 
+from app.services.ingestion.document_unit import DocumentUnit
 
 class MarkdownLoader:
     def load(self, file_path: str) -> str:
@@ -26,6 +28,19 @@ class MarkdownLoader:
         )
 
         return self._clean_markdown(markdown)
+
+    def load_with_metadata(
+        self,
+        file_path: str,
+    ) -> List[DocumentUnit]:
+        content = self.load(file_path)
+
+        return [
+            DocumentUnit(
+                content=content,
+                metadata={},
+            )
+        ]
 
     def _clean_markdown(self, markdown: str) -> str:
         text = "\n".join(

@@ -369,7 +369,6 @@ def test_document_loader_routes_docx_with_metadata(tmp_path: Path):
     assert "Employees must submit leave requests." in units[0].content
     assert units[0].metadata == {}
 
-
 def test_csv_loader_load_with_metadata(tmp_path: Path):
     file_path = tmp_path / "employees.csv"
 
@@ -444,4 +443,57 @@ def test_document_loader_routes_html_with_metadata(tmp_path: Path):
     assert len(units) == 1
     assert "Employee Leave Policy" in units[0].content
     assert "Employees must submit leave requests." in units[0].content
+    assert units[0].metadata == {}
+
+
+def test_markdown_loader_load_with_metadata(tmp_path: Path):
+
+    file_path = tmp_path / "policy.md"
+
+    file_path.write_text(
+        """
+        # Employee Leave Policy
+
+        Employees must submit leave requests.
+
+        - Submit requests before the deadline.
+        - Manager approval is required.
+        """,
+        encoding="utf-8",
+    )
+
+    loader = MarkdownLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert "Employee Leave Policy" in units[0].content
+    assert "Employees must submit leave requests." in units[0].content
+    assert "Submit requests before the deadline." in units[0].content
+    assert units[0].metadata == {}
+
+def test_document_loader_routes_markdown_with_metadata(tmp_path: Path):
+
+    file_path = tmp_path / "policy.md"
+
+    file_path.write_text(
+        """
+        # Employee Leave Policy
+
+        Employees must submit leave requests.
+
+        - Submit requests before the deadline.
+        - Manager approval is required.
+        """,
+        encoding="utf-8",
+    )
+
+    loader = DocumentLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert "Employee Leave Policy" in units[0].content
+    assert "Employees must submit leave requests." in units[0].content
+    assert "Submit requests before the deadline." in units[0].content
     assert units[0].metadata == {}

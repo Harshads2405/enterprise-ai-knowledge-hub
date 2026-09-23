@@ -30,7 +30,16 @@ class IngestionService:
 
             extension = Path(file_path).suffix.lower()
 
-            if extension in {".pdf", ".txt", ".docx", ".csv", ".html", ".htm"}:
+            if extension in {
+                ".pdf",
+                ".txt",
+                ".docx",
+                ".csv",
+                ".html",
+                ".htm",
+                ".md",
+                ".markdown",
+            }:
                 units = document_loader.load_with_metadata(file_path)
 
                 if not units:
