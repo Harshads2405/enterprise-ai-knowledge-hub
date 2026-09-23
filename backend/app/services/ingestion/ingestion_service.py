@@ -30,23 +30,18 @@ class IngestionService:
 
             extension = Path(file_path).suffix.lower()
 
-            if extension == ".pdf":
+            if extension in {".pdf", ".txt"}:
                 units = document_loader.load_with_metadata(file_path)
 
                 if not units:
-                    raise ValueError(
-                        "Document contains no extractable text."
-                    )
+                    raise ValueError("Document contains no extractable text.")
 
                 chunks = text_chunker.split_units(units)
-
             else:
                 text = document_loader.load(file_path)
 
                 if not text.strip():
-                    raise ValueError(
-                        "Document contains no extractable text."
-                    )
+                    raise ValueError("Document contains no extractable text.")
 
                 chunks = text_chunker.split(text)
 

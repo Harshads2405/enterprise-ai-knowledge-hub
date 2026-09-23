@@ -505,3 +505,75 @@ def test_ingest_markdown_uses_standard_text_pipeline(tmp_path: Path):
         assert document.status == "completed"
     finally:
         db.close()
+
+def test_ingest_txt_uses_metadata_aware_pipeline(tmp_path: Path):
+    file_path = tmp_path / "policy.txt"
+
+    file_path.write_text(
+        """
+        Employee Leave Policy
+
+        Employees must submit leave requests.
+        Leave requests require manager approval.
+        """,
+        encoding="utf-8",
+    )
+
+    db = SessionLocal()
+
+    try:
+        document = Document(
+            organization_id=9,
+            uploaded_by=9,
+            title="Employee Leave Policy",
+            source_type="upload",
+            source_name="policy.txt",
+            status="uploaded",
+            document_metadata={
+                "department": "HR",
+                "document_type": "policy",
+                "version": "1.0",
+                "access_level": "internal",
+            },
+        )
+
+        db.add(document)
+        db.commit()
+        db.refresh(document)
+
+        document_id = document.id
+    finally:
+        db.close()
+
+    service = IngestionService()
+
+    chunks = service.ingest(
+        document_id=document_id,
+        file_path=str(file_path),
+    )
+
+    assert len(chunks) >= 1
+
+    combined_content = "\n".join(
+        chunk.content for chunk in chunks
+    )
+
+    assert "Employee Leave Policy" in combined_content
+    assert "Employees must submit leave requests." in combined_content
+    assert "# " not in combined_content
+
+    for chunk in chunks:
+        assert chunk.chunk_metadata["department"] == "HR"
+        assert chunk.chunk_metadata["document_type"] == "policy"
+        assert chunk.chunk_metadata["version"] == "1.0"
+        assert chunk.chunk_metadata["access_level"] == "internal"
+
+    db = SessionLocal()
+
+    try:
+        document = db.get(Document, document_id)
+
+        assert document is not None
+        assert document.status == "completed"
+    finally:
+        db.close()

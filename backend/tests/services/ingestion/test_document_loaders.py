@@ -9,6 +9,7 @@ from app.services.ingestion.loaders.csv_loader import CSVLoader
 from app.services.ingestion.document_loader import DocumentLoader
 from app.services.ingestion.loaders.html_loader import HTMLLoader
 from app.services.ingestion.loaders.markdown_loader import MarkdownLoader
+from app.services.ingestion.text_loader import TextLoader
 
 
 def test_docx_loader_extracts_paragraphs(tmp_path: Path):
@@ -301,3 +302,35 @@ def test_document_loader_routes_markdown(tmp_path: Path):
     assert "Employee Leave Policy" in result
     assert "Employees must submit leave requests." in result
     assert "# " not in result
+
+def test_text_loader_load_with_metadata(tmp_path: Path):
+    file_path = tmp_path / "policy.txt"
+
+    file_path.write_text(
+        "Employees must submit leave requests.",
+        encoding="utf-8",
+    )
+
+    loader = TextLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert units[0].content == "Employees must submit leave requests."
+    assert units[0].metadata == {}
+
+def test_document_loader_routes_txt_with_metadata(tmp_path: Path):
+    file_path = tmp_path / "policy.txt"
+
+    file_path.write_text(
+        "Employees must submit leave requests.",
+        encoding="utf-8",
+    )
+
+    loader = DocumentLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert units[0].content == "Employees must submit leave requests."
+    assert units[0].metadata == {}

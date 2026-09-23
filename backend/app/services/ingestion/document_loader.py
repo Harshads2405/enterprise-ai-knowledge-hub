@@ -67,6 +67,9 @@ class DocumentLoader:
         if extension == ".pdf":
             return pdf_loader.load_with_metadata(file_path)
 
+        if extension == ".txt":
+            return text_loader.load_with_metadata(file_path)
+
         raise ValueError(
             f"Metadata-aware loading is not supported for: {extension}"
         )

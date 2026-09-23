@@ -1,4 +1,7 @@
 from pathlib import Path
+from typing import List
+
+from app.services.ingestion.document_unit import DocumentUnit
 
 
 class TextLoader:
@@ -18,6 +21,19 @@ class TextLoader:
         return path.read_text(
             encoding="utf-8"
         )
+
+    def load_with_metadata(
+        self,
+        file_path: str,
+    ) -> List[DocumentUnit]:
+        content = self.load(file_path)
+
+        return [
+            DocumentUnit(
+                content=content,
+                metadata={},
+            )
+        ]
 
 
 text_loader = TextLoader()
