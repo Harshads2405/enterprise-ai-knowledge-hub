@@ -334,3 +334,37 @@ def test_document_loader_routes_txt_with_metadata(tmp_path: Path):
     assert len(units) == 1
     assert units[0].content == "Employees must submit leave requests."
     assert units[0].metadata == {}
+
+def test_docx_loader_load_with_metadata(tmp_path: Path):
+    file_path = tmp_path / "policy.docx"
+
+    document = Document()
+    document.add_paragraph("Employee Leave Policy")
+    document.add_paragraph("Employees must submit leave requests.")
+    document.save(file_path)
+
+    loader = DOCXLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert "Employee Leave Policy" in units[0].content
+    assert "Employees must submit leave requests." in units[0].content
+    assert units[0].metadata == {}
+
+def test_document_loader_routes_docx_with_metadata(tmp_path: Path):
+    file_path = tmp_path / "policy.docx"
+
+    document = Document()
+    document.add_paragraph("Employee Leave Policy")
+    document.add_paragraph("Employees must submit leave requests.")
+    document.save(file_path)
+
+    loader = DocumentLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert "Employee Leave Policy" in units[0].content
+    assert "Employees must submit leave requests." in units[0].content
+    assert units[0].metadata == {}

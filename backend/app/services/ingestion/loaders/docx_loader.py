@@ -1,7 +1,9 @@
 from pathlib import Path
+from typing import List
 
 from docx import Document
 
+from app.services.ingestion.document_unit import DocumentUnit
 
 class DOCXLoader:
     def load(self, file_path: str) -> str:
@@ -33,6 +35,19 @@ class DOCXLoader:
                 paragraphs.append(text)
 
         return "\n\n".join(paragraphs)
+
+    def load_with_metadata(
+        self,
+        file_path: str,
+    ) -> List[DocumentUnit]:
+        content = self.load(file_path)
+
+        return [
+            DocumentUnit(
+                content=content,
+                metadata={},
+            )
+        ]
 
 
 docx_loader = DOCXLoader()

@@ -8,6 +8,7 @@ from app.db.session import SessionLocal
 from app.models.document import Document
 from app.services.ingestion.document_unit import DocumentUnit
 from app.services.ingestion.ingestion_service import IngestionService
+from docx import Document as DOCXDocument
 
 class FakeSession:
     def __init__(self, document):
@@ -561,6 +562,74 @@ def test_ingest_txt_uses_metadata_aware_pipeline(tmp_path: Path):
     assert "Employee Leave Policy" in combined_content
     assert "Employees must submit leave requests." in combined_content
     assert "# " not in combined_content
+
+    for chunk in chunks:
+        assert chunk.chunk_metadata["department"] == "HR"
+        assert chunk.chunk_metadata["document_type"] == "policy"
+        assert chunk.chunk_metadata["version"] == "1.0"
+        assert chunk.chunk_metadata["access_level"] == "internal"
+
+    db = SessionLocal()
+
+    try:
+        document = db.get(Document, document_id)
+
+        assert document is not None
+        assert document.status == "completed"
+    finally:
+        db.close()
+
+def test_ingest_docx_uses_metadata_aware_pipeline(tmp_path: Path):
+    file_path = tmp_path / "policy.docx"
+
+    docx_document = DOCXDocument()
+    docx_document.add_paragraph("Employee Leave Policy")
+    docx_document.add_paragraph("Employees must submit leave requests.")
+    docx_document.add_paragraph("Leave requests require manager approval.")
+    docx_document.save(file_path)
+
+    db = SessionLocal()
+
+    try:
+        document_record = Document(
+            organization_id=9,
+            uploaded_by=9,
+            title="Employee Leave Policy",
+            source_type="upload",
+            source_name="policy.docx",
+            status="uploaded",
+            document_metadata={
+                "department": "HR",
+                "document_type": "policy",
+                "version": "1.0",
+                "access_level": "internal",
+            },
+        )
+
+        db.add(document_record)
+        db.commit()
+        db.refresh(document_record)
+
+        document_id = document_record.id
+    finally:
+        db.close()
+
+    service = IngestionService()
+
+    chunks = service.ingest(
+        document_id=document_id,
+        file_path=str(file_path),
+    )
+
+    assert len(chunks) >= 1
+
+    combined_content = "\n".join(
+        chunk.content for chunk in chunks
+    )
+
+    assert "Employee Leave Policy" in combined_content
+    assert "Employees must submit leave requests." in combined_content
+    assert "Leave requests require manager approval." in combined_content
 
     for chunk in chunks:
         assert chunk.chunk_metadata["department"] == "HR"
