@@ -8,6 +8,7 @@ from app.services.ingestion.loaders.pdf_loader import PDFLoader
 from app.services.ingestion.loaders.csv_loader import CSVLoader
 from app.services.ingestion.document_loader import DocumentLoader
 from app.services.ingestion.loaders.html_loader import HTMLLoader
+from app.services.ingestion.loaders.markdown_loader import MarkdownLoader
 
 
 def test_docx_loader_extracts_paragraphs(tmp_path: Path):
@@ -206,3 +207,97 @@ def test_document_loader_routes_html(tmp_path: Path):
 
     assert "Employee Leave Policy" in result
     assert "Employees must submit leave requests." in result
+
+def test_markdown_loader_extracts_readable_text(tmp_path: Path):
+    file_path = tmp_path / "policy.md"
+
+    file_path.write_text(
+        """
+        # Employee Leave Policy
+
+        ## Rules
+
+        - Employees must submit leave requests.
+        - Managers must approve requests.
+
+        **Important:** Submit requests before the deadline.
+
+        [Leave Portal](https://example.com)
+        """,
+        encoding="utf-8",
+    )
+
+    loader = MarkdownLoader()
+
+    result = loader.load(str(file_path))
+
+    assert "Employee Leave Policy" in result
+    assert "Rules" in result
+    assert "Employees must submit leave requests." in result
+    assert "Managers must approve requests." in result
+    assert "Important: Submit requests before the deadline." in result
+    assert "Leave Portal" in result
+
+    assert "# " not in result
+    assert "**" not in result
+    assert "[Leave Portal]" not in result
+
+
+def test_markdown_loader_accepts_markdown_extension(tmp_path: Path):
+    file_path = tmp_path / "policy.markdown"
+
+    file_path.write_text(
+        "# Employee Leave Policy",
+        encoding="utf-8",
+    )
+
+    loader = MarkdownLoader()
+
+    result = loader.load(str(file_path))
+
+    assert result == "Employee Leave Policy"
+
+
+def test_markdown_loader_rejects_non_markdown(tmp_path: Path):
+    file_path = tmp_path / "policy.txt"
+    file_path.write_text("test", encoding="utf-8")
+
+    loader = MarkdownLoader()
+
+    with pytest.raises(
+        ValueError,
+        match="Expected a Markdown file",
+    ):
+        loader.load(str(file_path))
+
+
+def test_markdown_loader_missing_file(tmp_path: Path):
+    file_path = tmp_path / "missing.md"
+
+    loader = MarkdownLoader()
+
+    with pytest.raises(
+        FileNotFoundError,
+        match="File not found",
+    ):
+        loader.load(str(file_path))
+
+def test_document_loader_routes_markdown(tmp_path: Path):
+    file_path = tmp_path / "policy.md"
+
+    file_path.write_text(
+        """
+        # Employee Leave Policy
+
+        Employees must submit leave requests.
+        """,
+        encoding="utf-8",
+    )
+
+    loader = DocumentLoader()
+
+    result = loader.load(str(file_path))
+
+    assert "Employee Leave Policy" in result
+    assert "Employees must submit leave requests." in result
+    assert "# " not in result

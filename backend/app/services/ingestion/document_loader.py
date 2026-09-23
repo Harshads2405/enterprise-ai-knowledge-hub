@@ -7,7 +7,7 @@ from app.services.ingestion.loaders.pdf_loader import pdf_loader
 from app.services.ingestion.loaders.docx_loader import docx_loader
 from app.services.ingestion.loaders.csv_loader import csv_loader
 from app.services.ingestion.loaders.html_loader import html_loader
-
+from app.services.ingestion.loaders.markdown_loader import markdown_loader
 class DocumentLoader:
     def load(self, file_path: str) -> str:
         path = Path(file_path)
@@ -38,6 +38,9 @@ class DocumentLoader:
 
         if extension in {".html", ".htm"}:
             return html_loader.load(file_path)
+
+        if extension in {".md", ".markdown"}:
+            return markdown_loader.load(file_path)
 
         raise ValueError(
             f"Unsupported document type: {extension}"
