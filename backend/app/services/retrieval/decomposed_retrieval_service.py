@@ -15,6 +15,9 @@ class DecomposedRetrievalService:
         limit: int = 5,
         candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
         decomposed_queries = query_decomposer_service.decompose(
@@ -33,6 +36,9 @@ class DecomposedRetrievalService:
                 limit=limit,
                 candidate_limit=candidate_limit,
                 department=department,
+                document_type=document_type,
+                version=version,
+                access_level=access_level,
             )
 
         unique_results = {}
@@ -46,6 +52,9 @@ class DecomposedRetrievalService:
                 limit=limit,
                 candidate_limit=candidate_limit,
                 department=department,
+                document_type=document_type,
+                version=version,
+                access_level=access_level,
             )
 
             for result in results:

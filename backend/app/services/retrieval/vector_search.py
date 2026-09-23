@@ -3,7 +3,6 @@ from typing import Dict, List, Optional
 from sqlalchemy import select, text
 from sqlalchemy.orm import joinedload
 
-from app.core.config import settings
 from app.db.session import SessionLocal
 from app.models.document_chunk import DocumentChunk
 from app.services.retrieval.retrieval_result import RetrievalResult
@@ -15,6 +14,9 @@ class VectorSearch:
         query_embedding: List[float],
         limit: int = 5,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
         db = SessionLocal()
 
@@ -27,11 +29,19 @@ class VectorSearch:
                 DocumentChunk.embedding.is_not(None),
             ]
 
-            if department is not None:
-                filters.append(
-                    DocumentChunk.chunk_metadata["department"].as_string()
-                    == department
-                )
+            metadata_filters = {
+                "department": department,
+                "document_type": document_type,
+                "version": version,
+                "access_level": access_level,
+            }
+
+            for key, value in metadata_filters.items():
+                if value is not None:
+                    filters.append(
+                        DocumentChunk.chunk_metadata[key].as_string()
+                        == value
+                    )
 
             statement = (
                 select(DocumentChunk, distance.label("distance"))
@@ -59,6 +69,9 @@ class VectorSearch:
         query: str,
         limit: int = 5,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
         db = SessionLocal()
 
@@ -68,13 +81,32 @@ class VectorSearch:
                 "limit": limit,
             }
 
-            department_filter = ""
+            metadata_filters = {
+                "department": department,
+                "document_type": document_type,
+                "version": version,
+                "access_level": access_level,
+            }
 
-            if department is not None:
-                params["department"] = department
-                department_filter = """
-                    AND document_chunks.metadata->>'department' = :department
-                """
+            metadata_conditions = []
+
+            for key, value in metadata_filters.items():
+                if value is not None:
+                    parameter_name = f"metadata_{key}"
+
+                    params[parameter_name] = value
+
+                    metadata_conditions.append(
+                        f"document_chunks.metadata->>'{key}' = "
+                        f":{parameter_name}"
+                    )
+
+            metadata_filter = ""
+
+            if metadata_conditions:
+                metadata_filter = (
+                    " AND " + " AND ".join(metadata_conditions)
+                )
 
             ranked_query = text(
                 f"""
@@ -87,7 +119,7 @@ class VectorSearch:
                 FROM document_chunks
                 WHERE document_chunks.search_vector @@
                     plainto_tsquery('english', :query)
-                {department_filter}
+                {metadata_filter}
                 ORDER BY rank DESC
                 LIMIT :limit
                 """
@@ -99,6 +131,7 @@ class VectorSearch:
                 return []
 
             chunk_ids = [row.id for row in rows]
+
             rank_map = {
                 row.id: float(row.rank)
                 for row in rows
@@ -135,6 +168,9 @@ class VectorSearch:
         query: str,
         limit: int = 5,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
         vector_limit: int = 10,
         keyword_limit: int = 10,
         rrf_k: int = 60,
@@ -143,12 +179,18 @@ class VectorSearch:
             query_embedding=query_embedding,
             limit=vector_limit,
             department=department,
+            document_type=document_type,
+            version=version,
+            access_level=access_level,
         )
 
         keyword_results = self.keyword_search(
             query=query,
             limit=keyword_limit,
             department=department,
+            document_type=document_type,
+            version=version,
+            access_level=access_level,
         )
 
         scores: Dict[int, float] = {}

@@ -68,6 +68,9 @@ class RAGService:
         query: str,
         limit: Optional[int] = None,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
         final_top_k = limit if limit is not None else settings.rag_top_k
@@ -79,6 +82,9 @@ class RAGService:
                 limit=final_top_k,
                 candidate_limit=candidate_limit,
                 department=department,
+                document_type=document_type,
+                version=version,
+                access_level=access_level,
             )
 
         rewritten_query = query_rewriter_service.rewrite(
@@ -120,6 +126,9 @@ class RAGService:
             limit=final_top_k,
             candidate_limit=candidate_limit,
             department=department,
+            document_type=document_type,
+            version=version,
+            access_level=access_level,
         )
 
     def retrieve_with_decomposition(
@@ -127,12 +136,18 @@ class RAGService:
         query: str,
         limit: int = 5,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
         return decomposed_retrieval_service.retrieve(
             query=query,
             limit=limit,
             department=department,
+            document_type=document_type,
+            version=version,
+            access_level=access_level,
         )
 
     def build_context(
@@ -204,12 +219,18 @@ class RAGService:
         question: str,
         limit: Optional[int] = None,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
     ) -> RAGResponse:
 
         results = self.retrieve(
             query=question,
             limit=limit,
             department=department,
+            document_type=document_type,
+            version=version,
+            access_level=access_level,
         )
 
         explicit_topic = (
@@ -295,6 +316,9 @@ class RAGService:
             selected_topic: str,
             limit: int = 5,
             department: Optional[str] = None,
+            document_type: Optional[str] = None,
+            version: Optional[str] = None,
+            access_level: Optional[str] = None,
     ) -> RAGResponse:
 
         resolution = clarification_resolver.resolve(
@@ -306,6 +330,9 @@ class RAGService:
             question=resolution.resolved_query,
             limit=limit,
             department=department,
+            document_type=document_type,
+            version=version,
+            access_level=access_level,
         )
 
 

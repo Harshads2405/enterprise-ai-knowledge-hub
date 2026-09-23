@@ -14,6 +14,9 @@ class RetrievalPipeline:
         limit: int = 5,
         candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
+        document_type: Optional[str] = None,
+        version: Optional[str] = None,
+        access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
         # Remove duplicate search formulations while preserving order.
@@ -50,6 +53,9 @@ class RetrievalPipeline:
                 query=search_query,
                 limit=candidate_limit,
                 department=department,
+                document_type=document_type,
+                version=version,
+                access_level=access_level,
             )
 
             if not candidates:
