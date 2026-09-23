@@ -11,7 +11,10 @@ class EnterpriseRAGPrompt:
     def __init__(self):
         self.prompt_builder = RAGPromptBuilder()
 
-    def build(self) -> ChatPromptTemplate:
+    def build(
+        self,
+        question_variable: str = "question",
+    ) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_messages(
             [
                 (
@@ -25,10 +28,10 @@ KNOWLEDGE BASE CONTEXT
                 ),
                 (
                     "human",
-                    """USER QUESTION
+                    f"""USER QUESTION
 =============
 
-{question}
+{{{question_variable}}}
 
 ANSWER
 ======

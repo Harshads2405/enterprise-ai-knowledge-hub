@@ -27,7 +27,9 @@ def build_rag_chain(
 
     llm = EnterpriseChatModel()
 
-    prompt = enterprise_rag_prompt.build()
+    prompt = enterprise_rag_prompt.build(
+        question_variable="input",
+    )
 
     document_chain = create_stuff_documents_chain(
         llm,
