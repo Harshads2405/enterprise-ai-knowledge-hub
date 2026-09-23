@@ -268,3 +268,90 @@ def test_ingest_indexing_failure_marks_failed(monkeypatch):
     assert document.status == "failed"
     assert fake_session.rolled_back is True
     assert fake_session.closed is True
+
+def test_ingest_csv_uses_standard_text_pipeline(monkeypatch):
+    document = make_document()
+    fake_session = FakeSession(document)
+
+    monkeypatch.setattr(
+        "app.services.ingestion.ingestion_service.SessionLocal",
+        lambda: fake_session,
+    )
+
+    captured = {}
+
+    def fake_load(file_path):
+        captured["file_path"] = file_path
+        return (
+            "Name | Department | Role\n"
+            "John | IT | Developer\n"
+            "Sarah | HR | Manager"
+        )
+
+    monkeypatch.setattr(
+        "app.services.ingestion.ingestion_service.document_loader.load",
+        fake_load,
+    )
+
+    def fake_split(text):
+        captured["text"] = text
+        return [
+            "Name | Department | Role\n"
+            "John | IT | Developer",
+            "Sarah | HR | Manager",
+        ]
+
+    monkeypatch.setattr(
+        "app.services.ingestion.ingestion_service.text_chunker.split",
+        fake_split,
+    )
+
+    indexed_chunks = [
+        SimpleNamespace(id=1),
+        SimpleNamespace(id=2),
+    ]
+
+    def fake_index_chunks(
+        document_id,
+        chunks,
+        document_metadata,
+    ):
+        captured["document_id"] = document_id
+        captured["chunks"] = chunks
+        captured["metadata"] = document_metadata
+        return indexed_chunks
+
+    monkeypatch.setattr(
+        "app.services.ingestion.ingestion_service.document_indexer.index_chunks",
+        fake_index_chunks,
+    )
+
+    service = IngestionService()
+
+    result = service.ingest(
+        document_id=42,
+        file_path="employees.csv",
+    )
+
+    assert result == indexed_chunks
+    assert document.status == "completed"
+    assert fake_session.committed is True
+    assert fake_session.rolled_back is False
+    assert fake_session.closed is True
+
+    assert captured["file_path"] == "employees.csv"
+
+    assert captured["text"] == (
+        "Name | Department | Role\n"
+        "John | IT | Developer\n"
+        "Sarah | HR | Manager"
+    )
+
+    assert captured["chunks"] == [
+        "Name | Department | Role\n"
+        "John | IT | Developer",
+        "Sarah | HR | Manager",
+    ]
+
+    assert captured["document_id"] == 42
+    assert captured["metadata"] == document.document_metadata

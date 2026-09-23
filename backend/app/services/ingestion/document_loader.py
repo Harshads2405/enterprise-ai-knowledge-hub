@@ -5,7 +5,7 @@ from app.services.ingestion.document_unit import DocumentUnit
 from app.services.ingestion.text_loader import text_loader
 from app.services.ingestion.loaders.pdf_loader import pdf_loader
 from app.services.ingestion.loaders.docx_loader import docx_loader
-
+from app.services.ingestion.loaders.csv_loader import csv_loader
 
 class DocumentLoader:
     def load(self, file_path: str) -> str:
@@ -31,6 +31,9 @@ class DocumentLoader:
 
         if extension == ".docx":
             return docx_loader.load(file_path)
+
+        if extension == ".csv":
+            return csv_loader.load(file_path)
 
         raise ValueError(
             f"Unsupported document type: {extension}"
