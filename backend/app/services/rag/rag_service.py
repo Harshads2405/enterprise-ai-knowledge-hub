@@ -62,6 +62,9 @@ from app.services.langchain.generation import (
 from app.services.llm.groq_client import (
     groq_client,
 )
+from app.services.langchain.prompt import (
+    enterprise_rag_prompt,
+)
 
 class RAGService:
 
@@ -287,12 +290,15 @@ class RAGService:
                 sources=[],
             )
 
-        prompt = rag_prompt_builder.build(
-            question=question,
-            context=context,
-        )
+        prompt = enterprise_rag_prompt.build()
 
-        answer = langchain_generation_service.generate(prompt)
+        answer = langchain_generation_service.generate_from_prompt(
+            prompt=prompt,
+            variables={
+                "question": question,
+                "context": context,
+            },
+        )
 
         citation_validation = citation_validator.validate(
             answer=answer,
