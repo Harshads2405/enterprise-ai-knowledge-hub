@@ -389,3 +389,59 @@ def test_csv_loader_load_with_metadata(tmp_path: Path):
     assert "John | IT | Developer" in units[0].content
     assert "Sarah | HR | Manager" in units[0].content
     assert units[0].metadata == {}
+
+
+def test_html_loader_load_with_metadata(tmp_path: Path):
+    file_path = tmp_path / "policy.html"
+
+    file_path.write_text(
+        """
+        <html>
+            <head>
+                <title>Employee Policy</title>
+                <style>.hidden { display: none; }</style>
+            </head>
+            <body>
+                <h1>Employee Leave Policy</h1>
+                <p>Employees must submit leave requests.</p>
+                <script>console.log("ignored");</script>
+            </body>
+        </html>
+        """,
+        encoding="utf-8",
+    )
+
+    loader = HTMLLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert "Employee Leave Policy" in units[0].content
+    assert "Employees must submit leave requests." in units[0].content
+    assert "console.log" not in units[0].content
+    assert units[0].metadata == {}
+
+
+def test_document_loader_routes_html_with_metadata(tmp_path: Path):
+    file_path = tmp_path / "policy.html"
+
+    file_path.write_text(
+        """
+        <html>
+            <body>
+                <h1>Employee Leave Policy</h1>
+                <p>Employees must submit leave requests.</p>
+            </body>
+        </html>
+        """,
+        encoding="utf-8",
+    )
+
+    loader = DocumentLoader()
+
+    units = loader.load_with_metadata(str(file_path))
+
+    assert len(units) == 1
+    assert "Employee Leave Policy" in units[0].content
+    assert "Employees must submit leave requests." in units[0].content
+    assert units[0].metadata == {}

@@ -1,6 +1,9 @@
 from pathlib import Path
+from typing import List
 
 from bs4 import BeautifulSoup
+
+from app.services.ingestion.document_unit import DocumentUnit
 
 
 class HTMLLoader:
@@ -40,6 +43,19 @@ class HTMLLoader:
             separator="\n",
             strip=True,
         )
+
+    def load_with_metadata(
+        self,
+        file_path: str,
+    ) -> List[DocumentUnit]:
+        content = self.load(file_path)
+
+        return [
+            DocumentUnit(
+                content=content,
+                metadata={},
+            )
+        ]
 
 
 html_loader = HTMLLoader()

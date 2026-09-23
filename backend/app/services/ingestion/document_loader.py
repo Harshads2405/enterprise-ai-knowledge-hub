@@ -76,6 +76,9 @@ class DocumentLoader:
         if extension == ".csv":
             return csv_loader.load_with_metadata(file_path)
 
+        if extension in {".html", ".htm"}:
+            return html_loader.load_with_metadata(file_path)
+
         raise ValueError(
             f"Metadata-aware loading is not supported for: {extension}"
         )

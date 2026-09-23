@@ -368,7 +368,7 @@ def test_ingest_csv_uses_metadata_text_pipeline(monkeypatch):
     assert captured["document_id"] == 42
     assert captured["metadata"] == document.document_metadata
 
-def test_ingest_html_uses_standard_text_pipeline(monkeypatch):
+def test_ingest_html_uses_metadata_text_pipeline(monkeypatch):
     document = make_document()
     fake_session = FakeSession(document)
 
@@ -379,28 +379,40 @@ def test_ingest_html_uses_standard_text_pipeline(monkeypatch):
 
     captured = {}
 
-    def fake_load(file_path):
+    def fake_load_with_metadata(file_path):
         captured["file_path"] = file_path
-        return (
-            "Employee Leave Policy\n"
-            "Employees must submit leave requests."
-        )
 
-    monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.document_loader.load",
-        fake_load,
-    )
-
-    def fake_split(text):
-        captured["text"] = text
         return [
-            "Employee Leave Policy",
-            "Employees must submit leave requests.",
+            DocumentUnit(
+                content=(
+                    "Employee Leave Policy\n"
+                    "Employees must submit leave requests."
+                ),
+                metadata={},
+            )
         ]
 
     monkeypatch.setattr(
-        "app.services.ingestion.ingestion_service.text_chunker.split",
-        fake_split,
+        "app.services.ingestion.ingestion_service.document_loader.load_with_metadata",
+        fake_load_with_metadata,
+    )
+
+    def fake_split_units(units):
+        captured["units"] = units
+
+        return [
+            DocumentUnit(
+                content=(
+                    "Employee Leave Policy\n"
+                    "Employees must submit leave requests."
+                ),
+                metadata={},
+            )
+        ]
+
+    monkeypatch.setattr(
+        "app.services.ingestion.ingestion_service.text_chunker.split_units",
+        fake_split_units,
     )
 
     indexed_chunks = [
@@ -438,14 +450,22 @@ def test_ingest_html_uses_standard_text_pipeline(monkeypatch):
 
     assert captured["file_path"] == "policy.html"
 
-    assert captured["text"] == (
+    assert len(captured["units"]) == 1
+    assert captured["units"][0].content == (
         "Employee Leave Policy\n"
         "Employees must submit leave requests."
     )
 
+    assert captured["units"][0].metadata == {}
+
     assert captured["chunks"] == [
-        "Employee Leave Policy",
-        "Employees must submit leave requests.",
+        DocumentUnit(
+            content=(
+                "Employee Leave Policy\n"
+                "Employees must submit leave requests."
+            ),
+            metadata={},
+        )
     ]
 
     assert captured["document_id"] == 42
