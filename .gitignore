@@ -45,3 +45,5 @@ finetuning/evaluation/*
 !finetuning/evaluation/.gitkeep
 
 backend/storage/
+
+.venv-agents/
