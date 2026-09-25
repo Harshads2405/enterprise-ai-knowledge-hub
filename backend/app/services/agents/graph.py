@@ -8,7 +8,7 @@ from langgraph.prebuilt import ToolNode
 
 from app.services.agents.llm import AgentChatModel
 from app.services.agents.state import AgentState
-from app.services.agents.tools import search_knowledge_base
+from app.services.agents.tools import AGENT_TOOLS
 
 def agent_node(state: AgentState) -> AgentState:
     """
@@ -42,7 +42,7 @@ def agent_node(state: AgentState) -> AgentState:
         }
 
     model = AgentChatModel().bind_tools(
-        [search_knowledge_base]
+        AGENT_TOOLS
     )
 
     # The first agent call needs a HumanMessage.
@@ -114,7 +114,7 @@ def build_agent_graph():
     graph.add_node("agent", agent_node)
 
     tool_node = ToolNode(
-        [search_knowledge_base]
+        AGENT_TOOLS
     )
 
     graph.add_node("tools", tool_node)

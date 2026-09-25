@@ -71,3 +71,8 @@ def search_knowledge_base(
         )
 
     return documents
+
+
+AGENT_TOOLS = [
+    search_knowledge_base,
+]
