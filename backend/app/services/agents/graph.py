@@ -45,6 +45,22 @@ def agent_node(state: AgentState) -> AgentState:
         "messages": [response],
     }
 
+def route_after_agent(state: AgentState) -> str:
+    """
+    Route the graph based on whether the agent requested a tool.
+    """
+
+    messages = state.get("messages", [])
+
+    if not messages:
+        return END
+
+    last_message = messages[-1]
+
+    if isinstance(last_message, AIMessage) and last_message.tool_calls:
+        return "tools"
+
+    return END
 
 def build_agent_graph():
     graph = StateGraph(AgentState)
@@ -58,7 +74,15 @@ def build_agent_graph():
     graph.add_node("tools", tool_node)
 
     graph.add_edge(START, "agent")
-    graph.add_edge("agent", "tools")
+    graph.add_conditional_edges(
+        "agent",
+        route_after_agent,
+        {
+            "tools": "tools",
+            END: END,
+        },
+    )
+
     graph.add_edge("tools", END)
 
     return graph.compile()
