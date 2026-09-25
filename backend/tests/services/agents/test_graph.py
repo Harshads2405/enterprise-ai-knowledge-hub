@@ -77,6 +77,9 @@ def test_agent_graph_executes_knowledge_base_tool():
         in result["messages"][1].content
     )
 
+    assert result["answer"]
+    assert "20 days of annual leave" in result["answer"]
+
     mock_func.assert_called_once()
 
 def test_agent_graph_handles_empty_question():

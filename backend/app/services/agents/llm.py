@@ -1,7 +1,7 @@
 from typing import Any, List, Optional, Sequence
 
 from langchain_core.language_models.chat_models import BaseChatModel
-from langchain_core.messages import AIMessage, BaseMessage
+from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
 from langchain_core.tools import BaseTool
 
@@ -43,23 +43,36 @@ class AgentChatModel(BaseChatModel):
         )
 
     def _generate(
-        self,
-        messages: List[BaseMessage],
-        stop: Optional[List[str]] = None,
-        run_manager: Any = None,
-        **kwargs: Any,
+            self,
+            messages: List[BaseMessage],
+            stop: Optional[List[str]] = None,
+            run_manager: Any = None,
+            **kwargs: Any,
     ) -> ChatResult:
 
         question = ""
+        tool_result = ""
 
         for message in messages:
             if message.type == "human":
                 question = str(message.content)
 
+            elif isinstance(message, ToolMessage):
+                tool_result = str(message.content)
+
         if not question.strip():
             response = AIMessage(
                 content="No question was provided."
             )
+
+        elif tool_result.strip():
+            response = AIMessage(
+                content=(
+                    "Based on the enterprise knowledge base: "
+                    f"{tool_result}"
+                )
+            )
+
         elif self._bound_tools:
             tool = self._bound_tools[0]
 
@@ -77,6 +90,7 @@ class AgentChatModel(BaseChatModel):
                     }
                 ],
             )
+
         else:
             response = AIMessage(
                 content=(

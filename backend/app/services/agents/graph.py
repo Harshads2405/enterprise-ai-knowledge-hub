@@ -1,4 +1,4 @@
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 
@@ -9,14 +9,25 @@ from app.services.agents.tools import search_knowledge_base
 
 def agent_node(state: AgentState) -> AgentState:
     """
-    Agent decision node.
+    Agent decision and answer-generation node.
 
-    The LLM decides whether the question requires a knowledge-base
-    search. For this development milestone, the model is deterministic
-    and produces the knowledge-base tool call.
+    The agent receives the complete message history so that it can
+    either request a tool or generate a final answer from the tool result.
     """
 
     question = state.get("question", "").strip()
+
+    messages = state.get("messages", [])
+
+    # Recover the question from the previous tool call when the graph
+    # reaches the agent for the second time.
+    if not question and messages:
+        for message in messages:
+            if isinstance(message, AIMessage) and message.tool_calls:
+                tool_args = message.tool_calls[0].get("args", {})
+                question = str(tool_args.get("query", "")).strip()
+                if question:
+                    break
 
     if not question:
         return {
@@ -31,18 +42,31 @@ def agent_node(state: AgentState) -> AgentState:
         [search_knowledge_base]
     )
 
-    response = model.invoke(
-        [
-            {
-                "role": "user",
-                "content": question,
-            }
+    # The first agent call needs a HumanMessage.
+    # On the second call, messages already contain the AI tool call
+    # and ToolMessage, so we prepend the original question only for
+    # model invocation.
+    model_messages = messages
+
+    if not model_messages:
+        model_messages = [
+            HumanMessage(content=question)
         ]
-    )
+    elif not any(
+        isinstance(message, HumanMessage)
+        for message in model_messages
+    ):
+        model_messages = [
+            HumanMessage(content=question),
+            *model_messages,
+        ]
+
+    response = model.invoke(model_messages)
 
     return {
         **state,
         "messages": [response],
+        "answer": response.content or state.get("answer", ""),
     }
 
 def route_after_agent(state: AgentState) -> str:
@@ -83,7 +107,7 @@ def build_agent_graph():
         },
     )
 
-    graph.add_edge("tools", END)
+    graph.add_edge("tools", "agent")
 
     return graph.compile()
 
