@@ -1,11 +1,14 @@
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import (
+    AIMessage,
+    HumanMessage,
+    ToolMessage,
+)
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 
 from app.services.agents.llm import AgentChatModel
 from app.services.agents.state import AgentState
 from app.services.agents.tools import search_knowledge_base
-
 
 def agent_node(state: AgentState) -> AgentState:
     """
@@ -69,6 +72,25 @@ def agent_node(state: AgentState) -> AgentState:
         "answer": response.content or state.get("answer", ""),
     }
 
+def tool_result_node(state: AgentState) -> AgentState:
+    """
+    Extract tool execution results from the message history
+    and store them explicitly in agent state.
+    """
+
+    messages = state.get("messages", [])
+
+    tool_results = [
+        message.content
+        for message in messages
+        if isinstance(message, ToolMessage)
+    ]
+
+    return {
+        **state,
+        "tool_results": tool_results,
+    }
+
 def route_after_agent(state: AgentState) -> str:
     """
     Route the graph based on whether the agent requested a tool.
@@ -96,6 +118,7 @@ def build_agent_graph():
     )
 
     graph.add_node("tools", tool_node)
+    graph.add_node("tool_results", tool_result_node)
 
     graph.add_edge(START, "agent")
     graph.add_conditional_edges(
@@ -107,7 +130,8 @@ def build_agent_graph():
         },
     )
 
-    graph.add_edge("tools", "agent")
+    graph.add_edge("tools", "tool_results")
+    graph.add_edge("tool_results", "agent")
 
     return graph.compile()
 

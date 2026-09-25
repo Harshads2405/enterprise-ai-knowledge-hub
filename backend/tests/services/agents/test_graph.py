@@ -80,6 +80,12 @@ def test_agent_graph_executes_knowledge_base_tool():
     assert result["answer"]
     assert "20 days of annual leave" in result["answer"]
 
+    assert result["tool_results"]
+    assert (
+        "20 days of annual leave"
+        in str(result["tool_results"])
+    )
+
     mock_func.assert_called_once()
 
 def test_agent_graph_handles_empty_question():
