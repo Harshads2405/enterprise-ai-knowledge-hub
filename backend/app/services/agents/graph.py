@@ -2,16 +2,18 @@ from langchain_core.messages import AIMessage
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
 
+from app.services.agents.llm import AgentChatModel
 from app.services.agents.state import AgentState
 from app.services.agents.tools import search_knowledge_base
 
 
 def agent_node(state: AgentState) -> AgentState:
     """
-    Initial agent node.
+    Agent decision node.
 
-    For this milestone, the node deterministically creates a tool call
-    for the knowledge-base search.
+    The LLM decides whether the question requires a knowledge-base
+    search. For this development milestone, the model is deterministic
+    and produces the knowledge-base tool call.
     """
 
     question = state.get("question", "").strip()
@@ -21,38 +23,30 @@ def agent_node(state: AgentState) -> AgentState:
             **state,
             "answer": "No question was provided.",
             "messages": [
-                AIMessage(
-                    content="No question was provided."
-                )
+                AIMessage(content="No question was provided.")
             ],
         }
 
-    tool_call = {
-        "name": search_knowledge_base.name,
-        "args": {
-            "query": question,
-            "limit": 3,
-        },
-        "id": "knowledge-search-1",
-        "type": "tool_call",
-    }
+    model = AgentChatModel().bind_tools(
+        [search_knowledge_base]
+    )
+
+    response = model.invoke(
+        [
+            {
+                "role": "user",
+                "content": question,
+            }
+        ]
+    )
 
     return {
         **state,
-        "messages": [
-            AIMessage(
-                content="",
-                tool_calls=[tool_call],
-            )
-        ],
+        "messages": [response],
     }
 
 
 def build_agent_graph():
-    """
-    Build and compile the LangGraph workflow.
-    """
-
     graph = StateGraph(AgentState)
 
     graph.add_node("agent", agent_node)
