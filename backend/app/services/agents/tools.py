@@ -73,6 +73,24 @@ def search_knowledge_base(
     return documents
 
 
+@tool
+def query_database(query: str) -> Dict[str, Any]:
+    """
+    Query approved enterprise database information.
+
+    This development implementation validates the request and returns
+    a structured placeholder until the database tool service is implemented.
+    """
+    if not query or not query.strip():
+        raise ValueError("Database query cannot be empty.")
+
+    return {
+        "query": query,
+        "status": "not_implemented",
+        "message": "Database query execution is not implemented yet.",
+    }
+
+
 @dataclass(frozen=True)
 class AgentToolMetadata:
     requires_confirmation: bool = False
@@ -82,11 +100,18 @@ SEARCH_KNOWLEDGE_BASE_METADATA = AgentToolMetadata(
     requires_confirmation=False,
 )
 
+QUERY_DATABASE_METADATA = AgentToolMetadata(
+    requires_confirmation=False,
+)
+
 
 AGENT_TOOLS = [
     search_knowledge_base,
+    query_database,
 ]
+
 
 AGENT_TOOL_METADATA = {
     search_knowledge_base.name: SEARCH_KNOWLEDGE_BASE_METADATA,
+    query_database.name: QUERY_DATABASE_METADATA,
 }

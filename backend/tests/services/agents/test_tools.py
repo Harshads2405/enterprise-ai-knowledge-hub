@@ -13,6 +13,7 @@ sys.modules[
 
 from app.services.agents.tools import (
     AGENT_TOOL_METADATA,
+    query_database,
     search_knowledge_base,
 )
 
@@ -81,6 +82,23 @@ def test_search_knowledge_base_delegates_to_retrieval_pipeline(
 def test_search_knowledge_base_is_read_only():
     metadata = AGENT_TOOL_METADATA[
         search_knowledge_base.name
+    ]
+
+    assert metadata.requires_confirmation is False
+
+
+def test_query_database_is_langchain_tool():
+    assert query_database.name == "query_database"
+
+
+def test_query_database_rejects_empty_query():
+    with pytest.raises(ValueError, match="Database query cannot be empty"):
+        query_database.invoke({"query": ""})
+
+
+def test_query_database_is_read_only():
+    metadata = AGENT_TOOL_METADATA[
+        query_database.name
     ]
 
     assert metadata.requires_confirmation is False
