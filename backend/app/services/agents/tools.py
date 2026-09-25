@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Optional
-
+from dataclasses import dataclass
 from langchain_core.tools import tool
 
 from app.services.retrieval.retrieval_pipeline import (
@@ -73,6 +73,20 @@ def search_knowledge_base(
     return documents
 
 
+@dataclass(frozen=True)
+class AgentToolMetadata:
+    requires_confirmation: bool = False
+
+
+SEARCH_KNOWLEDGE_BASE_METADATA = AgentToolMetadata(
+    requires_confirmation=False,
+)
+
+
 AGENT_TOOLS = [
     search_knowledge_base,
 ]
+
+AGENT_TOOL_METADATA = {
+    search_knowledge_base.name: SEARCH_KNOWLEDGE_BASE_METADATA,
+}

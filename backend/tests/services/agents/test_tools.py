@@ -11,8 +11,10 @@ sys.modules[
     "app.services.retrieval.retrieval_pipeline"
 ] = retrieval_pipeline_module
 
-from app.services.agents.tools import search_knowledge_base
-
+from app.services.agents.tools import (
+    AGENT_TOOL_METADATA,
+    search_knowledge_base,
+)
 
 def test_search_knowledge_base_is_langchain_tool():
     assert search_knowledge_base.name == "search_knowledge_base"
@@ -74,3 +76,11 @@ def test_search_knowledge_base_delegates_to_retrieval_pipeline(
         version="v1",
         access_level="internal",
     )
+
+
+def test_search_knowledge_base_is_read_only():
+    metadata = AGENT_TOOL_METADATA[
+        search_knowledge_base.name
+    ]
+
+    assert metadata.requires_confirmation is False
