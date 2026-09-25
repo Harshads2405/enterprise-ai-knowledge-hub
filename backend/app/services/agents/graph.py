@@ -1,3 +1,4 @@
+from langchain_core.messages import AIMessage
 from langgraph.graph import END, START, StateGraph
 
 from app.services.agents.state import AgentState
@@ -5,7 +6,8 @@ from app.services.agents.state import AgentState
 
 def agent_node(state: AgentState) -> AgentState:
     """
-    Minimal agent node used to validate the LangGraph foundation.
+    Initial agent node that processes the current question
+    and appends an AI response to the message history.
     """
 
     question = state.get("question", "").strip()
@@ -14,11 +16,19 @@ def agent_node(state: AgentState) -> AgentState:
         return {
             **state,
             "answer": "No question was provided.",
+            "messages": [
+                AIMessage(content="No question was provided.")
+            ],
         }
+
+    answer = f"Agent received: {question}"
 
     return {
         **state,
-        "answer": f"Agent received: {question}",
+        "answer": answer,
+        "messages": [
+            AIMessage(content=answer)
+        ],
     }
 
 
