@@ -252,3 +252,29 @@ def test_confirmation_decision_rejects_invalid_value():
         match="Confirmation decision must be 'approved' or 'rejected'",
     ):
         confirmation_decision_node(state)
+
+
+def test_route_after_confirmation_decision_approved():
+    from app.services.agents.graph import route_after_confirmation_decision
+
+    state = {
+        "confirmation_decision": "approved",
+    }
+
+    assert route_after_confirmation_decision(state) == "tools"
+
+
+def test_route_after_confirmation_decision_rejected():
+    from app.services.agents.graph import route_after_confirmation_decision
+
+    state = {
+        "confirmation_decision": "rejected",
+    }
+
+    assert route_after_confirmation_decision(state) == "__end__"
+
+
+def test_route_after_confirmation_decision_invalid():
+    from app.services.agents.graph import route_after_confirmation_decision
+
+    assert route_after_confirmation_decision({}) == "__end__"
