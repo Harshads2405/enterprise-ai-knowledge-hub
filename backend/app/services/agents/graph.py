@@ -4,6 +4,7 @@ from langchain_core.messages import (
     ToolMessage,
 )
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import interrupt
 from langgraph.prebuilt import ToolNode
 
 from app.services.agents.llm import AgentChatModel
@@ -75,8 +76,8 @@ def agent_node(state: AgentState) -> AgentState:
 
 def tool_confirmation_node(state: AgentState) -> AgentState:
     """
-    Inspect the requested tool and determine whether human confirmation
-    is required before execution.
+    Inspect the requested tool and pause execution when human
+    confirmation is required.
     """
     messages = state.get("messages", [])
 
@@ -105,12 +106,27 @@ def tool_confirmation_node(state: AgentState) -> AgentState:
             "confirmation_required": False,
         }
 
+    decision = interrupt(
+        {
+            "type": "tool_confirmation",
+            "tool_name": tool_name,
+            "tool_call_id": tool_call["id"],
+            "tool_args": tool_call.get("args", {}),
+        }
+    )
+
+    if decision not in {"approved", "rejected"}:
+        raise ValueError(
+            "Confirmation decision must be 'approved' or 'rejected'."
+        )
+
     return {
         **state,
+        "confirmation_decision": decision,
+        "confirmation_required": False,
         "pending_tool_name": tool_name,
         "pending_tool_call_id": tool_call["id"],
         "pending_tool_args": tool_call.get("args", {}),
-        "confirmation_required": True,
     }
 
 
@@ -200,15 +216,15 @@ def route_after_confirmation_decision(state: AgentState) -> str:
     return END
 
 
-def build_agent_graph():
+def build_agent_graph(checkpointer=None):
     graph = StateGraph(AgentState)
 
     graph.add_node("agent", agent_node)
     graph.add_node("confirmation", tool_confirmation_node)
 
     tool_node = ToolNode(AGENT_TOOLS)
-
     graph.add_node("tools", tool_node)
+
     graph.add_node("tool_results", tool_result_node)
 
     graph.add_edge(START, "agent")
@@ -234,7 +250,8 @@ def build_agent_graph():
     graph.add_edge("tools", "tool_results")
     graph.add_edge("tool_results", "agent")
 
-    return graph.compile()
+    return graph.compile(checkpointer=checkpointer)
 
 
 agent_graph = build_agent_graph()
+

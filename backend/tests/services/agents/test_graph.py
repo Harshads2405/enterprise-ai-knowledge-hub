@@ -5,7 +5,6 @@ import pytest
 
 from langchain_core.messages import AIMessage, ToolMessage
 
-
 retrieval_pipeline_module = MagicMock()
 retrieval_pipeline_module.retrieval_pipeline = MagicMock()
 
@@ -130,11 +129,34 @@ def test_agent_state_supports_tool_confirmation():
 
 def test_tool_confirmation_node_pauses_confirmation_required_tool():
     from langchain_core.messages import AIMessage
+    from langchain_core.tools import tool
+    from langgraph.checkpoint.memory import MemorySaver
+    from langgraph.graph import END, START, StateGraph
+    from langgraph.prebuilt import ToolNode
+    from langgraph.types import Command
 
-    from app.services.agents.graph import tool_confirmation_node
+    from app.services.agents.graph import (
+        route_after_confirmation,
+        tool_confirmation_node,
+    )
+    from app.services.agents.state import AgentState
     from app.services.agents.tools import (
         AGENT_TOOL_METADATA,
         AgentToolMetadata,
+    )
+
+    execution_log = []
+
+    @tool
+    def test_write_tool(value: str) -> str:
+        """Test write operation used to verify human confirmation."""
+        execution_log.append(value)
+        return f"write completed: {value}"
+
+    original_metadata = AGENT_TOOL_METADATA.get("test_write_tool")
+
+    AGENT_TOOL_METADATA["test_write_tool"] = AgentToolMetadata(
+        requires_confirmation=True,
     )
 
     tool_call = {
@@ -144,36 +166,92 @@ def test_tool_confirmation_node_pauses_confirmation_required_tool():
         "type": "tool_call",
     }
 
-    state = {
-        "question": "Perform a write operation",
-        "messages": [
-            AIMessage(
-                content="",
-                tool_calls=[tool_call],
-            )
-        ],
-    }
-
-    original_metadata = AGENT_TOOL_METADATA.get("test_write_tool")
-
-    AGENT_TOOL_METADATA["test_write_tool"] = AgentToolMetadata(
-        requires_confirmation=True,
-    )
+    def test_agent_node(state: AgentState) -> AgentState:
+        return {
+            **state,
+            "messages": [
+                AIMessage(
+                    content="",
+                    tool_calls=[tool_call],
+                )
+            ],
+        }
 
     try:
-        result = tool_confirmation_node(state)
+        graph = StateGraph(AgentState)
+
+        graph.add_node("agent", test_agent_node)
+        graph.add_node("confirmation", tool_confirmation_node)
+        graph.add_node(
+            "tools",
+            ToolNode([test_write_tool]),
+        )
+
+        graph.add_edge(START, "agent")
+
+        graph.add_conditional_edges(
+            "agent",
+            lambda state: "confirmation",
+            {
+                "confirmation": "confirmation",
+            },
+        )
+
+        graph.add_conditional_edges(
+            "confirmation",
+            route_after_confirmation,
+            {
+                "tools": "tools",
+                END: END,
+            },
+        )
+
+        graph.add_edge("tools", END)
+
+        checkpointer = MemorySaver()
+        compiled_graph = graph.compile(
+            checkpointer=checkpointer,
+        )
+
+        config = {
+            "configurable": {
+                "thread_id": "confirmation-test-1",
+            }
+        }
+
+        result = compiled_graph.invoke(
+            {
+                "question": "Perform a write operation",
+                "messages": [],
+            },
+            config,
+        )
+
+        assert "__interrupt__" in result
+
+        interrupt_payload = result["__interrupt__"][0].value
+
+        assert interrupt_payload["type"] == "tool_confirmation"
+        assert interrupt_payload["tool_name"] == "test_write_tool"
+        assert interrupt_payload["tool_call_id"] == "test-call-1"
+        assert interrupt_payload["tool_args"] == {
+            "value": "important",
+        }
+
+        assert execution_log == []
+
+        result = compiled_graph.invoke(
+            Command(resume="approved"),
+            config,
+        )
+
+        assert execution_log == ["important"]
+
     finally:
         if original_metadata is None:
             AGENT_TOOL_METADATA.pop("test_write_tool", None)
         else:
             AGENT_TOOL_METADATA["test_write_tool"] = original_metadata
-
-    assert result["confirmation_required"] is True
-    assert result["pending_tool_name"] == "test_write_tool"
-    assert result["pending_tool_call_id"] == "test-call-1"
-    assert result["pending_tool_args"] == {
-        "value": "important",
-    }
 
 def test_agent_state_supports_confirmation_decision():
     state = {
