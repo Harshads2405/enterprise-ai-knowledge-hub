@@ -172,3 +172,31 @@ def test_tool_confirmation_node_pauses_confirmation_required_tool():
     assert result["pending_tool_args"] == {
         "value": "important",
     }
+
+def test_agent_state_supports_confirmation_decision():
+    state = {
+        "pending_tool_name": "create_leave_request",
+        "pending_tool_call_id": "call-1",
+        "pending_tool_args": {
+            "days": 3,
+        },
+        "confirmation_required": True,
+        "confirmation_decision": "approved",
+    }
+
+    assert state["confirmation_decision"] == "approved"
+
+
+def test_agent_state_supports_confirmation_rejection():
+    state = {
+        "pending_tool_name": "create_leave_request",
+        "pending_tool_call_id": "call-2",
+        "pending_tool_args": {
+            "days": 3,
+        },
+        "confirmation_required": True,
+        "confirmation_decision": "rejected",
+    }
+
+    assert state["confirmation_decision"] == "rejected"
+

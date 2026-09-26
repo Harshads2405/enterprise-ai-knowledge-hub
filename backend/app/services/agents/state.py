@@ -19,3 +19,6 @@ class AgentState(TypedDict, total=False):
     pending_tool_call_id: str
     pending_tool_args: dict
     confirmation_required: bool
+    # Human-in-the-loop confirmation state.
+
+    confirmation_decision: str
