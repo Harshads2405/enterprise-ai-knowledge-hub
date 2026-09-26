@@ -1,6 +1,8 @@
 import sys
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from langchain_core.messages import AIMessage, ToolMessage
 
 
@@ -200,3 +202,53 @@ def test_agent_state_supports_confirmation_rejection():
 
     assert state["confirmation_decision"] == "rejected"
 
+
+def test_confirmation_decision_approved():
+    from app.services.agents.graph import confirmation_decision_node
+
+    state = {
+        "pending_tool_name": "create_leave_request",
+        "pending_tool_call_id": "call-1",
+        "pending_tool_args": {"days": 3},
+        "confirmation_required": True,
+        "confirmation_decision": "approved",
+    }
+
+    result = confirmation_decision_node(state)
+
+    assert result["confirmation_required"] is False
+    assert result["confirmation_decision"] == "approved"
+
+
+def test_confirmation_decision_rejected():
+    from app.services.agents.graph import confirmation_decision_node
+
+    state = {
+        "pending_tool_name": "create_leave_request",
+        "pending_tool_call_id": "call-2",
+        "pending_tool_args": {"days": 3},
+        "confirmation_required": True,
+        "confirmation_decision": "rejected",
+    }
+
+    result = confirmation_decision_node(state)
+
+    assert result["confirmation_required"] is False
+    assert result["confirmation_decision"] == "rejected"
+    assert result["answer"] == (
+        "The requested tool action was rejected."
+    )
+
+
+def test_confirmation_decision_rejects_invalid_value():
+    from app.services.agents.graph import confirmation_decision_node
+
+    state = {
+        "confirmation_decision": "maybe",
+    }
+
+    with pytest.raises(
+        ValueError,
+        match="Confirmation decision must be 'approved' or 'rejected'",
+    ):
+        confirmation_decision_node(state)

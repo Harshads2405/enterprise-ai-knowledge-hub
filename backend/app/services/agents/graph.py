@@ -161,6 +161,45 @@ def route_after_confirmation(state: AgentState) -> str:
     return "tools"
 
 
+def confirmation_decision_node(state: AgentState) -> AgentState:
+    """
+    Process the human confirmation decision for a pending tool call.
+    """
+    decision = state.get("confirmation_decision")
+
+    if decision not in {"approved", "rejected"}:
+        raise ValueError(
+            "Confirmation decision must be 'approved' or 'rejected'."
+        )
+
+    if decision == "rejected":
+        return {
+            **state,
+            "confirmation_required": False,
+            "answer": "The requested tool action was rejected.",
+        }
+
+    return {
+        **state,
+        "confirmation_required": False,
+    }
+
+
+def route_after_confirmation_decision(state: AgentState) -> str:
+    """
+    Route the graph based on the human confirmation decision.
+    """
+    decision = state.get("confirmation_decision")
+
+    if decision == "approved":
+        return "tools"
+
+    if decision == "rejected":
+        return END
+
+    return END
+
+
 def build_agent_graph():
     graph = StateGraph(AgentState)
 
