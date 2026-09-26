@@ -8,7 +8,11 @@ from langgraph.prebuilt import ToolNode
 
 from app.services.agents.llm import AgentChatModel
 from app.services.agents.state import AgentState
-from app.services.agents.tools import AGENT_TOOLS
+from app.services.agents.tools import (
+    AGENT_TOOL_METADATA,
+    AGENT_TOOLS,
+)
+
 
 def agent_node(state: AgentState) -> AgentState:
     """
@@ -17,9 +21,7 @@ def agent_node(state: AgentState) -> AgentState:
     The agent receives the complete message history so that it can
     either request a tool or generate a final answer from the tool result.
     """
-
     question = state.get("question", "").strip()
-
     messages = state.get("messages", [])
 
     # Recover the question from the previous tool call when the graph
@@ -41,9 +43,7 @@ def agent_node(state: AgentState) -> AgentState:
             ],
         }
 
-    model = AgentChatModel().bind_tools(
-        AGENT_TOOLS
-    )
+    model = AgentChatModel().bind_tools(AGENT_TOOLS)
 
     # The first agent call needs a HumanMessage.
     # On the second call, messages already contain the AI tool call
@@ -72,12 +72,53 @@ def agent_node(state: AgentState) -> AgentState:
         "answer": response.content or state.get("answer", ""),
     }
 
+
+def tool_confirmation_node(state: AgentState) -> AgentState:
+    """
+    Inspect the requested tool and determine whether human confirmation
+    is required before execution.
+    """
+    messages = state.get("messages", [])
+
+    if not messages:
+        return state
+
+    last_message = messages[-1]
+
+    if not isinstance(last_message, AIMessage):
+        return state
+
+    if not last_message.tool_calls:
+        return state
+
+    tool_call = last_message.tool_calls[0]
+    tool_name = tool_call["name"]
+
+    metadata = AGENT_TOOL_METADATA.get(tool_name)
+
+    if metadata is None:
+        raise ValueError(f"Unknown agent tool: {tool_name}")
+
+    if not metadata.requires_confirmation:
+        return {
+            **state,
+            "confirmation_required": False,
+        }
+
+    return {
+        **state,
+        "pending_tool_name": tool_name,
+        "pending_tool_call_id": tool_call["id"],
+        "pending_tool_args": tool_call.get("args", {}),
+        "confirmation_required": True,
+    }
+
+
 def tool_result_node(state: AgentState) -> AgentState:
     """
     Extract tool execution results from the message history
     and store them explicitly in agent state.
     """
-
     messages = state.get("messages", [])
 
     tool_results = [
@@ -91,11 +132,11 @@ def tool_result_node(state: AgentState) -> AgentState:
         "tool_results": tool_results,
     }
 
+
 def route_after_agent(state: AgentState) -> str:
     """
     Route the graph based on whether the agent requested a tool.
     """
-
     messages = state.get("messages", [])
 
     if not messages:
@@ -104,26 +145,47 @@ def route_after_agent(state: AgentState) -> str:
     last_message = messages[-1]
 
     if isinstance(last_message, AIMessage) and last_message.tool_calls:
-        return "tools"
+        return "confirmation"
 
     return END
+
+
+def route_after_confirmation(state: AgentState) -> str:
+    """
+    Route the graph after checking whether the requested tool requires
+    human confirmation.
+    """
+    if state.get("confirmation_required", False):
+        return END
+
+    return "tools"
+
 
 def build_agent_graph():
     graph = StateGraph(AgentState)
 
     graph.add_node("agent", agent_node)
+    graph.add_node("confirmation", tool_confirmation_node)
 
-    tool_node = ToolNode(
-        AGENT_TOOLS
-    )
+    tool_node = ToolNode(AGENT_TOOLS)
 
     graph.add_node("tools", tool_node)
     graph.add_node("tool_results", tool_result_node)
 
     graph.add_edge(START, "agent")
+
     graph.add_conditional_edges(
         "agent",
         route_after_agent,
+        {
+            "confirmation": "confirmation",
+            END: END,
+        },
+    )
+
+    graph.add_conditional_edges(
+        "confirmation",
+        route_after_confirmation,
         {
             "tools": "tools",
             END: END,

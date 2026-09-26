@@ -124,3 +124,51 @@ def test_agent_state_supports_tool_confirmation():
     assert state["pending_tool_call_id"] == "call-1"
     assert state["pending_tool_args"] == {"days": 3}
     assert state["confirmation_required"] is True
+
+
+def test_tool_confirmation_node_pauses_confirmation_required_tool():
+    from langchain_core.messages import AIMessage
+
+    from app.services.agents.graph import tool_confirmation_node
+    from app.services.agents.tools import (
+        AGENT_TOOL_METADATA,
+        AgentToolMetadata,
+    )
+
+    tool_call = {
+        "name": "test_write_tool",
+        "args": {"value": "important"},
+        "id": "test-call-1",
+        "type": "tool_call",
+    }
+
+    state = {
+        "question": "Perform a write operation",
+        "messages": [
+            AIMessage(
+                content="",
+                tool_calls=[tool_call],
+            )
+        ],
+    }
+
+    original_metadata = AGENT_TOOL_METADATA.get("test_write_tool")
+
+    AGENT_TOOL_METADATA["test_write_tool"] = AgentToolMetadata(
+        requires_confirmation=True,
+    )
+
+    try:
+        result = tool_confirmation_node(state)
+    finally:
+        if original_metadata is None:
+            AGENT_TOOL_METADATA.pop("test_write_tool", None)
+        else:
+            AGENT_TOOL_METADATA["test_write_tool"] = original_metadata
+
+    assert result["confirmation_required"] is True
+    assert result["pending_tool_name"] == "test_write_tool"
+    assert result["pending_tool_call_id"] == "test-call-1"
+    assert result["pending_tool_args"] == {
+        "value": "important",
+    }
