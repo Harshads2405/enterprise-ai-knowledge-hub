@@ -13,6 +13,7 @@ from app.services.agents.tools import (
     AGENT_TOOL_METADATA,
     AGENT_TOOLS,
 )
+from app.services.agents.memory import agent_checkpointer
 
 
 def agent_node(state: AgentState) -> AgentState:
@@ -216,7 +217,7 @@ def route_after_confirmation_decision(state: AgentState) -> str:
     return END
 
 
-def build_agent_graph(checkpointer=None):
+def build_agent_graph(checkpointer=agent_checkpointer):
     graph = StateGraph(AgentState)
 
     graph.add_node("agent", agent_node)

@@ -40,8 +40,13 @@ def test_agent_graph_executes_knowledge_base_tool():
     ) as mock_func:
         result = agent_graph.invoke(
             {
-                "question": "What is the employee leave policy?"
-            }
+                "question": "What is the employee leave policy?",
+            },
+            {
+                "configurable": {
+                    "thread_id": "test-knowledge-search-1",
+                }
+            },
         )
 
     assert result["question"] == (
@@ -92,8 +97,13 @@ def test_agent_graph_executes_knowledge_base_tool():
 def test_agent_graph_handles_empty_question():
     result = agent_graph.invoke(
         {
-            "question": ""
-        }
+            "question": "",
+        },
+        {
+            "configurable": {
+                "thread_id": "test-empty-question-1",
+            }
+        },
     )
 
     assert result["answer"] == "No question was provided."
@@ -356,3 +366,47 @@ def test_route_after_confirmation_decision_invalid():
     from app.services.agents.graph import route_after_confirmation_decision
 
     assert route_after_confirmation_decision({}) == "__end__"
+
+def test_agent_graph_memory_is_isolated_by_thread_id():
+    first_thread_config = {
+        "configurable": {
+            "thread_id": "memory-thread-1",
+        }
+    }
+    second_thread_config = {
+        "configurable": {
+            "thread_id": "memory-thread-2",
+        }
+    }
+
+    first_result = agent_graph.invoke(
+        {
+            "question": "What is the employee leave policy?",
+        },
+        first_thread_config,
+    )
+
+    second_result = agent_graph.invoke(
+        {
+            "question": "What is the employee leave policy?",
+        },
+        first_thread_config,
+    )
+
+    isolated_result = agent_graph.invoke(
+        {
+            "question": "What is the employee leave policy?",
+        },
+        second_thread_config,
+    )
+
+    assert first_result["answer"]
+    assert second_result["answer"]
+    assert isolated_result["answer"]
+
+    assert first_result["messages"]
+    assert second_result["messages"]
+    assert isolated_result["messages"]
+
+    assert len(second_result["messages"]) > len(first_result["messages"])
+    assert len(isolated_result["messages"]) == len(first_result["messages"])
