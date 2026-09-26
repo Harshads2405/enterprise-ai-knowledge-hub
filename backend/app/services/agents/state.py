@@ -13,3 +13,9 @@ class AgentState(TypedDict, total=False):
     question: str
     answer: str
     tool_results: list
+
+    # Human-in-the-loop confirmation state.
+    pending_tool_name: str
+    pending_tool_call_id: str
+    pending_tool_args: dict
+    confirmation_required: bool

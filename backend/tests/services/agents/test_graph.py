@@ -107,3 +107,20 @@ def test_agent_graph_handles_empty_question():
     assert result["messages"][0].content == (
         "No question was provided."
     )
+
+
+def test_agent_state_supports_tool_confirmation():
+    state = {
+        "question": "Create a leave request",
+        "pending_tool_name": "create_leave_request",
+        "pending_tool_call_id": "call-1",
+        "pending_tool_args": {
+            "days": 3,
+        },
+        "confirmation_required": True,
+    }
+
+    assert state["pending_tool_name"] == "create_leave_request"
+    assert state["pending_tool_call_id"] == "call-1"
+    assert state["pending_tool_args"] == {"days": 3}
+    assert state["confirmation_required"] is True
