@@ -4,16 +4,16 @@ from langchain_core.messages import (
     ToolMessage,
 )
 from langgraph.graph import END, START, StateGraph
-from langgraph.types import interrupt
 from langgraph.prebuilt import ToolNode
+from langgraph.types import interrupt
 
 from app.services.agents.llm import AgentChatModel
+from app.services.agents.memory import agent_checkpointer
 from app.services.agents.state import AgentState
 from app.services.agents.tools import (
     AGENT_TOOL_METADATA,
     AGENT_TOOLS,
 )
-from app.services.agents.memory import agent_checkpointer
 
 
 def agent_node(state: AgentState) -> AgentState:
@@ -33,6 +33,7 @@ def agent_node(state: AgentState) -> AgentState:
             if isinstance(message, AIMessage) and message.tool_calls:
                 tool_args = message.tool_calls[0].get("args", {})
                 question = str(tool_args.get("query", "")).strip()
+
                 if question:
                     break
 
@@ -101,12 +102,14 @@ def tool_confirmation_node(state: AgentState) -> AgentState:
     if metadata is None:
         raise ValueError(f"Unknown agent tool: {tool_name}")
 
+    # Read-only tools can execute without confirmation.
     if not metadata.requires_confirmation:
         return {
             **state,
             "confirmation_required": False,
         }
 
+    # Pause the graph and request human approval.
     decision = interrupt(
         {
             "type": "tool_confirmation",
@@ -255,4 +258,3 @@ def build_agent_graph(checkpointer=agent_checkpointer):
 
 
 agent_graph = build_agent_graph()
-
