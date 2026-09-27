@@ -97,6 +97,33 @@ export async function sendConversationMessage(
   );
 }
 
+export async function getConversations(
+  organizationId: number,
+  userId: number,
+): Promise<ConversationResponse[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/conversations?organization_id=${organizationId}&user_id=${userId}`,
+  );
+
+  if (!response.ok) {
+    let message = `Request failed with status ${response.status}.`;
+
+    try {
+      const errorBody = await response.json();
+
+      if (typeof errorBody?.detail === "string") {
+        message = errorBody.detail;
+      }
+    } catch {
+      // Keep the default error message.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json() as Promise<ConversationResponse[]>;
+}
+
 export async function getConversation(
   conversationId: number,
 ): Promise<ConversationResponse> {
