@@ -16,6 +16,25 @@ from app.services.agents.tools import (
 )
 
 
+def agent_error_node(
+    state: AgentState,
+    error: Exception,
+) -> AgentState:
+    """
+    Convert an agent exception into a controlled error state.
+    """
+    error_message = str(error).strip()
+
+    if not error_message:
+        error_message = "An unexpected agent error occurred."
+
+    return {
+        **state,
+        "error": error_message,
+        "answer": "The agent could not complete the requested operation.",
+    }
+
+
 def agent_node(state: AgentState) -> AgentState:
     """
     Agent decision and answer-generation node.
@@ -132,6 +151,52 @@ def tool_confirmation_node(state: AgentState) -> AgentState:
         "pending_tool_call_id": tool_call["id"],
         "pending_tool_args": tool_call.get("args", {}),
     }
+
+
+def tool_execution_node(state: AgentState) -> AgentState:
+    """
+    Execute the requested tool and convert execution failures
+    into a controlled agent error state.
+    """
+    messages = state.get("messages", [])
+
+    if not messages:
+        return {
+            **state,
+            "error": "No tool call was available for execution.",
+        }
+
+    last_message = messages[-1]
+
+    if not isinstance(last_message, AIMessage):
+        return {
+            **state,
+            "error": "The latest agent message does not contain a tool call.",
+        }
+
+    if not last_message.tool_calls:
+        return {
+            **state,
+            "error": "No tool call was requested by the agent.",
+        }
+
+    try:
+        tool_node = ToolNode(AGENT_TOOLS)
+
+        result = tool_node.invoke(
+            {
+                "messages": messages,
+            }
+        )
+
+        return {
+            **state,
+            **result,
+            "error": "",
+        }
+
+    except Exception as exc:
+        return agent_error_node(state, exc)
 
 
 def tool_result_node(state: AgentState) -> AgentState:

@@ -3,7 +3,11 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from langchain_core.messages import AIMessage, ToolMessage
+from langchain_core.messages import (
+    AIMessage,
+    HumanMessage,
+    ToolMessage,
+)
 
 retrieval_pipeline_module = MagicMock()
 retrieval_pipeline_module.retrieval_pipeline = MagicMock()
@@ -410,3 +414,82 @@ def test_agent_graph_memory_is_isolated_by_thread_id():
 
     assert len(second_result["messages"]) > len(first_result["messages"])
     assert len(isolated_result["messages"]) == len(first_result["messages"])
+
+
+def test_agent_error_node_stores_error():
+    from app.services.agents.graph import agent_error_node
+
+    state = {
+        "question": "Test question",
+    }
+
+    result = agent_error_node(
+        state,
+        ValueError("Tool execution failed."),
+    )
+
+    assert result["error"] == "Tool execution failed."
+    assert result["answer"] == (
+        "The agent could not complete the requested operation."
+    )
+
+
+def test_agent_error_node_handles_empty_error():
+    from app.services.agents.graph import agent_error_node
+
+    state = {
+        "question": "Test question",
+    }
+
+    result = agent_error_node(
+        state,
+        ValueError(""),
+    )
+
+    assert result["error"] == "An unexpected agent error occurred."
+
+def test_tool_execution_node_requires_tool_call():
+    from app.services.agents.graph import tool_execution_node
+
+    result = tool_execution_node(
+        {
+            "messages": [],
+        }
+    )
+
+    assert result["error"] == (
+        "No tool call was available for execution."
+    )
+
+
+def test_tool_execution_node_requires_ai_message():
+    from app.services.agents.graph import tool_execution_node
+
+    result = tool_execution_node(
+        {
+            "messages": [
+                HumanMessage(content="Test question"),
+            ],
+        }
+    )
+
+    assert result["error"] == (
+        "The latest agent message does not contain a tool call."
+    )
+
+
+def test_tool_execution_node_requires_tool_call_request():
+    from app.services.agents.graph import tool_execution_node
+
+    result = tool_execution_node(
+        {
+            "messages": [
+                AIMessage(content="I can answer this."),
+            ],
+        }
+    )
+
+    assert result["error"] == (
+        "No tool call was requested by the agent."
+    )
+

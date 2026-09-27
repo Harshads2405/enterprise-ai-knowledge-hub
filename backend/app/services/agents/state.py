@@ -11,6 +11,7 @@ class AgentState(TypedDict, total=False):
     messages: Annotated[list[BaseMessage], add_messages]
     question: str
     answer: str
+    error: str
     tool_results: list
 
     pending_tool_name: str
