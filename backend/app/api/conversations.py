@@ -27,6 +27,7 @@ from app.services.conversation.conversation_state_service import (
 from app.services.conversation.conversation_context_service import (
     conversation_context_service,
 )
+from typing import List
 
 router = APIRouter(
     prefix="/api/v1/conversations",
@@ -58,6 +59,132 @@ def create_conversation(
         created_at=conversation.created_at,
         updated_at=conversation.updated_at,
     )
+
+@router.get(
+    "",
+    response_model=List[ConversationResponse],
+)
+def list_conversations(
+    organization_id: int,
+    user_id: int,
+    db: Session = Depends(get_db),
+) -> List[ConversationResponse]:
+
+    conversations = conversation_service.list_conversations(
+        db=db,
+        organization_id=organization_id,
+        user_id=user_id,
+    )
+
+    return [
+        ConversationResponse(
+            id=conversation.id,
+            organization_id=conversation.organization_id,
+            user_id=conversation.user_id,
+            title=conversation.title,
+            created_at=conversation.created_at,
+            updated_at=conversation.updated_at,
+        )
+        for conversation in conversations
+    ]
+
+
+@router.get(
+    "/{conversation_id}",
+    response_model=ConversationResponse,
+)
+def get_conversation(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+) -> ConversationResponse:
+
+    conversation = conversation_service.get_conversation(
+        db=db,
+        conversation_id=conversation_id,
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found.",
+        )
+
+    return ConversationResponse(
+        id=conversation.id,
+        organization_id=conversation.organization_id,
+        user_id=conversation.user_id,
+        title=conversation.title,
+        created_at=conversation.created_at,
+        updated_at=conversation.updated_at,
+    )
+
+
+@router.get(
+    "/{conversation_id}",
+    response_model=ConversationResponse,
+)
+def get_conversation(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+) -> ConversationResponse:
+
+    conversation = conversation_service.get_conversation(
+        db=db,
+        conversation_id=conversation_id,
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found.",
+        )
+
+    return ConversationResponse(
+        id=conversation.id,
+        organization_id=conversation.organization_id,
+        user_id=conversation.user_id,
+        title=conversation.title,
+        created_at=conversation.created_at,
+        updated_at=conversation.updated_at,
+    )
+
+
+@router.get(
+    "/{conversation_id}/messages",
+    response_model=List[ConversationMessageResponse],
+)
+def get_conversation_messages(
+    conversation_id: int,
+    db: Session = Depends(get_db),
+) -> List[ConversationMessageResponse]:
+
+    conversation = conversation_service.get_conversation(
+        db=db,
+        conversation_id=conversation_id,
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found.",
+        )
+
+    messages = conversation_service.get_messages(
+        db=db,
+        conversation_id=conversation_id,
+    )
+
+    return [
+        ConversationMessageResponse(
+            message_id=message.id,
+            conversation_id=message.conversation_id,
+            role=message.role,
+            content=message.content,
+            metadata=message.message_metadata,
+        )
+        for message in messages
+    ]
+
 
 @router.post(
     "/{conversation_id}/messages",

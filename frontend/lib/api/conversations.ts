@@ -96,3 +96,63 @@ export async function sendConversationMessage(
     payload,
   );
 }
+
+export async function getConversation(
+  conversationId: number,
+): Promise<ConversationResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/conversations/${conversationId}`,
+  );
+
+  if (!response.ok) {
+    let message = `Request failed with status ${response.status}.`;
+
+    try {
+      const errorBody = await response.json();
+
+      if (typeof errorBody?.detail === "string") {
+        message = errorBody.detail;
+      }
+    } catch {
+      // Keep the default error message.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json() as Promise<ConversationResponse>;
+}
+
+export type ConversationMessage = {
+  message_id: number;
+  conversation_id: number;
+  role: "user" | "assistant";
+  content: string;
+  metadata: Record<string, unknown>;
+};
+
+export async function getConversationMessages(
+  conversationId: number,
+): Promise<ConversationMessage[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/conversations/${conversationId}/messages`,
+  );
+
+  if (!response.ok) {
+    let message = `Request failed with status ${response.status}.`;
+
+    try {
+      const errorBody = await response.json();
+
+      if (typeof errorBody?.detail === "string") {
+        message = errorBody.detail;
+      }
+    } catch {
+      // Keep the default error message.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json() as Promise<ConversationMessage[]>;
+}
