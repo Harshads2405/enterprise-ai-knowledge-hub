@@ -161,3 +161,29 @@ def list_documents(
         for document in documents
     ]
 
+@router.get("/{document_id}")
+def get_document(
+    document_id: int,
+    db: Session = Depends(get_db),
+):
+    document = document_service.get_document(
+        db=db,
+        document_id=document_id,
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found.",
+        )
+
+    return {
+        "id": document.id,
+        "title": document.title,
+        "source_type": document.source_type,
+        "source_name": document.source_name,
+        "status": document.status,
+        "metadata": document.document_metadata,
+        "created_at": document.created_at.isoformat(),
+        "updated_at": document.updated_at.isoformat(),
+    }

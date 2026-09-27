@@ -20,6 +20,17 @@ export type UploadDocumentRequest = {
   access_level?: string;
 };
 
+export type DocumentDetail = {
+  id: number;
+  title: string;
+  source_type: string;
+  source_name: string;
+  status: string;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+};
+
 export type DocumentListItem = {
   id: number;
   title: string;
@@ -124,3 +135,28 @@ export async function getDocuments(
   return response.json() as Promise<DocumentListItem[]>;
 }
 
+export async function getDocument(
+  documentId: number,
+): Promise<DocumentDetail> {
+  const response = await fetch(
+    `${API_BASE_URL}/api/v1/documents/${documentId}`,
+  );
+
+  if (!response.ok) {
+    let message = `Failed to load document with status ${response.status}.`;
+
+    try {
+      const errorBody = await response.json();
+
+      if (typeof errorBody?.detail === "string") {
+        message = errorBody.detail;
+      }
+    } catch {
+      // Keep default error message.
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json() as Promise<DocumentDetail>;
+}
