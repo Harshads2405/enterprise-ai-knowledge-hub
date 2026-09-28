@@ -6,7 +6,7 @@ from app.api.documents import router as documents_router
 from app.api.health import router as health_router
 from app.api.llm import router as llm_router
 from app.api.rag import router as rag_router
-
+from app.api.feedback import router as feedback_router
 
 app = FastAPI(
     title="Enterprise AI Knowledge & Operations Copilot",
@@ -39,3 +39,5 @@ app.include_router(llm_router)
 app.include_router(documents_router)
 app.include_router(rag_router)
 app.include_router(conversations_router)
+app.include_router(feedback_router)
+
