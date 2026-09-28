@@ -7,8 +7,9 @@ export type Citation = {
   source_name?: string;
   page?: number;
   chunk_id?: number;
-  content?: string;
-  score?: number;
+  chunk_index?: number;
+  retrieval_score?: number;
+  reranker_score?: number;
 };
 
 export type ConversationResponse = {
