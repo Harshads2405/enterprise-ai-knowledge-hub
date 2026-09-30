@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 
 import {
@@ -9,11 +8,18 @@ import {
   getDocument,
 } from "@/lib/api/documents";
 
+import DocumentDetailHeader from "@/components/documents/DocumentDetailHeader";
+import DocumentStatusBadge from "@/components/documents/DocumentStatusBadge";
+import DocumentInfoCard from "@/components/documents/DocumentInfoCard";
+import DocumentProcessingStatus from "@/components/documents/DocumentProcessingStatus";
+
 export default function DocumentDetailPage() {
   const params = useParams();
   const documentId = Number(params.documentId);
 
-  const [document, setDocument] = useState<DocumentDetail | null>(null);
+  const [document, setDocument] =
+    useState<DocumentDetail | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -58,14 +64,16 @@ export default function DocumentDetailPage() {
     return (
       <main className="documents-page">
         <div className="documents-shell">
-          <Link
-            href="/documents"
-            className="document-back-link"
-          >
-            ← Back to documents
-          </Link>
+          <DocumentDetailHeader
+            sourceName="Document"
+            title=""
+            status="error"
+          />
 
-          <div className="document-error">
+          <div
+            className="document-error"
+            role="alert"
+          >
             {error || "Document not found."}
           </div>
         </div>
@@ -78,114 +86,28 @@ export default function DocumentDetailPage() {
   return (
     <main className="documents-page">
       <div className="documents-shell">
-        <Link
-          href="/documents"
-          className="document-back-link"
-        >
-          ← Back to documents
-        </Link>
+        <DocumentDetailHeader
+          sourceName={document.source_name}
+          title={document.title}
+          status={document.status}
+        />
 
-        <header className="documents-header document-detail-header">
-          <div>
-            <p className="documents-eyebrow">
-              Document Intelligence
-            </p>
+      <DocumentInfoCard
+        documentId={document.id}
+        sourceType={document.source_type}
+        department={String(metadata.department ?? "-")}
+        documentType={String(metadata.document_type ?? "-")}
+        version={String(metadata.version ?? "-")}
+        accessLevel={String(metadata.access_level ?? "-")}
+        createdAt={new Date(
+          document.created_at,
+        ).toLocaleString()}
+        updatedAt={new Date(
+          document.updated_at,
+        ).toLocaleString()}
+      />
 
-            <h1>{document.source_name}</h1>
-
-            <p>
-              {document.title}
-            </p>
-          </div>
-
-          <span
-            className={`document-status document-status-${document.status.toLowerCase()}`}
-          >
-            {document.status}
-          </span>
-        </header>
-
-        <section className="document-detail-card">
-          <div className="document-detail-heading">
-            <h2>Document Information</h2>
-          </div>
-
-          <div className="document-detail-grid">
-            <div className="document-detail-item">
-              <span>Document ID</span>
-              <strong>{document.id}</strong>
-            </div>
-
-            <div className="document-detail-item">
-              <span>File Type</span>
-              <strong>
-                {document.source_type.toUpperCase()}
-              </strong>
-            </div>
-
-            <div className="document-detail-item">
-              <span>Department</span>
-              <strong>
-                {String(metadata.department ?? "-")}
-              </strong>
-            </div>
-
-            <div className="document-detail-item">
-              <span>Document Type</span>
-              <strong>
-                {String(metadata.document_type ?? "-")}
-              </strong>
-            </div>
-
-            <div className="document-detail-item">
-              <span>Version</span>
-              <strong>
-                {String(metadata.version ?? "-")}
-              </strong>
-            </div>
-
-            <div className="document-detail-item">
-              <span>Access Level</span>
-              <strong>
-                {String(metadata.access_level ?? "-")}
-              </strong>
-            </div>
-
-            <div className="document-detail-item">
-              <span>Created</span>
-              <strong>
-                {new Date(document.created_at).toLocaleString()}
-              </strong>
-            </div>
-
-            <div className="document-detail-item">
-              <span>Last Updated</span>
-              <strong>
-                {new Date(document.updated_at).toLocaleString()}
-              </strong>
-            </div>
-          </div>
-        </section>
-
-        <section className="document-detail-card">
-          <div className="document-detail-heading">
-            <h2>Processing Status</h2>
-          </div>
-
-          <div className="document-processing-status">
-            <span
-              className={`document-status document-status-${document.status.toLowerCase()}`}
-            >
-              {document.status}
-            </span>
-
-            <p>
-              This document has been processed by the document
-              ingestion pipeline.
-            </p>
-          </div>
-        </section>
-      </div>
+    <DocumentProcessingStatus status={document.status} />      </div>
     </main>
   );
 }

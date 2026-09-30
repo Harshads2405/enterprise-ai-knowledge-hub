@@ -7,6 +7,8 @@ import {
   getDocuments,
   uploadDocument,
 } from "@/lib/api/documents";
+import DocumentUploadForm from "@/components/documents/DocumentUploadForm";
+import DocumentTable from "@/components/documents/DocumentTable";
 
 const ORGANIZATION_ID = 9;
 const USER_ID = 9;
@@ -120,20 +122,6 @@ export default function DocumentsPage() {
     }
   }
 
-  function getStatusClass(status: string) {
-    return `document-status document-status-${status.toLowerCase()}`;
-  }
-
-  function getMetadataValue(
-    document: DocumentListItem,
-    key: string,
-  ): string {
-    const value = document.metadata?.[key];
-
-    return value === undefined || value === null
-      ? "-"
-      : String(value);
-  }
 
   return (
     <main className="documents-page">
@@ -148,92 +136,22 @@ export default function DocumentsPage() {
           </div>
         </header>
 
-        <section className="document-upload-form">
-          <div className="document-section-heading">
-            <h2>Upload Document</h2>
-            <p>
-              Supported formats: TXT, PDF, and DOCX.
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <div className="document-file-field">
-              <label htmlFor="document-file">Document</label>
-              <input
-                id="document-file"
-                type="file"
-                accept=".txt,.pdf,.docx"
-                onChange={handleFileChange}
-              />
-            </div>
-
-            <div className="document-form-grid">
-              <label className="document-field">
-                <span>Department</span>
-                <input
-                  type="text"
-                  value={department}
-                  onChange={(event) => setDepartment(event.target.value)}
-                  placeholder="e.g. HR"
-                />
-              </label>
-
-              <label className="document-field">
-                <span>Document Type</span>
-                <input
-                  type="text"
-                  value={documentType}
-                  onChange={(event) =>
-                    setDocumentType(event.target.value)
-                  }
-                  placeholder="e.g. Policy"
-                />
-              </label>
-
-              <label className="document-field">
-                <span>Version</span>
-                <input
-                  type="text"
-                  value={version}
-                  onChange={(event) => setVersion(event.target.value)}
-                  placeholder="e.g. 1.0"
-                />
-              </label>
-
-              <label className="document-field">
-                <span>Access Level</span>
-                <input
-                  type="text"
-                  value={accessLevel}
-                  onChange={(event) =>
-                    setAccessLevel(event.target.value)
-                  }
-                  placeholder="e.g. internal"
-                />
-              </label>
-            </div>
-
-            {uploadError && (
-              <div className="document-error">
-                {uploadError}
-              </div>
-            )}
-
-            {uploadSuccess && (
-              <div className="document-success">
-                {uploadSuccess}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="document-upload-button"
-              disabled={isUploading}
-            >
-              {isUploading ? "Processing..." : "Upload Document"}
-            </button>
-          </form>
-        </section>
+          <DocumentUploadForm
+            file={file}
+            department={department}
+            documentType={documentType}
+            version={version}
+            accessLevel={accessLevel}
+            isUploading={isUploading}
+            uploadError={uploadError}
+            uploadSuccess={uploadSuccess}
+            onFileChange={handleFileChange}
+            onDepartmentChange={setDepartment}
+            onDocumentTypeChange={setDocumentType}
+            onVersionChange={setVersion}
+            onAccessLevelChange={setAccessLevel}
+            onSubmit={handleSubmit}
+          />
 
         <section className="documents-list-section">
           <div className="documents-list-header">
@@ -269,58 +187,7 @@ export default function DocumentsPage() {
               No documents have been uploaded yet.
             </div>
           ) : (
-            <div className="documents-table-wrapper">
-              <table className="documents-table">
-                <thead>
-                  <tr>
-                    <th>Document</th>
-                    <th>Type</th>
-                    <th>Department</th>
-                    <th>Version</th>
-                    <th>Access</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {documents.map((document) => (
-                    <tr key={document.id}>
-                      <td>
-                        <div className="document-name">
-                          {document.source_name}
-                        </div>
-                        <div className="document-title">
-                          {document.title}
-                        </div>
-                      </td>
-
-                      <td>
-                        {document.source_type.toUpperCase()}
-                      </td>
-
-                      <td>
-                        {getMetadataValue(document, "department")}
-                      </td>
-
-                      <td>
-                        {getMetadataValue(document, "version")}
-                      </td>
-
-                      <td>
-                        {getMetadataValue(document, "access_level")}
-                      </td>
-
-                      <td>
-                        <span className={getStatusClass(document.status)}>
-                          {document.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+            <DocumentTable documents={documents} />          )}
         </section>
       </div>
     </main>
