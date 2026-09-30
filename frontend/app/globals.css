@@ -69,9 +69,9 @@ a {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   overflow: hidden;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: var(--surface-primary);
+  background: var(--surface);
 }
 
 /* =========================================================
@@ -389,14 +389,14 @@ a {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border-color);
-  background: var(--surface-secondary);
+  border-right: 1px solid var(--border);
+  background: var(--surface-soft);
   overflow: hidden;
 }
 
 .conversation-sidebar-header {
   padding: 20px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border);
 }
 
 .conversation-sidebar-header h2 {
@@ -406,17 +406,17 @@ a {
 
 .new-conversation-button {
   width: 100%;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 12px;
-  background: var(--surface-primary);
-  color: var(--text-primary);
+  background: var(--surface);
+  color: var(--foreground);
   cursor: pointer;
   font-size: 14px;
 }
 
 .new-conversation-button:hover {
-  background: var(--surface-hover);
+  background: var(--surface-soft);
 }
 
 .conversation-list {
@@ -427,7 +427,7 @@ a {
 
 .conversation-list-status {
   margin: 12px;
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -442,18 +442,18 @@ a {
   border: 1px solid transparent;
   border-radius: 8px;
   background: transparent;
-  color: var(--text-primary);
+  color: var(--foreground);
   text-align: left;
   cursor: pointer;
 }
 
 .conversation-item:hover {
-  background: var(--surface-hover);
+  background: var(--surface-soft);
 }
 
 .conversation-item-active {
-  border-color: var(--border-color);
-  background: var(--surface-primary);
+  border-color: var(--border);
+  background: var(--surface);
 }
 
 .conversation-item-title {
@@ -466,7 +466,7 @@ a {
 
 .conversation-item-id {
   flex-shrink: 0;
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 11px;
 }
 
@@ -497,7 +497,7 @@ a {
     flex: 0 0 auto;
     max-height: 240px;
     border-right: none;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
   }
 
   .conversation-list {
@@ -519,9 +519,9 @@ a {
   width: min(1000px, 100%);
   margin: 0 auto;
   padding: 32px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: var(--surface-primary);
+  background: var(--surface);
 }
 
 .documents-header {
@@ -535,7 +535,7 @@ a {
 
 .documents-header p:last-child {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--muted);
   line-height: 1.6;
 }
 
@@ -556,29 +556,29 @@ a {
 .document-field label {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--foreground);
 }
 
 .document-file-field input[type="file"],
 .document-field input {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 11px 12px;
-  background: var(--surface-secondary);
-  color: var(--text-primary);
+  background: var(--surface-soft);
+  color: var(--foreground);
   font: inherit;
 }
 
 .document-file-field small {
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 12px;
 }
 
 .selected-file {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 13px;
 }
 
@@ -590,10 +590,10 @@ a {
 
 .document-error {
   padding: 12px 14px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  color: var(--text-primary);
-  background: var(--surface-secondary);
+  color: var(--foreground);
+  background: var(--surface-soft);
   font-size: 13px;
 }
 
@@ -602,9 +602,9 @@ a {
   flex-direction: column;
   gap: 6px;
   padding: 14px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--surface-secondary);
+  background: var(--surface-soft);
 }
 
 .document-success strong {
@@ -613,23 +613,23 @@ a {
 
 .document-success span,
 .document-success small {
-  color: var(--text-secondary);
+  color: var(--muted);
 }
 
 .document-upload-button {
   align-self: flex-start;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 11px 18px;
-  background: var(--surface-primary);
-  color: var(--text-primary);
+  background: var(--surface);
+  color: var(--foreground);
   cursor: pointer;
   font: inherit;
   font-weight: 600;
 }
 
 .document-upload-button:hover:not(:disabled) {
-  background: var(--surface-hover);
+  background: var(--surface-soft);
 }
 
 .document-upload-button:disabled {
@@ -687,7 +687,7 @@ a {
 }
 
 .document-refresh-button:hover:not(:disabled) {
-  background: var(--surface-muted);
+  background: var(--surface-soft);
 }
 
 .document-refresh-button:disabled {
@@ -735,7 +735,7 @@ a {
 }
 
 .documents-table tbody tr:hover {
-  background: var(--surface-muted);
+  background: var(--surface-soft);
 }
 
 .document-name {
@@ -792,14 +792,14 @@ a {
 .document-back-link {
   display: inline-flex;
   margin-bottom: 24px;
-  color: var(--text-secondary);
+  color: var(--muted);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
 }
 
 .document-back-link:hover {
-  color: var(--text-primary);
+  color: var(--foreground);
 }
 
 .document-detail-header {
@@ -816,9 +816,9 @@ a {
 .document-detail-card {
   margin-top: 24px;
   padding: 24px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: var(--surface-primary);
+  background: var(--surface);
 }
 
 .document-detail-heading {
@@ -835,7 +835,7 @@ a {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
   overflow: hidden;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 10px;
 }
 
@@ -844,11 +844,11 @@ a {
   flex-direction: column;
   gap: 6px;
   padding: 16px;
-  background: var(--surface-secondary);
+  background: var(--surface-soft);
 }
 
 .document-detail-item span {
-  color: var(--text-secondary);
+  color: var(--muted);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -856,7 +856,7 @@ a {
 }
 
 .document-detail-item strong {
-  color: var(--text-primary);
+  color: var(--foreground);
   font-size: 14px;
   font-weight: 600;
 }
@@ -869,7 +869,7 @@ a {
 
 .document-processing-status p {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--muted);
   line-height: 1.5;
 }
 
