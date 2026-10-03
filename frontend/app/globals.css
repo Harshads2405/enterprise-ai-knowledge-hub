@@ -1085,3 +1085,92 @@ a {
     min-height: 0;
   }
 }
+
+/* =========================================================
+   Shared UI — Buttons
+   ========================================================= */
+
+.ui-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.ui-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ui-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ui-button-primary {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.ui-button-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.ui-button-secondary {
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--muted-strong);
+}
+
+.ui-button-secondary:hover:not(:disabled) {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+}
+
+.ui-button-ghost {
+  background: transparent;
+  color: var(--muted-strong);
+}
+
+.ui-button-ghost:hover:not(:disabled) {
+  background: var(--surface-soft);
+  color: var(--foreground);
+}
+
+.ui-button-danger {
+  border-color: var(--danger-bg);
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.ui-button-danger:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.ui-button-sm {
+  min-height: 32px;
+  padding: 0 11px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+.ui-button-lg {
+  min-height: 44px;
+  padding: 0 18px;
+}
