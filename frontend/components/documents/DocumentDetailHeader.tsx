@@ -22,18 +22,24 @@ export default function DocumentDetailHeader({
         ← Back to documents
       </Link>
 
-      <header className="documents-header document-detail-header">
-        <div>
-          <p className="documents-eyebrow">
-            Document Intelligence
-          </p>
+      <header className="documents-header document-detail-header ui-card">
+        <div className="ui-card-header">
+          <div>
+            <p className="documents-eyebrow">
+              Document Intelligence
+            </p>
 
-          <h1>{sourceName}</h1>
+            <h1 className="ui-card-title">
+              {sourceName}
+            </h1>
 
-          <p>{title}</p>
+            <p className="ui-card-description">
+              {title}
+            </p>
+          </div>
+
+          <DocumentStatusBadge status={status} />
         </div>
-
-        <DocumentStatusBadge status={status} />
       </header>
     </>
   );
