@@ -34,110 +34,130 @@ export default function DocumentUploadForm({
   onSubmit,
 }: DocumentUploadFormProps) {
   return (
-    <section className="document-upload-form">
-      <div className="document-section-heading">
-        <h2>Upload Document</h2>
-        <p>
-          Supported formats: TXT, PDF, and DOCX.
-        </p>
+    <section className="document-upload-form ui-card">
+      <div className="ui-card-header">
+        <div>
+          <h2 className="ui-card-title">Upload Document</h2>
+          <p className="ui-card-description">
+            Supported formats: TXT, PDF, and DOCX.
+          </p>
+        </div>
       </div>
 
-      <form onSubmit={onSubmit}>
-        <div className="document-file-field">
-          <label htmlFor="document-file">
-            Document
-          </label>
+      <div className="ui-card-body">
+        <form onSubmit={onSubmit}>
+          <div className="document-file-field">
+            <label
+              htmlFor="document-file"
+              className="ui-label"
+            >
+              Document
+            </label>
 
-          <input
-            id="document-file"
-            type="file"
-            accept=".txt,.pdf,.docx"
-            onChange={onFileChange}
-          />
+            <input
+              id="document-file"
+              type="file"
+              accept=".txt,.pdf,.docx"
+              onChange={onFileChange}
+              className="ui-input"
+            />
 
-          {file && (
-            <small>
-              Selected: {file.name}
-            </small>
+            {file && (
+              <small className="ui-field-help">
+                Selected: {file.name}
+              </small>
+            )}
+          </div>
+
+          <div className="document-form-grid">
+            <label className="document-field">
+              <span className="ui-label">Department</span>
+
+              <input
+                type="text"
+                value={department}
+                onChange={(event) =>
+                  onDepartmentChange(event.target.value)
+                }
+                placeholder="e.g. HR"
+                className="ui-input"
+              />
+            </label>
+
+            <label className="document-field">
+              <span className="ui-label">Document Type</span>
+
+              <input
+                type="text"
+                value={documentType}
+                onChange={(event) =>
+                  onDocumentTypeChange(event.target.value)
+                }
+                placeholder="e.g. Policy"
+                className="ui-input"
+              />
+            </label>
+
+            <label className="document-field">
+              <span className="ui-label">Version</span>
+
+              <input
+                type="text"
+                value={version}
+                onChange={(event) =>
+                  onVersionChange(event.target.value)
+                }
+                placeholder="e.g. 1.0"
+                className="ui-input"
+              />
+            </label>
+
+            <label className="document-field">
+              <span className="ui-label">Access Level</span>
+
+              <input
+                type="text"
+                value={accessLevel}
+                onChange={(event) =>
+                  onAccessLevelChange(event.target.value)
+                }
+                placeholder="e.g. internal"
+                className="ui-input"
+              />
+            </label>
+          </div>
+
+          {uploadError && (
+            <div
+              className="ui-feedback ui-feedback-error"
+              role="alert"
+            >
+              {uploadError}
+            </div>
           )}
-        </div>
 
-        <div className="document-form-grid">
-          <label className="document-field">
-            <span>Department</span>
+          {uploadSuccess && (
+            <div
+              className="ui-feedback ui-feedback-success"
+              role="status"
+            >
+              {uploadSuccess}
+            </div>
+          )}
 
-            <input
-              type="text"
-              value={department}
-              onChange={(event) =>
-                onDepartmentChange(event.target.value)
-              }
-              placeholder="e.g. HR"
-            />
-          </label>
-
-          <label className="document-field">
-            <span>Document Type</span>
-
-            <input
-              type="text"
-              value={documentType}
-              onChange={(event) =>
-                onDocumentTypeChange(event.target.value)
-              }
-              placeholder="e.g. Policy"
-            />
-          </label>
-
-          <label className="document-field">
-            <span>Version</span>
-
-            <input
-              type="text"
-              value={version}
-              onChange={(event) =>
-                onVersionChange(event.target.value)
-              }
-              placeholder="e.g. 1.0"
-            />
-          </label>
-
-          <label className="document-field">
-            <span>Access Level</span>
-
-            <input
-              type="text"
-              value={accessLevel}
-              onChange={(event) =>
-                onAccessLevelChange(event.target.value)
-              }
-              placeholder="e.g. internal"
-            />
-          </label>
-        </div>
-
-        {uploadError && (
-          <div className="document-error" role="alert">
-            {uploadError}
+          <div className="document-upload-actions">
+            <button
+              type="submit"
+              className="ui-button ui-button-primary"
+              disabled={isUploading}
+            >
+              {isUploading
+                ? "Processing..."
+                : "Upload Document"}
+            </button>
           </div>
-        )}
-
-        {uploadSuccess && (
-          <div className="document-success" role="status">
-            {uploadSuccess}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          className="document-upload-button"
-          disabled={isUploading}
-        >
-          {isUploading
-            ? "Processing..."
-            : "Upload Document"}
-        </button>
-      </form>
+        </form>
+      </div>
     </section>
   );
 }
