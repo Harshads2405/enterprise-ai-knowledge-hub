@@ -29,7 +29,7 @@ export default function ConversationSidebar({
 
         <button
           type="button"
-          className="new-conversation-button"
+          className="ui-button ui-button-primary ui-button-sm new-conversation-button"
           onClick={onNewConversation}
         >
           + New Chat

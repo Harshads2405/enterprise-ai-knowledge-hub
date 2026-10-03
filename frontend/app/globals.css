@@ -406,17 +406,6 @@ a {
 
 .new-conversation-button {
   width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
-  background: var(--surface);
-  color: var(--foreground);
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.new-conversation-button:hover {
-  background: var(--surface-soft);
 }
 
 .conversation-list {
