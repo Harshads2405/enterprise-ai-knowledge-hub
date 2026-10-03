@@ -1174,3 +1174,98 @@ a {
   min-height: 44px;
   padding: 0 18px;
 }
+
+/* =========================================================
+   Shared UI — Form Controls
+   ========================================================= */
+
+.ui-label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted-strong);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.ui-input,
+.ui-textarea,
+.ui-select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.ui-input,
+.ui-select {
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+.ui-textarea {
+  min-height: 100px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.ui-input::placeholder,
+.ui-textarea::placeholder {
+  color: var(--muted);
+}
+
+.ui-input:hover:not(:disabled),
+.ui-textarea:hover:not(:disabled),
+.ui-select:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+
+.ui-input:focus,
+.ui-textarea:focus,
+.ui-select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(99 102 241 / 0.15);
+}
+
+.ui-input:disabled,
+.ui-textarea:disabled,
+.ui-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.ui-input-error,
+.ui-textarea-error,
+.ui-select-error {
+  border-color: var(--danger-text);
+}
+
+.ui-input-error:focus,
+.ui-textarea-error:focus,
+.ui-select-error:focus {
+  border-color: var(--danger-text);
+  box-shadow: 0 0 0 2px rgb(252 165 165 / 0.12);
+}
+
+.ui-field-error {
+  margin-top: 6px;
+  color: var(--danger-text);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ui-field-help {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
