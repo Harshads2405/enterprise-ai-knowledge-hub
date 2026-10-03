@@ -1328,3 +1328,87 @@ a {
   border-radius: 10px;
   background: var(--surface-soft);
 }
+
+/* =========================================================
+   Shared UI — Status Badges & Feedback States
+   ========================================================= */
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.ui-badge-neutral {
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--muted-strong);
+}
+
+.ui-badge-success {
+  border-color: #14532d;
+  background: #10291b;
+  color: #86efac;
+}
+
+.ui-badge-warning {
+  border-color: #713f12;
+  background: #2a1d0b;
+  color: #fcd34d;
+}
+
+.ui-badge-danger {
+  border-color: #7f1d1d;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.ui-badge-info {
+  border-color: #3730a3;
+  background: #17154a;
+  color: #a5b4fc;
+}
+
+.ui-feedback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ui-feedback-success {
+  border-color: #14532d;
+  background: #10291b;
+  color: #86efac;
+}
+
+.ui-feedback-warning {
+  border-color: #713f12;
+  background: #2a1d0b;
+  color: #fcd34d;
+}
+
+.ui-feedback-error {
+  border-color: #7f1d1d;
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.ui-feedback-info {
+  border-color: #3730a3;
+  background: #17154a;
+  color: #c7d2fe;
+}
