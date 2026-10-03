@@ -21,7 +21,7 @@ export default function DocumentTable({
   documents,
 }: DocumentTableProps) {
   return (
-    <div className="documents-table-wrapper">
+    <div className="documents-table-wrapper ui-panel">
       <table className="documents-table">
         <thead>
           <tr>
