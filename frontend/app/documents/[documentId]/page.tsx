@@ -8,8 +8,8 @@ import {
   getDocument,
 } from "@/lib/api/documents";
 
+import AppShell from "@/components/layout/AppShell";
 import DocumentDetailHeader from "@/components/documents/DocumentDetailHeader";
-import DocumentStatusBadge from "@/components/documents/DocumentStatusBadge";
 import DocumentInfoCard from "@/components/documents/DocumentInfoCard";
 import DocumentProcessingStatus from "@/components/documents/DocumentProcessingStatus";
 
@@ -50,64 +50,73 @@ export default function DocumentDetailPage() {
 
   if (isLoading) {
     return (
-      <main className="documents-page">
-        <div className="documents-shell">
-          <div className="documents-empty-state">
-            Loading document...
+      <AppShell>
+        <div className="documents-page">
+          <div className="documents-shell">
+            <div className="documents-empty-state">
+              Loading document...
+            </div>
           </div>
         </div>
-      </main>
+      </AppShell>
     );
   }
 
   if (error || !document) {
     return (
-      <main className="documents-page">
-        <div className="documents-shell">
-          <DocumentDetailHeader
-            sourceName="Document"
-            title=""
-            status="error"
-          />
+      <AppShell>
+        <div className="documents-page">
+          <div className="documents-shell">
+            <DocumentDetailHeader
+              sourceName="Document"
+              title=""
+              status="error"
+            />
 
-          <div
-            className="document-error"
-            role="alert"
-          >
-            {error || "Document not found."}
+            <div
+              className="document-error"
+              role="alert"
+            >
+              {error || "Document not found."}
+            </div>
           </div>
         </div>
-      </main>
+      </AppShell>
     );
   }
 
   const metadata = document.metadata ?? {};
 
   return (
-    <main className="documents-page">
-      <div className="documents-shell">
-        <DocumentDetailHeader
-          sourceName={document.source_name}
-          title={document.title}
-          status={document.status}
-        />
+    <AppShell>
+      <div className="documents-page">
+        <div className="documents-shell">
+          <DocumentDetailHeader
+            sourceName={document.source_name}
+            title={document.title}
+            status={document.status}
+          />
 
-      <DocumentInfoCard
-        documentId={document.id}
-        sourceType={document.source_type}
-        department={String(metadata.department ?? "-")}
-        documentType={String(metadata.document_type ?? "-")}
-        version={String(metadata.version ?? "-")}
-        accessLevel={String(metadata.access_level ?? "-")}
-        createdAt={new Date(
-          document.created_at,
-        ).toLocaleString()}
-        updatedAt={new Date(
-          document.updated_at,
-        ).toLocaleString()}
-      />
+          <DocumentInfoCard
+            documentId={document.id}
+            sourceType={document.source_type}
+            department={String(metadata.department ?? "-")}
+            documentType={String(metadata.document_type ?? "-")}
+            version={String(metadata.version ?? "-")}
+            accessLevel={String(metadata.access_level ?? "-")}
+            createdAt={new Date(
+              document.created_at,
+            ).toLocaleString()}
+            updatedAt={new Date(
+              document.updated_at,
+            ).toLocaleString()}
+          />
 
-    <DocumentProcessingStatus status={document.status} />      </div>
-    </main>
+          <DocumentProcessingStatus
+            status={document.status}
+          />
+        </div>
+      </div>
+    </AppShell>
   );
 }

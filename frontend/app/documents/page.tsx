@@ -7,8 +7,10 @@ import {
   getDocuments,
   uploadDocument,
 } from "@/lib/api/documents";
+
 import DocumentUploadForm from "@/components/documents/DocumentUploadForm";
 import DocumentTable from "@/components/documents/DocumentTable";
+import AppShell from "@/components/layout/AppShell";
 
 const ORGANIZATION_ID = 9;
 const USER_ID = 9;
@@ -122,19 +124,23 @@ export default function DocumentsPage() {
     }
   }
 
-
   return (
-    <main className="documents-page">
-      <div className="documents-shell">
-        <header className="documents-header">
-          <div>
-            <p className="documents-eyebrow">Knowledge Base</p>
-            <h1>Document Intelligence</h1>
-            <p>
-              Upload enterprise documents and monitor their indexing status.
-            </p>
-          </div>
-        </header>
+    <AppShell>
+      <div className="documents-page">
+        <div className="documents-shell">
+          <header className="documents-header">
+            <div>
+              <p className="documents-eyebrow">
+                Knowledge Base
+              </p>
+
+              <h1>Document Intelligence</h1>
+
+              <p>
+                Upload enterprise documents and monitor their indexing status.
+              </p>
+            </div>
+          </header>
 
           <DocumentUploadForm
             file={file}
@@ -153,44 +159,48 @@ export default function DocumentsPage() {
             onSubmit={handleSubmit}
           />
 
-        <section className="documents-list-section">
-          <div className="documents-list-header">
-            <div>
-              <h2>Documents</h2>
-              <p>
-                Documents currently indexed for this organization.
-              </p>
+          <section className="documents-list-section">
+            <div className="documents-list-header">
+              <div>
+                <h2>Documents</h2>
+
+                <p>
+                  Documents currently indexed for this organization.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="document-refresh-button"
+                onClick={() => void loadDocuments()}
+                disabled={isLoadingDocuments}
+              >
+                {isLoadingDocuments
+                  ? "Refreshing..."
+                  : "Refresh"}
+              </button>
             </div>
 
-            <button
-              type="button"
-              className="document-refresh-button"
-              onClick={() => void loadDocuments()}
-              disabled={isLoadingDocuments}
-            >
-              {isLoadingDocuments ? "Refreshing..." : "Refresh"}
-            </button>
-          </div>
+            {documentsError && (
+              <div className="document-error">
+                {documentsError}
+              </div>
+            )}
 
-          {documentsError && (
-            <div className="document-error">
-              {documentsError}
-            </div>
-          )}
-
-          {isLoadingDocuments ? (
-            <div className="documents-empty-state">
-              Loading documents...
-            </div>
-          ) : documents.length === 0 ? (
-            <div className="documents-empty-state">
-              No documents have been uploaded yet.
-            </div>
-          ) : (
-            <DocumentTable documents={documents} />          )}
-        </section>
+            {isLoadingDocuments ? (
+              <div className="documents-empty-state">
+                Loading documents...
+              </div>
+            ) : documents.length === 0 ? (
+              <div className="documents-empty-state">
+                No documents have been uploaded yet.
+              </div>
+            ) : (
+              <DocumentTable documents={documents} />
+            )}
+          </section>
+        </div>
       </div>
-    </main>
+    </AppShell>
   );
 }
-

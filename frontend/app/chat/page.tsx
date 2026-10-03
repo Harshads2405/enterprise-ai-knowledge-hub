@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  FormEvent,
-  useEffect,
-  useState,
-} from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 import {
   Citation,
@@ -21,6 +17,7 @@ import ConversationSidebar from "@/components/chat/ConversationSidebar";
 import ChatHeader from "@/components/chat/ChatHeader";
 import MessageList from "@/components/chat/MessageList";
 import ChatInput from "@/components/chat/ChatInput";
+import AppShell from "@/components/layout/AppShell";
 
 import type {
   FeedbackRating,
@@ -155,64 +152,66 @@ export default function ChatPage() {
     }
   }
 
-const handleFeedback = async (
-  messageId: string,
-  backendMessageId: number | undefined,
-  rating: FeedbackRating,
-) => {
-  const message = messages.find((item) => item.id === messageId);
+  const handleFeedback = async (
+    messageId: string,
+    backendMessageId: number | undefined,
+    rating: FeedbackRating,
+  ) => {
+    const message = messages.find(
+      (item) => item.id === messageId,
+    );
 
-  if (!backendMessageId || message?.feedbackSubmitting) {
-    return;
-  }
-
-  setMessages((currentMessages) =>
-    currentMessages.map((message) =>
-      message.id === messageId
-        ? {
-            ...message,
-            feedbackSubmitting: true,
-          }
-        : message,
-    ),
-  );
-
-  try {
-    await createFeedback({
-      message_id: backendMessageId,
-      user_id: USER_ID,
-      rating,
-    });
+    if (!backendMessageId || message?.feedbackSubmitting) {
+      return;
+    }
 
     setMessages((currentMessages) =>
       currentMessages.map((message) =>
         message.id === messageId
           ? {
               ...message,
-              feedback: rating,
-              feedbackSubmitting: false,
-            }
-          : message,
-      ),
-    );
-  } catch (error) {
-    setMessages((currentMessages) =>
-      currentMessages.map((message) =>
-        message.id === messageId
-          ? {
-              ...message,
-              feedbackSubmitting: false,
+              feedbackSubmitting: true,
             }
           : message,
       ),
     );
 
-    console.error(
-      "Failed to submit feedback:",
-      error,
-    );
-  }
-};
+    try {
+      await createFeedback({
+        message_id: backendMessageId,
+        user_id: USER_ID,
+        rating,
+      });
+
+      setMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message.id === messageId
+            ? {
+                ...message,
+                feedback: rating,
+                feedbackSubmitting: false,
+              }
+            : message,
+        ),
+      );
+    } catch (error) {
+      setMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message.id === messageId
+            ? {
+                ...message,
+                feedbackSubmitting: false,
+              }
+            : message,
+        ),
+      );
+
+      console.error(
+        "Failed to submit feedback:",
+        error,
+      );
+    }
+  };
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
@@ -221,10 +220,14 @@ const handleFeedback = async (
 
     const content = input.trim();
 
-    if (!content || isLoading) return;
+    if (!content || isLoading) {
+      return;
+    }
 
     if (content.length > 4000) {
-      setError("Message cannot exceed 4000 characters.");
+      setError(
+        "Message cannot exceed 4000 characters.",
+      );
       return;
     }
 
@@ -245,8 +248,7 @@ const handleFeedback = async (
     setIsLoading(true);
 
     try {
-      let activeConversationId =
-        conversationId;
+      let activeConversationId = conversationId;
 
       if (!activeConversationId) {
         const conversation =
@@ -311,54 +313,53 @@ const handleFeedback = async (
   }
 
   return (
-    <main className="chat-page">
-      <section className="chat-shell">
-
-        <ConversationSidebar
-          conversations={conversations}
-          conversationId={conversationId}
-          isLoadingConversations={
-            isLoadingConversations
-          }
-          isLoading={isLoading}
-          onNewConversation={
-            handleNewConversation
-          }
-          onSelectConversation={
-            handleSelectConversation
-          }
-        />
-
-        <section className="chat-main">
-
-          <ChatHeader
+    <AppShell>
+      <div className="chat-page">
+        <section className="chat-shell">
+          <ConversationSidebar
+            conversations={conversations}
             conversationId={conversationId}
-          />
-
-          <MessageList
-            messages={messages}
+            isLoadingConversations={
+              isLoadingConversations
+            }
             isLoading={isLoading}
-            onFeedback={handleFeedback}
+            onNewConversation={
+              handleNewConversation
+            }
+            onSelectConversation={
+              handleSelectConversation
+            }
           />
 
-          {error && (
-            <div
-              className="chat-error"
-              role="alert"
-            >
-              {error}
-            </div>
-          )}
+          <section className="chat-main">
+            <ChatHeader
+              conversationId={conversationId}
+            />
 
-          <ChatInput
-            input={input}
-            isLoading={isLoading}
-            onInputChange={setInput}
-            onSubmit={handleSubmit}
-          />
+            <MessageList
+              messages={messages}
+              isLoading={isLoading}
+              onFeedback={handleFeedback}
+            />
 
+            {error && (
+              <div
+                className="chat-error"
+                role="alert"
+              >
+                {error}
+              </div>
+            )}
+
+            <ChatInput
+              input={input}
+              isLoading={isLoading}
+              onInputChange={setInput}
+              onSubmit={handleSubmit}
+            />
+          </section>
         </section>
-      </section>
-    </main>
+      </div>
+    </AppShell>
   );
 }
