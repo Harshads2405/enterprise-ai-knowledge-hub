@@ -8,18 +8,24 @@ export default function DocumentProcessingStatus({
   status,
 }: DocumentProcessingStatusProps) {
   return (
-    <section className="document-detail-card">
-      <div className="document-detail-heading">
-        <h2>Processing Status</h2>
+    <section className="document-detail-card ui-card">
+      <div className="ui-card-header">
+        <div>
+          <h2 className="ui-card-title">
+            Processing Status
+          </h2>
+        </div>
       </div>
 
-      <div className="document-processing-status">
-        <DocumentStatusBadge status={status} />
+      <div className="ui-card-body">
+        <div className="document-processing-status">
+          <DocumentStatusBadge status={status} />
 
-        <p>
-          This document has been processed by the
-          document ingestion pipeline.
-        </p>
+          <p>
+            This document has been processed by the
+            document ingestion pipeline.
+          </p>
+        </div>
       </div>
     </section>
   );
