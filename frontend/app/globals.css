@@ -1000,6 +1000,19 @@ a {
   flex: 0 0 auto;
   justify-content: center;
 }
+.app-sidebar-nav-icon {
+  display: inline-flex;
+  width: 18px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.app-sidebar-nav-item-active .app-sidebar-nav-icon {
+  color: var(--foreground);
+}
 
   .app-shell-content {
     min-height: 0;

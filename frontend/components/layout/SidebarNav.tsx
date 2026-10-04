@@ -18,6 +18,9 @@ export default function SidebarNav() {
         }`}
         aria-current={isChatActive ? "page" : undefined}
       >
+        <span className="app-sidebar-nav-icon" aria-hidden="true">
+          ▣
+        </span>
         <span>Chat</span>
       </Link>
 
@@ -28,6 +31,9 @@ export default function SidebarNav() {
         }`}
         aria-current={isDocumentsActive ? "page" : undefined}
       >
+        <span className="app-sidebar-nav-icon" aria-hidden="true">
+          ▤
+        </span>
         <span>Documents</span>
       </Link>
     </nav>
