@@ -140,6 +140,7 @@ class RAGService:
         self,
         query: str,
         limit: int = 5,
+	candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
         document_type: Optional[str] = None,
         version: Optional[str] = None,
@@ -149,6 +150,7 @@ class RAGService:
         return decomposed_retrieval_service.retrieve(
             query=query,
             limit=limit,
+	    candidate_limit=candidate_limit,
             department=department,
             document_type=document_type,
             version=version,

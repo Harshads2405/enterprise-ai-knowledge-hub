@@ -1,0 +1,1055 @@
+[
+  {
+    "id": "hr_leave_001",
+    "question": "How many annual leave days do employees get?",
+    "expected_chunk_ids": [
+      26
+    ],
+    "retrieved_chunk_ids": [
+      26,
+      16,
+      407
+    ],
+    "answer": "Employees are entitled to 20 days of annual leave per year. [Source 1] [Source 2]",
+    "sources": [
+      {
+        "document_id": 16,
+        "chunk_id": 26,
+        "rank": null
+      },
+      {
+        "document_id": 10,
+        "chunk_id": 16,
+        "rank": null
+      },
+      {
+        "document_id": 398,
+        "chunk_id": 407,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 11040.47,
+    "error": null
+  },
+  {
+    "id": "hr_leave_002",
+    "question": "How should annual leave be requested?",
+    "expected_chunk_ids": [
+      26
+    ],
+    "retrieved_chunk_ids": [
+      26,
+      16,
+      407
+    ],
+    "answer": "Annual leave should be requested through the approved leave request process before the planned absence. [Source 1] [Source 2] [Source 3]",
+    "sources": [
+      {
+        "document_id": 16,
+        "chunk_id": 26,
+        "rank": null
+      },
+      {
+        "document_id": 10,
+        "chunk_id": 16,
+        "rank": null
+      },
+      {
+        "document_id": 398,
+        "chunk_id": 407,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 12385.49,
+    "error": null
+  },
+  {
+    "id": "hr_leave_003",
+    "question": "What is the employee annual leave entitlement?",
+    "expected_chunk_ids": [
+      26
+    ],
+    "retrieved_chunk_ids": [
+      407,
+      26,
+      16
+    ],
+    "answer": "Employees are entitled to 20 days of annual leave per year. [Source 2] [Source 3]",
+    "sources": [
+      {
+        "document_id": 398,
+        "chunk_id": 407,
+        "rank": null
+      },
+      {
+        "document_id": 16,
+        "chunk_id": 26,
+        "rank": null
+      },
+      {
+        "document_id": 10,
+        "chunk_id": 16,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 9225.94,
+    "error": null
+  },
+  {
+    "id": "hr_leave_004",
+    "question": "Who should approve an annual leave request?",
+    "expected_chunk_ids": [
+      26
+    ],
+    "retrieved_chunk_ids": [
+      26,
+      407,
+      16
+    ],
+    "answer": "I don't have enough information in the provided knowledge base to answer that.",
+    "sources": [
+      {
+        "document_id": 16,
+        "chunk_id": 26,
+        "rank": null
+      },
+      {
+        "document_id": 398,
+        "chunk_id": 407,
+        "rank": null
+      },
+      {
+        "document_id": 10,
+        "chunk_id": 16,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 5472.6,
+    "error": null
+  },
+  {
+    "id": "hr_remote_001",
+    "question": "Can employees work remotely?",
+    "expected_chunk_ids": [
+      27
+    ],
+    "retrieved_chunk_ids": [
+      27,
+      25,
+      31
+    ],
+    "answer": "Yes—employees may work remotely when their role and business requirements permit remote work, as stated in the Enterprise Remote Work Policy. [Source 1]",
+    "sources": [
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 15,
+        "chunk_id": 25,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 7224.19,
+    "error": null
+  },
+  {
+    "id": "hr_remote_002",
+    "question": "What approval is required for remote work?",
+    "expected_chunk_ids": [
+      27
+    ],
+    "retrieved_chunk_ids": [
+      27,
+      167,
+      176
+    ],
+    "answer": "Remote work requires manager approval before an employee can work remotely. [Source 1]",
+    "sources": [
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 158,
+        "chunk_id": 167,
+        "rank": null
+      },
+      {
+        "document_id": 167,
+        "chunk_id": 176,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 5722.59,
+    "error": null
+  },
+  {
+    "id": "hr_remote_003",
+    "question": "What factors are considered when reviewing remote work requests?",
+    "expected_chunk_ids": [
+      27
+    ],
+    "retrieved_chunk_ids": [
+      27,
+      32,
+      182
+    ],
+    "answer": "Managers may consider business needs, team collaboration, employee responsibilities, and operational requirements when reviewing remote work requests. [Source 1]",
+    "sources": [
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 173,
+        "chunk_id": 182,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 7063.09,
+    "error": null
+  },
+  {
+    "id": "hr_attendance_001",
+    "question": "How should employees record their attendance?",
+    "expected_chunk_ids": [
+      25
+    ],
+    "retrieved_chunk_ids": [
+      25,
+      28,
+      33
+    ],
+    "answer": "Employees should record their attendance using the organization’s approved attendance system. [Source 1]",
+    "sources": [
+      {
+        "document_id": 15,
+        "chunk_id": 25,
+        "rank": null
+      },
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      },
+      {
+        "document_id": 23,
+        "chunk_id": 33,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 22121.14,
+    "error": null
+  },
+  {
+    "id": "hr_attendance_002",
+    "question": "What should an employee do if they cannot attend work?",
+    "expected_chunk_ids": [
+      25
+    ],
+    "retrieved_chunk_ids": [
+      25,
+      27,
+      143
+    ],
+    "answer": "If an employee cannot attend work as scheduled, they should inform their manager according to the applicable absence reporting process. [Source 1]",
+    "sources": [
+      {
+        "document_id": 15,
+        "chunk_id": 25,
+        "rank": null
+      },
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 134,
+        "chunk_id": 143,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 19043.46,
+    "error": null
+  },
+  {
+    "id": "hr_attendance_003",
+    "question": "Who may review repeated attendance issues?",
+    "expected_chunk_ids": [
+      25
+    ],
+    "retrieved_chunk_ids": [
+      25,
+      32,
+      29
+    ],
+    "answer": "Repeated attendance issues may be reviewed by the employee’s manager and the appropriate HR team. [Source 1]",
+    "sources": [
+      {
+        "document_id": 15,
+        "chunk_id": 25,
+        "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 19,
+        "chunk_id": 29,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 21605.61,
+    "error": null
+  },
+  {
+    "id": "hr_mixed_001",
+    "question": "What is the remote work policy?",
+    "expected_chunk_ids": [
+      27
+    ],
+    "retrieved_chunk_ids": [
+      27,
+      32,
+      31
+    ],
+    "answer": "The Enterprise Remote Work Policy states that employees may work remotely when their role and business requirements permit remote work, and that employees working remotely are expected to remain available during their agreed working hours. This policy applies to employees who are eligible for remote work. [Source 1]",
+    "sources": [
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 13602.21,
+    "error": null
+  },
+  {
+    "id": "hr_mixed_002",
+    "question": "What is the attendance policy?",
+    "expected_chunk_ids": [
+      25
+    ],
+    "retrieved_chunk_ids": [
+      25,
+      28,
+      183
+    ],
+    "answer": "The attendance policy requires employees to follow their assigned working schedule, maintain regular attendance, record attendance using the organization’s approved attendance system, and ensure that their attendance records are accurate. [Source 1]",
+    "sources": [
+      {
+        "document_id": 15,
+        "chunk_id": 25,
+        "rank": null
+      },
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      },
+      {
+        "document_id": 174,
+        "chunk_id": 183,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 14128.42,
+    "error": null
+  },
+  {
+    "id": "finance_expense_001",
+    "question": "How should employees submit business expense claims?",
+    "expected_chunk_ids": [
+      28
+    ],
+    "retrieved_chunk_ids": [
+      28,
+      29,
+      30
+    ],
+    "answer": "Employees must submit business expense claims through the approved expense management system, ensuring the claims include valid receipts and supporting documentation and that the information is accurate. [Source 1]",
+    "sources": [
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      },
+      {
+        "document_id": 19,
+        "chunk_id": 29,
+        "rank": null
+      },
+      {
+        "document_id": 20,
+        "chunk_id": 30,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 10619.91,
+    "error": null
+  },
+  {
+    "id": "finance_expense_002",
+    "question": "What documents are required for an expense claim?",
+    "expected_chunk_ids": [
+      28
+    ],
+    "retrieved_chunk_ids": [
+      28,
+      30,
+      29
+    ],
+    "answer": "Expense claims must include valid receipts and supporting documentation. [Source 1]",
+    "sources": [
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      },
+      {
+        "document_id": 20,
+        "chunk_id": 30,
+        "rank": null
+      },
+      {
+        "document_id": 19,
+        "chunk_id": 29,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 18255.99,
+    "error": null
+  },
+  {
+    "id": "finance_reimbursement_001",
+    "question": "Which business expenses can be reimbursed?",
+    "expected_chunk_ids": [
+      29
+    ],
+    "retrieved_chunk_ids": [
+      29,
+      28,
+      30
+    ],
+    "answer": "Eligible business expenses may be reimbursed when they are submitted according to the approved reimbursement process, including travel expenses that comply with the company’s expense limits. [Source 1] [Source 3]",
+    "sources": [
+      {
+        "document_id": 19,
+        "chunk_id": 29,
+        "rank": null
+      },
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      },
+      {
+        "document_id": 20,
+        "chunk_id": 30,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 19046.38,
+    "error": null
+  },
+  {
+    "id": "finance_reimbursement_002",
+    "question": "Who reviews reimbursement requests?",
+    "expected_chunk_ids": [
+      29
+    ],
+    "retrieved_chunk_ids": [
+      29,
+      32,
+      28
+    ],
+    "answer": "Reimbursement requests are reviewed by the appropriate manager or the finance team. [Source 1]",
+    "sources": [
+      {
+        "document_id": 19,
+        "chunk_id": 29,
+        "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 15974.13,
+    "error": null
+  },
+  {
+    "id": "finance_travel_001",
+    "question": "Does business travel require approval?",
+    "expected_chunk_ids": [
+      30
+    ],
+    "retrieved_chunk_ids": [
+      30,
+      158,
+      167
+    ],
+    "answer": "Yes, business travel must be approved before an employee makes travel arrangements. [Source 1]",
+    "sources": [
+      {
+        "document_id": 20,
+        "chunk_id": 30,
+        "rank": null
+      },
+      {
+        "document_id": 149,
+        "chunk_id": 158,
+        "rank": null
+      },
+      {
+        "document_id": 158,
+        "chunk_id": 167,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 10135.12,
+    "error": null
+  },
+  {
+    "id": "finance_travel_002",
+    "question": "How should employees book business travel?",
+    "expected_chunk_ids": [
+      30
+    ],
+    "retrieved_chunk_ids": [
+      30,
+      28,
+      27
+    ],
+    "answer": "Employees should book business travel using the company’s approved travel booking process, and they must obtain approval before making any arrangements. [Source 1]",
+    "sources": [
+      {
+        "document_id": 20,
+        "chunk_id": 30,
+        "rank": null
+      },
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      },
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 9517.69,
+    "error": null
+  },
+  {
+    "id": "it_security_001",
+    "question": "How should employees protect company systems and data?",
+    "expected_chunk_ids": [
+      31
+    ],
+    "retrieved_chunk_ids": [
+      31,
+      32,
+      33
+    ],
+    "answer": "Employees must protect company systems, applications, and data from unauthorized access by using only authorized accounts and approved devices, and by limiting access to sensitive information to employees who are authorized based on business requirements. [Source 1]",
+    "sources": [
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 23,
+        "chunk_id": 33,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 23558.96,
+    "error": null
+  },
+  {
+    "id": "it_security_002",
+    "question": "Can employees share their passwords?",
+    "expected_chunk_ids": [
+      31
+    ],
+    "retrieved_chunk_ids": [
+      31,
+      32,
+      27
+    ],
+    "answer": "No, employees must not share their passwords with other individuals. [Source 1]",
+    "sources": [
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 21601.97,
+    "error": null
+  },
+  {
+    "id": "it_security_003",
+    "question": "What should employees do if they suspect a security incident?",
+    "expected_chunk_ids": [
+      31
+    ],
+    "retrieved_chunk_ids": [
+      33,
+      31,
+      25
+    ],
+    "answer": "Employees should report suspected security incidents to the IT security team as soon as possible and provide any relevant information when requested. [Source 1] [Source 2]",
+    "sources": [
+      {
+        "document_id": 23,
+        "chunk_id": 33,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 15,
+        "chunk_id": 25,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 17507.44,
+    "error": null
+  },
+  {
+    "id": "it_access_001",
+    "question": "How is access to company systems granted?",
+    "expected_chunk_ids": [
+      32
+    ],
+    "retrieved_chunk_ids": [
+      32,
+      31,
+      28
+    ],
+    "answer": "Access to company systems is granted based on an employee’s job responsibilities, with managers requesting access through the approved access request process and employees using only authorized accounts and approved devices. [Source 1] [Source 2]",
+    "sources": [
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 13110.89,
+    "error": null
+  },
+  {
+    "id": "it_access_002",
+    "question": "Who requests system access for employees?",
+    "expected_chunk_ids": [
+      32
+    ],
+    "retrieved_chunk_ids": [
+      32,
+      27,
+      154
+    ],
+    "answer": "Managers request system access for employees through the approved access request process. [Source 1]",
+    "sources": [
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 145,
+        "chunk_id": 154,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 16893.21,
+    "error": null
+  },
+  {
+    "id": "it_access_003",
+    "question": "Who provisions approved access requests?",
+    "expected_chunk_ids": [
+      32
+    ],
+    "retrieved_chunk_ids": [
+      32,
+      185,
+      146
+    ],
+    "answer": "The IT team provisions approved access requests. [Source 1]",
+    "sources": [
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 176,
+        "chunk_id": 185,
+        "rank": null
+      },
+      {
+        "document_id": 137,
+        "chunk_id": 146,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 15969.82,
+    "error": null
+  },
+  {
+    "id": "it_incident_001",
+    "question": "What are examples of security incidents?",
+    "expected_chunk_ids": [
+      33
+    ],
+    "retrieved_chunk_ids": [
+      33,
+      31,
+      177
+    ],
+    "answer": "Examples of security incidents include unauthorized access, suspected data exposure, malware activity, or compromised accounts. [Source 1]",
+    "sources": [
+      {
+        "document_id": 23,
+        "chunk_id": 33,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 168,
+        "chunk_id": 177,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 17919.45,
+    "error": null
+  },
+  {
+    "id": "it_incident_002",
+    "question": "Who investigates reported security incidents?",
+    "expected_chunk_ids": [
+      33
+    ],
+    "retrieved_chunk_ids": [
+      33,
+      31,
+      158
+    ],
+    "answer": "The IT security team investigates reported security incidents. [Source 1]",
+    "sources": [
+      {
+        "document_id": 23,
+        "chunk_id": 33,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 149,
+        "chunk_id": 158,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 7886.1,
+    "error": null
+  },
+  {
+    "id": "it_incident_003",
+    "question": "What information should employees provide during an incident investigation?",
+    "expected_chunk_ids": [
+      33
+    ],
+    "retrieved_chunk_ids": [
+      33,
+      31,
+      25
+    ],
+    "answer": "Employees should provide relevant information about the incident when requested by the IT security team. [Source 1]",
+    "sources": [
+      {
+        "document_id": 23,
+        "chunk_id": 33,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 15,
+        "chunk_id": 25,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 15665.37,
+    "error": null
+  },
+  {
+    "id": "ambiguous_001",
+    "question": "What approval is required for remote work?",
+    "expected_chunk_ids": [
+      27
+    ],
+    "retrieved_chunk_ids": [
+      27,
+      167,
+      176
+    ],
+    "answer": "Remote work requires manager approval before an employee works remotely. [Source 1]",
+    "sources": [
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 158,
+        "chunk_id": 167,
+        "rank": null
+      },
+      {
+        "document_id": 167,
+        "chunk_id": 176,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 14220.85,
+    "error": null
+  },
+  {
+    "id": "ambiguous_002",
+    "question": "Who reviews remote work requests?",
+    "expected_chunk_ids": [
+      27
+    ],
+    "retrieved_chunk_ids": [
+      27,
+      32,
+      181
+    ],
+    "answer": "Remote work requests are reviewed by managers. [Source 1]",
+    "sources": [
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 172,
+        "chunk_id": 181,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 18403.8,
+    "error": null
+  },
+  {
+    "id": "ambiguous_003",
+    "question": "What should employees submit with their request?",
+    "expected_chunk_ids": [
+      28,
+      29
+    ],
+    "retrieved_chunk_ids": [],
+    "answer": "",
+    "sources": [],
+    "should_clarify": true,
+    "latency_ms": 8670.79,
+    "error": null
+  },
+  {
+    "id": "ambiguous_004",
+    "question": "Who is responsible for security-related issues?",
+    "expected_chunk_ids": [
+      31,
+      33
+    ],
+    "retrieved_chunk_ids": [],
+    "answer": "",
+    "sources": [],
+    "should_clarify": true,
+    "latency_ms": 12276.53,
+    "error": null
+  },
+  {
+    "id": "ambiguous_005",
+    "question": "What happens when access is not authorized?",
+    "expected_chunk_ids": [
+      32
+    ],
+    "retrieved_chunk_ids": [
+      32,
+      31,
+      33
+    ],
+    "answer": "Unauthorized access is prohibited; employees must not attempt to use systems or information they are not authorized to access. If unauthorized access occurs, it is treated as a security incident that should be reported to the IT security team and documented according to the organization’s procedures. [Source 1] [Source 3]",
+    "sources": [
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
+      },
+      {
+        "document_id": 21,
+        "chunk_id": 31,
+        "rank": null
+      },
+      {
+        "document_id": 23,
+        "chunk_id": 33,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 21369.74,
+    "error": null
+  },
+  {
+    "id": "ambiguous_006",
+    "question": "What approval requirements apply to remote work, travel, and expenses?",
+    "expected_chunk_ids": [
+      27,
+      30,
+      28
+    ],
+    "retrieved_chunk_ids": [
+      27,
+      30,
+      28
+    ],
+    "answer": "- Remote work: Employees must obtain manager approval before working remotely, submitting the request through the approved remote‑work process. [Source 1]  \n- Travel: Business travel must be approved by a manager before the employee makes any travel arrangements. [Source 2]  \n- Expenses: Employees must submit expense claims through the approved expense‑management system, and managers must review and approve those claims. [Source 3]",
+    "sources": [
+      {
+        "document_id": 17,
+        "chunk_id": 27,
+        "rank": null
+      },
+      {
+        "document_id": 20,
+        "chunk_id": 30,
+        "rank": null
+      },
+      {
+        "document_id": 18,
+        "chunk_id": 28,
+        "rank": null
+      }
+    ],
+    "should_clarify": false,
+    "latency_ms": 13207.77,
+    "error": null
+  }
+]
