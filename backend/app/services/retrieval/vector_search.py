@@ -120,7 +120,7 @@ class VectorSearch:
                 WHERE document_chunks.search_vector @@
                     plainto_tsquery('english', :query)
                 {metadata_filter}
-                ORDER BY rank DESC
+                ORDER BY rank DESC, document_chunks.id DESC
                 LIMIT :limit
                 """
             )

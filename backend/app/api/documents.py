@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.document import Document
 from app.services.ingestion.ingestion_service import ingestion_service
-
+from app.services.document_service import document_service
 
 
 router = APIRouter(
@@ -133,3 +133,57 @@ def upload_document(
 
     finally:
         file.file.close()
+
+
+@router.get("")
+def list_documents(
+    organization_id: int,
+    uploaded_by: Optional[int] = None,
+    db: Session = Depends(get_db),
+):
+    documents = document_service.list_documents(
+        db=db,
+        organization_id=organization_id,
+        uploaded_by=uploaded_by,
+    )
+
+    return [
+        {
+            "id": document.id,
+            "title": document.title,
+            "source_type": document.source_type,
+            "source_name": document.source_name,
+            "status": document.status,
+            "metadata": document.document_metadata,
+            "created_at": document.created_at.isoformat(),
+            "updated_at": document.updated_at.isoformat(),
+        }
+        for document in documents
+    ]
+
+@router.get("/{document_id}")
+def get_document(
+    document_id: int,
+    db: Session = Depends(get_db),
+):
+    document = document_service.get_document(
+        db=db,
+        document_id=document_id,
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Document not found.",
+        )
+
+    return {
+        "id": document.id,
+        "title": document.title,
+        "source_type": document.source_type,
+        "source_name": document.source_name,
+        "status": document.status,
+        "metadata": document.document_metadata,
+        "created_at": document.created_at.isoformat(),
+        "updated_at": document.updated_at.isoformat(),
+    }

@@ -27,9 +27,6 @@ from app.services.rag.prompts.rag_prompt import (
     rag_prompt_builder,
 )
 
-from app.services.llm.groq_client import (
-    groq_client,
-)
 
 from app.services.retrieval.retrieval_pipeline import (
     retrieval_pipeline,
@@ -59,7 +56,15 @@ from app.services.ambiguity.clarification_resolver import (
 )
 from app.services.rag.citation_validator import citation_validator
 from app.core.config import settings
-
+from app.services.langchain.generation import (
+    langchain_generation_service,
+)
+from app.services.llm.groq_client import (
+    groq_client,
+)
+from app.services.langchain.prompt import (
+    enterprise_rag_prompt,
+)
 
 class RAGService:
 
@@ -285,12 +290,15 @@ class RAGService:
                 sources=[],
             )
 
-        prompt = rag_prompt_builder.build(
-            question=question,
-            context=context,
-        )
+        prompt = enterprise_rag_prompt.build()
 
-        answer = groq_client.chat(prompt)
+        answer = langchain_generation_service.generate_from_prompt(
+            prompt=prompt,
+            variables={
+                "question": question,
+                "context": context,
+            },
+        )
 
         citation_validation = citation_validator.validate(
             answer=answer,

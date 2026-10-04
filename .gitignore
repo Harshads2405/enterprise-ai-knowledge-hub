@@ -47,3 +47,6 @@ finetuning/evaluation/*
 backend/storage/
 
 frontend/tsconfig.tsbuildinfo
+
+.venv-agents/
+frontend/tsconfig.tsbuildinfo

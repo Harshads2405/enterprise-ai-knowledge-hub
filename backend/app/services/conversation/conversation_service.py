@@ -15,7 +15,6 @@ class ConversationService:
         user_id: int,
         title: Optional[str] = None,
     ) -> Conversation:
-
         conversation = Conversation(
             organization_id=organization_id,
             user_id=user_id,
@@ -33,7 +32,6 @@ class ConversationService:
         db: Session,
         conversation_id: int,
     ) -> Optional[Conversation]:
-
         return (
             db.query(Conversation)
             .filter(Conversation.id == conversation_id)
@@ -48,7 +46,6 @@ class ConversationService:
         content: str,
         metadata: Optional[dict] = None,
     ) -> Message:
-
         message = Message(
             conversation_id=conversation_id,
             role=role,
@@ -67,11 +64,32 @@ class ConversationService:
         db: Session,
         conversation_id: int,
     ) -> List[Message]:
-
         return (
             db.query(Message)
             .filter(Message.conversation_id == conversation_id)
-            .order_by(Message.created_at.asc(), Message.id.asc())
+            .order_by(
+                Message.created_at.asc(),
+                Message.id.asc(),
+            )
+            .all()
+        )
+
+    def list_conversations(
+        self,
+        db: Session,
+        organization_id: int,
+        user_id: int,
+    ) -> List[Conversation]:
+        return (
+            db.query(Conversation)
+            .filter(
+                Conversation.organization_id == organization_id,
+                Conversation.user_id == user_id,
+            )
+            .order_by(
+                Conversation.updated_at.desc(),
+                Conversation.id.desc(),
+            )
             .all()
         )
 
