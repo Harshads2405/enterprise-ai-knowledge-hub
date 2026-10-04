@@ -56,8 +56,16 @@ export default function MessageList({
       {/* Loading state */}
       {isLoading && (
         <div className="message-row message-row-assistant">
-          <div className="message-bubble message-assistant">
-            <p>Thinking...</p>
+          <div className="message-bubble message-assistant chat-loading">
+            <span className="chat-loading-label">
+              Copilot is thinking
+            </span>
+
+            <span className="chat-loading-dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </div>
         </div>
       )}
