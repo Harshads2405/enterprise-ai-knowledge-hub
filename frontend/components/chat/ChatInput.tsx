@@ -14,18 +14,14 @@ export default function ChatInput({
   onSubmit,
 }: ChatInputProps) {
   return (
-    <form
-      className="chat-input-area"
-      onSubmit={onSubmit}
-    >
+    <form className="chat-input-area" onSubmit={onSubmit}>
       <input
         type="text"
         value={input}
-        onChange={(event) =>
-          onInputChange(event.target.value)
-        }
+        onChange={(event) => onInputChange(event.target.value)}
         placeholder="Ask your enterprise knowledge assistant..."
         disabled={isLoading}
+        aria-label="Ask the enterprise knowledge assistant"
       />
 
       <button
