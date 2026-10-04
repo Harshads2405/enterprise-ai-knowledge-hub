@@ -14,6 +14,15 @@ export default function Sidebar() {
       </div>
 
       <SidebarNav />
+
+      <div className="app-sidebar-footer">
+        <span className="app-sidebar-footer-label">AI Copilot</span>
+
+        <span className="app-sidebar-footer-status">
+          <span className="app-sidebar-footer-dot" aria-hidden="true" />
+          System ready
+        </span>
+      </div>
     </aside>
   );
 }
