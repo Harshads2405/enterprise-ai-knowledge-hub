@@ -990,15 +990,16 @@ a {
     font-size: 18px;
   }
 
-  .app-sidebar-nav {
-    flex-direction: row;
-    gap: 8px;
-  }
+.app-sidebar-nav {
+  flex-direction: row;
+  gap: 8px;
+  overflow-x: auto;
+}
 
-  .app-sidebar-nav-item {
-    flex: 1;
-    justify-content: center;
-  }
+.app-sidebar-nav-item {
+  flex: 0 0 auto;
+  justify-content: center;
+}
 
   .app-shell-content {
     min-height: 0;
