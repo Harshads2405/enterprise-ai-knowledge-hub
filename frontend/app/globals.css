@@ -484,13 +484,21 @@ a {
 
   .conversation-sidebar {
     flex: 0 0 auto;
-    max-height: 240px;
+    max-height: 210px;
     border-right: none;
     border-bottom: 1px solid var(--border);
   }
 
+  .conversation-sidebar-header {
+    padding: 14px 16px;
+  }
+
+  .conversation-sidebar-header h2 {
+    margin-bottom: 12px;
+  }
+
   .conversation-list {
-    max-height: 140px;
+    max-height: 110px;
   }
 
   .chat-main {
