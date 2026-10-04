@@ -932,6 +932,12 @@ a {
   color: var(--foreground);
 }
 
+.app-sidebar-nav-item-active {
+  border-color: var(--border);
+  background: var(--surface-soft);
+  color: var(--foreground);
+}
+
 .app-shell-content {
   min-width: 0;
   min-height: 100vh;
