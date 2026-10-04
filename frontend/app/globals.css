@@ -1585,3 +1585,33 @@ a {
     transform: translateY(-2px);
   }
 }
+
+.chat-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-input-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 80px;
+}
+
+.chat-input-counter {
+  position: absolute;
+  right: 12px;
+  bottom: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.chat-input-counter-warning {
+  color: #fcd34d;
+}
+
+.chat-input-counter-error {
+  color: var(--danger-text);
+}
