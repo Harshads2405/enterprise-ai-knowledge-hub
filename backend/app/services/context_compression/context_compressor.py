@@ -83,6 +83,13 @@ class ContextCompressor:
             if not sentences:
                 continue
 
+            # Preserve small, highly relevant chunks instead of aggressively
+            # removing sentences that may contain related policy requirements.
+            if len(sentences) <= self.max_sentences * 3:
+                result.compressed_content = " ".join(sentences)
+                compressed_results.append(result)
+                continue
+
             scored_sentences = self._score_sentences(
                 query_embedding=query_embedding,
                 sentences=sentences,
@@ -111,6 +118,5 @@ class ContextCompressor:
                 compressed_results.append(result)
 
         return compressed_results
-
 
 context_compressor = ContextCompressor()

@@ -29,7 +29,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 11040.47,
+    "latency_ms": 8387.44,
     "error": null
   },
   {
@@ -43,7 +43,7 @@
       16,
       407
     ],
-    "answer": "Annual leave should be requested through the approved leave request process before the planned absence. [Source 1] [Source 2] [Source 3]",
+    "answer": "Annual leave should be requested through the approved internal process, typically by submitting a leave request to the employee’s reporting manager via the company’s designated leave system. [Source 1] [Source 3]",
     "sources": [
       {
         "document_id": 16,
@@ -62,7 +62,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 12385.49,
+    "latency_ms": 9714.77,
     "error": null
   },
   {
@@ -72,12 +72,17 @@
       26
     ],
     "retrieved_chunk_ids": [
+      16,
       407,
-      26,
-      16
+      26
     ],
-    "answer": "Employees are entitled to 20 days of annual leave per year. [Source 2] [Source 3]",
+    "answer": "Employees are entitled to 20 days of annual leave per year. [Source 1] [Source 3]",
     "sources": [
+      {
+        "document_id": 10,
+        "chunk_id": 16,
+        "rank": null
+      },
       {
         "document_id": 398,
         "chunk_id": 407,
@@ -87,15 +92,10 @@
         "document_id": 16,
         "chunk_id": 26,
         "rank": null
-      },
-      {
-        "document_id": 10,
-        "chunk_id": 16,
-        "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 9225.94,
+    "latency_ms": 6222.65,
     "error": null
   },
   {
@@ -109,7 +109,7 @@
       407,
       16
     ],
-    "answer": "I don't have enough information in the provided knowledge base to answer that.",
+    "answer": "Managers should approve an annual leave request. [Source 1]",
     "sources": [
       {
         "document_id": 16,
@@ -128,7 +128,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 5472.6,
+    "latency_ms": 5684.4,
     "error": null
   },
   {
@@ -142,7 +142,7 @@
       25,
       31
     ],
-    "answer": "Yes—employees may work remotely when their role and business requirements permit remote work, as stated in the Enterprise Remote Work Policy. [Source 1]",
+    "answer": "Yes—employees may work remotely when their role and business requirements permit remote work, subject to the approved remote‑work request process and manager approval. [Source 1]",
     "sources": [
       {
         "document_id": 17,
@@ -161,7 +161,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 7224.19,
+    "latency_ms": 7690.63,
     "error": null
   },
   {
@@ -175,7 +175,7 @@
       167,
       176
     ],
-    "answer": "Remote work requires manager approval before an employee can work remotely. [Source 1]",
+    "answer": "Employees must obtain manager approval before working remotely. [Source 1]",
     "sources": [
       {
         "document_id": 17,
@@ -194,7 +194,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 5722.59,
+    "latency_ms": 20332.56,
     "error": null
   },
   {
@@ -227,7 +227,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 7063.09,
+    "latency_ms": 18194.88,
     "error": null
   },
   {
@@ -260,7 +260,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 22121.14,
+    "latency_ms": 19464.37,
     "error": null
   },
   {
@@ -293,7 +293,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 19043.46,
+    "latency_ms": 17996.74,
     "error": null
   },
   {
@@ -304,8 +304,8 @@
     ],
     "retrieved_chunk_ids": [
       25,
-      32,
-      29
+      29,
+      32
     ],
     "answer": "Repeated attendance issues may be reviewed by the employee’s manager and the appropriate HR team. [Source 1]",
     "sources": [
@@ -315,18 +315,18 @@
         "rank": null
       },
       {
-        "document_id": 22,
-        "chunk_id": 32,
+        "document_id": 19,
+        "chunk_id": 29,
         "rank": null
       },
       {
-        "document_id": 19,
-        "chunk_id": 29,
+        "document_id": 22,
+        "chunk_id": 32,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 21605.61,
+    "latency_ms": 21927.37,
     "error": null
   },
   {
@@ -338,9 +338,9 @@
     "retrieved_chunk_ids": [
       27,
       32,
-      31
+      25
     ],
-    "answer": "The Enterprise Remote Work Policy states that employees may work remotely when their role and business requirements permit remote work, and that employees working remotely are expected to remain available during their agreed working hours. This policy applies to employees who are eligible for remote work. [Source 1]",
+    "answer": "Employees may work remotely when their role and business requirements permit remote work. Remote work requests must be submitted through the approved remote work request process, and employees should obtain manager approval before working remotely. Managers may consider business needs, team collaboration, employee responsibilities, and operational requirements when reviewing requests. Employees working remotely are expected to remain available during their agreed working hours. This policy applies to employees who are eligible for remote work. [Source 1]",
     "sources": [
       {
         "document_id": 17,
@@ -353,13 +353,13 @@
         "rank": null
       },
       {
-        "document_id": 21,
-        "chunk_id": 31,
+        "document_id": 15,
+        "chunk_id": 25,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 13602.21,
+    "latency_ms": 22598.96,
     "error": null
   },
   {
@@ -370,10 +370,10 @@
     ],
     "retrieved_chunk_ids": [
       25,
-      28,
-      183
+      183,
+      156
     ],
-    "answer": "The attendance policy requires employees to follow their assigned working schedule, maintain regular attendance, record attendance using the organization’s approved attendance system, and ensure that their attendance records are accurate. [Source 1]",
+    "answer": "The attendance policy requires employees to follow their assigned working schedule, record attendance using the organization’s approved system, inform their manager if they cannot attend as scheduled, and keep accurate attendance records. Repeated attendance issues may be reviewed by the employee’s manager and the appropriate HR team. [Source 1]",
     "sources": [
       {
         "document_id": 15,
@@ -381,18 +381,18 @@
         "rank": null
       },
       {
-        "document_id": 18,
-        "chunk_id": 28,
+        "document_id": 174,
+        "chunk_id": 183,
         "rank": null
       },
       {
-        "document_id": 174,
-        "chunk_id": 183,
+        "document_id": 147,
+        "chunk_id": 156,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 14128.42,
+    "latency_ms": 16853.2,
     "error": null
   },
   {
@@ -425,7 +425,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 10619.91,
+    "latency_ms": 21577.28,
     "error": null
   },
   {
@@ -436,10 +436,10 @@
     ],
     "retrieved_chunk_ids": [
       28,
-      30,
-      29
+      29,
+      30
     ],
-    "answer": "Expense claims must include valid receipts and supporting documentation. [Source 1]",
+    "answer": "Expense claims must include valid receipts and supporting documentation. [Source 1] [Source 2]",
     "sources": [
       {
         "document_id": 18,
@@ -447,18 +447,18 @@
         "rank": null
       },
       {
-        "document_id": 20,
-        "chunk_id": 30,
+        "document_id": 19,
+        "chunk_id": 29,
         "rank": null
       },
       {
-        "document_id": 19,
-        "chunk_id": 29,
+        "document_id": 20,
+        "chunk_id": 30,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 18255.99,
+    "latency_ms": 14524.35,
     "error": null
   },
   {
@@ -472,7 +472,7 @@
       28,
       30
     ],
-    "answer": "Eligible business expenses may be reimbursed when they are submitted according to the approved reimbursement process, including travel expenses that comply with the company’s expense limits. [Source 1] [Source 3]",
+    "answer": "Eligible business expenses may be reimbursed when they are submitted through the approved reimbursement process with the required receipts and supporting documents. This includes travel expenses that have been approved beforehand, are booked through the company’s approved travel booking process, comply with applicable expense limits, and are submitted with receipts after the trip. [Source 1] [Source 3]",
     "sources": [
       {
         "document_id": 19,
@@ -491,7 +491,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 19046.38,
+    "latency_ms": 14534.35,
     "error": null
   },
   {
@@ -503,9 +503,9 @@
     "retrieved_chunk_ids": [
       29,
       32,
-      28
+      30
     ],
-    "answer": "Reimbursement requests are reviewed by the appropriate manager or the finance team. [Source 1]",
+    "answer": "Reimbursement requests are reviewed by the appropriate manager or the finance team. [Source 1]",
     "sources": [
       {
         "document_id": 19,
@@ -518,13 +518,13 @@
         "rank": null
       },
       {
-        "document_id": 18,
-        "chunk_id": 28,
+        "document_id": 20,
+        "chunk_id": 30,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 15974.13,
+    "latency_ms": 18613.45,
     "error": null
   },
   {
@@ -538,7 +538,7 @@
       158,
       167
     ],
-    "answer": "Yes, business travel must be approved before an employee makes travel arrangements. [Source 1]",
+    "answer": "Yes. Business travel must be approved before an employee makes travel arrangements. [Source 1]",
     "sources": [
       {
         "document_id": 20,
@@ -557,7 +557,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 10135.12,
+    "latency_ms": 19010.2,
     "error": null
   },
   {
@@ -568,10 +568,10 @@
     ],
     "retrieved_chunk_ids": [
       30,
-      28,
+      29,
       27
     ],
-    "answer": "Employees should book business travel using the company’s approved travel booking process, and they must obtain approval before making any arrangements. [Source 1]",
+    "answer": "Employees should use the company’s approved travel booking process for business trips and obtain approval before making any travel arrangements. [Source 1]",
     "sources": [
       {
         "document_id": 20,
@@ -579,8 +579,8 @@
         "rank": null
       },
       {
-        "document_id": 18,
-        "chunk_id": 28,
+        "document_id": 19,
+        "chunk_id": 29,
         "rank": null
       },
       {
@@ -590,7 +590,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 9517.69,
+    "latency_ms": 10311.21,
     "error": null
   },
   {
@@ -604,7 +604,7 @@
       32,
       33
     ],
-    "answer": "Employees must protect company systems, applications, and data from unauthorized access by using only authorized accounts and approved devices, and by limiting access to sensitive information to employees who are authorized based on business requirements. [Source 1]",
+    "answer": "Employees should protect company systems and data by:\n\n- Using strong passwords and never sharing them with others. [Source 1]  \n- Accessing systems only with authorized accounts and approved devices. [Source 1]  \n- Reporting any suspected security incidents to the IT security team promptly. [Source 1]  \n- Ensuring that access to sensitive information is limited to authorized employees based on business requirements. [Source 1]",
     "sources": [
       {
         "document_id": 21,
@@ -623,7 +623,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 23558.96,
+    "latency_ms": 14871.31,
     "error": null
   },
   {
@@ -637,7 +637,7 @@
       32,
       27
     ],
-    "answer": "No, employees must not share their passwords with other individuals. [Source 1]",
+    "answer": "No – employees must not share their passwords with other individuals. [Source 1]",
     "sources": [
       {
         "document_id": 21,
@@ -656,7 +656,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 21601.97,
+    "latency_ms": 26487.13,
     "error": null
   },
   {
@@ -670,7 +670,7 @@
       31,
       25
     ],
-    "answer": "Employees should report suspected security incidents to the IT security team as soon as possible and provide any relevant information when requested. [Source 1] [Source 2]",
+    "answer": "Employees should report suspected security incidents to the IT security team as soon as possible and provide any relevant information when requested by the team. [Source 1] [Source 2]",
     "sources": [
       {
         "document_id": 23,
@@ -689,7 +689,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 17507.44,
+    "latency_ms": 17513.69,
     "error": null
   },
   {
@@ -701,9 +701,9 @@
     "retrieved_chunk_ids": [
       32,
       31,
-      28
+      167
     ],
-    "answer": "Access to company systems is granted based on an employee’s job responsibilities, with managers requesting access through the approved access request process and employees using only authorized accounts and approved devices. [Source 1] [Source 2]",
+    "answer": "Access to company systems is granted through an approved access request process: managers submit requests based on an employee’s job responsibilities, the IT team reviews and provisions the approved requests, and administrator approval is required for the access to be granted. [Source 1] [Source 3]",
     "sources": [
       {
         "document_id": 22,
@@ -716,13 +716,13 @@
         "rank": null
       },
       {
-        "document_id": 18,
-        "chunk_id": 28,
+        "document_id": 158,
+        "chunk_id": 167,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 13110.89,
+    "latency_ms": 14624.4,
     "error": null
   },
   {
@@ -734,7 +734,7 @@
     "retrieved_chunk_ids": [
       32,
       27,
-      154
+      31
     ],
     "answer": "Managers request system access for employees through the approved access request process. [Source 1]",
     "sources": [
@@ -749,13 +749,13 @@
         "rank": null
       },
       {
-        "document_id": 145,
-        "chunk_id": 154,
+        "document_id": 21,
+        "chunk_id": 31,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 16893.21,
+    "latency_ms": 19570.85,
     "error": null
   },
   {
@@ -788,7 +788,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 15969.82,
+    "latency_ms": 13478.18,
     "error": null
   },
   {
@@ -821,7 +821,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 17919.45,
+    "latency_ms": 17483.07,
     "error": null
   },
   {
@@ -833,7 +833,7 @@
     "retrieved_chunk_ids": [
       33,
       31,
-      158
+      176
     ],
     "answer": "The IT security team investigates reported security incidents. [Source 1]",
     "sources": [
@@ -848,13 +848,13 @@
         "rank": null
       },
       {
-        "document_id": 149,
-        "chunk_id": 158,
+        "document_id": 167,
+        "chunk_id": 176,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 7886.1,
+    "latency_ms": 18796.58,
     "error": null
   },
   {
@@ -866,9 +866,9 @@
     "retrieved_chunk_ids": [
       33,
       31,
-      25
+      28
     ],
-    "answer": "Employees should provide relevant information about the incident when requested by the IT security team. [Source 1]",
+    "answer": "Employees should provide **relevant information about the incident when requested by the IT security team**. [Source 1]",
     "sources": [
       {
         "document_id": 23,
@@ -881,13 +881,13 @@
         "rank": null
       },
       {
-        "document_id": 15,
-        "chunk_id": 25,
+        "document_id": 18,
+        "chunk_id": 28,
         "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 15665.37,
+    "latency_ms": 14046.84,
     "error": null
   },
   {
@@ -901,7 +901,7 @@
       167,
       176
     ],
-    "answer": "Remote work requires manager approval before an employee works remotely. [Source 1]",
+    "answer": "Remote work requires manager approval before an employee begins working remotely. [Source 1]",
     "sources": [
       {
         "document_id": 17,
@@ -920,7 +920,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 14220.85,
+    "latency_ms": 19347.29,
     "error": null
   },
   {
@@ -934,7 +934,7 @@
       32,
       181
     ],
-    "answer": "Remote work requests are reviewed by managers. [Source 1]",
+    "answer": "Managers review remote work requests. [Source 1]",
     "sources": [
       {
         "document_id": 17,
@@ -953,7 +953,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 18403.8,
+    "latency_ms": 19113.55,
     "error": null
   },
   {
@@ -967,7 +967,7 @@
     "answer": "",
     "sources": [],
     "should_clarify": true,
-    "latency_ms": 8670.79,
+    "latency_ms": 4582.1,
     "error": null
   },
   {
@@ -981,7 +981,7 @@
     "answer": "",
     "sources": [],
     "should_clarify": true,
-    "latency_ms": 12276.53,
+    "latency_ms": 7963.8,
     "error": null
   },
   {
@@ -991,17 +991,12 @@
       32
     ],
     "retrieved_chunk_ids": [
-      32,
       31,
-      33
+      33,
+      32
     ],
-    "answer": "Unauthorized access is prohibited; employees must not attempt to use systems or information they are not authorized to access. If unauthorized access occurs, it is treated as a security incident that should be reported to the IT security team and documented according to the organization’s procedures. [Source 1] [Source 3]",
+    "answer": "Employees must not attempt to access systems or information that they are not authorized to use. [Source 3]",
     "sources": [
-      {
-        "document_id": 22,
-        "chunk_id": 32,
-        "rank": null
-      },
       {
         "document_id": 21,
         "chunk_id": 31,
@@ -1011,10 +1006,15 @@
         "document_id": 23,
         "chunk_id": 33,
         "rank": null
+      },
+      {
+        "document_id": 22,
+        "chunk_id": 32,
+        "rank": null
       }
     ],
     "should_clarify": false,
-    "latency_ms": 21369.74,
+    "latency_ms": 30679.08,
     "error": null
   },
   {
@@ -1030,7 +1030,7 @@
       30,
       28
     ],
-    "answer": "- Remote work: Employees must obtain manager approval before working remotely, submitting the request through the approved remote‑work process. [Source 1]  \n- Travel: Business travel must be approved by a manager before the employee makes any travel arrangements. [Source 2]  \n- Expenses: Employees must submit expense claims through the approved expense‑management system, and managers must review and approve those claims. [Source 3]",
+    "answer": "- **Remote work**: Employees must obtain manager approval before working remotely. Remote work requests are submitted through the approved remote‑work request process. [Source 1]  \n- **Business travel**: Travel must be approved before an employee makes arrangements, using the company’s approved travel booking process. [Source 2]  \n- **Business expenses**: Expense claims are submitted through the approved expense management system and must be reviewed and approved by a manager. [Source 3]",
     "sources": [
       {
         "document_id": 17,
@@ -1049,7 +1049,7 @@
       }
     ],
     "should_clarify": false,
-    "latency_ms": 13207.77,
+    "latency_ms": 7614.33,
     "error": null
   }
 ]
