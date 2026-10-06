@@ -1,0 +1,499 @@
+{
+  "summary": {
+    "total_cases": 33,
+    "faithfulness_scored_cases": 31,
+    "clarification_cases": 2,
+    "failed_cases": 0,
+    "average_faithfulness": 5.0,
+    "average_judge_latency_ms": 5301.0
+  },
+  "results": [
+    {
+      "id": "hr_leave_001",
+      "question": "How many annual leave days do employees get?",
+      "generated_answer": "Employees are entitled to 20 days of annual leave per year. [Source 1] [Source 2]",
+      "retrieved_chunk_ids": [
+        26,
+        16,
+        407
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer states 20 days of annual leave per year, which is directly supported by Source 1 and Source 2.",
+      "error": null,
+      "judge_latency_ms": 848.67
+    },
+    {
+      "id": "hr_leave_002",
+      "question": "How should annual leave be requested?",
+      "generated_answer": "Annual leave should be requested through the approved internal process, typically by submitting a leave request to the employee’s reporting manager via the company’s designated leave system. [Source 1] [Source 3]",
+      "retrieved_chunk_ids": [
+        26,
+        16,
+        407
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer accurately reflects the information in the retrieved sources.",
+      "error": null,
+      "judge_latency_ms": 577.04
+    },
+    {
+      "id": "hr_leave_003",
+      "question": "What is the employee annual leave entitlement?",
+      "generated_answer": "Employees are entitled to 20 days of annual leave per year. [Source 1] [Source 3]",
+      "retrieved_chunk_ids": [
+        16,
+        407,
+        26
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer states that employees are entitled to 20 days of annual leave per year, which is directly supported by Source 1 and Source 3, both of which specify a 20‑day entitlement. No unsupported claims are made.",
+      "error": null,
+      "judge_latency_ms": 657.11
+    },
+    {
+      "id": "hr_leave_004",
+      "question": "Who should approve an annual leave request?",
+      "generated_answer": "Managers should approve an annual leave request. [Source 1]",
+      "retrieved_chunk_ids": [
+        26,
+        407,
+        16
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The retrieved context explicitly states that managers are responsible for reviewing and approving leave requests, directly supporting the claim that managers should approve an annual leave request.",
+      "error": null,
+      "judge_latency_ms": 745.2
+    },
+    {
+      "id": "hr_remote_001",
+      "question": "Can employees work remotely?",
+      "generated_answer": "Yes—employees may work remotely when their role and business requirements permit remote work, subject to the approved remote‑work request process and manager approval. [Source 1]",
+      "retrieved_chunk_ids": [
+        27,
+        25,
+        31
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer accurately reflects the policy stated in Source 1, which explicitly says employees may work remotely when role and business requirements permit, and that remote work requests require approval through the approved process and manager approval.",
+      "error": null,
+      "judge_latency_ms": 880.06
+    },
+    {
+      "id": "hr_remote_002",
+      "question": "What approval is required for remote work?",
+      "generated_answer": "Employees must obtain manager approval before working remotely. [Source 1]",
+      "retrieved_chunk_ids": [
+        27,
+        167,
+        176
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer correctly states that manager approval is required for remote work, which is directly supported by Source 1.",
+      "error": null,
+      "judge_latency_ms": 733.17
+    },
+    {
+      "id": "hr_remote_003",
+      "question": "What factors are considered when reviewing remote work requests?",
+      "generated_answer": "Managers may consider business needs, team collaboration, employee responsibilities, and operational requirements when reviewing remote work requests. [Source 1]",
+      "retrieved_chunk_ids": [
+        27,
+        32,
+        182
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer directly cites the policy text that lists the factors managers may consider when reviewing remote work requests, matching the retrieved context.",
+      "error": null,
+      "judge_latency_ms": 11123.1
+    },
+    {
+      "id": "hr_attendance_001",
+      "question": "How should employees record their attendance?",
+      "generated_answer": "Employees should record their attendance using the organization’s approved attendance system. [Source 1]",
+      "retrieved_chunk_ids": [
+        25,
+        28,
+        33
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer directly quotes the policy statement from Source 1, which explicitly states that employees should record attendance using the approved system.",
+      "error": null,
+      "judge_latency_ms": 5123.69
+    },
+    {
+      "id": "hr_attendance_002",
+      "question": "What should an employee do if they cannot attend work?",
+      "generated_answer": "If an employee cannot attend work as scheduled, they should inform their manager according to the applicable absence reporting process. [Source 1]",
+      "retrieved_chunk_ids": [
+        25,
+        27,
+        143
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer directly quotes the statement from Source 1, which explicitly says that an employee who cannot attend work should inform their manager according to the applicable absence reporting process. No unsupported claims are made.",
+      "error": null,
+      "judge_latency_ms": 923.72
+    },
+    {
+      "id": "hr_attendance_003",
+      "question": "Who may review repeated attendance issues?",
+      "generated_answer": "Repeated attendance issues may be reviewed by the employee’s manager and the appropriate HR team. [Source 1]",
+      "retrieved_chunk_ids": [
+        25,
+        29,
+        32
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The generated answer directly quotes the statement from Source 1, which explicitly says repeated attendance issues may be reviewed by the employee’s manager and the appropriate HR team.",
+      "error": null,
+      "judge_latency_ms": 11245.97
+    },
+    {
+      "id": "hr_mixed_001",
+      "question": "What is the remote work policy?",
+      "generated_answer": "Employees may work remotely when their role and business requirements permit remote work. Remote work requests must be submitted through the approved remote work request process, and employees should obtain manager approval before working remotely. Managers may consider business needs, team collaboration, employee responsibilities, and operational requirements when reviewing requests. Employees working remotely are expected to remain available during their agreed working hours. This policy applies to employees who are eligible for remote work. [Source 1]",
+      "retrieved_chunk_ids": [
+        27,
+        32,
+        25
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "All claims in the answer are directly supported by the content of Source 1, which contains the remote work policy details. No unsupported statements are present.",
+      "error": null,
+      "judge_latency_ms": 4059.85
+    },
+    {
+      "id": "hr_mixed_002",
+      "question": "What is the attendance policy?",
+      "generated_answer": "The attendance policy requires employees to follow their assigned working schedule, record attendance using the organization’s approved system, inform their manager if they cannot attend as scheduled, and keep accurate attendance records. Repeated attendance issues may be reviewed by the employee’s manager and the appropriate HR team. [Source 1]",
+      "retrieved_chunk_ids": [
+        25,
+        183,
+        156
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "All claims in the generated answer are directly supported by the content of Source 1; no unsupported statements are present.",
+      "error": null,
+      "judge_latency_ms": 5224.75
+    },
+    {
+      "id": "finance_expense_001",
+      "question": "How should employees submit business expense claims?",
+      "generated_answer": "Employees must submit business expense claims through the approved expense management system, ensuring the claims include valid receipts and supporting documentation and that the information is accurate. [Source 1]",
+      "retrieved_chunk_ids": [
+        28,
+        29,
+        30
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer accurately reflects the information in Source 1, stating that employees must use the approved expense management system, include valid receipts and supporting documentation, and submit accurate information.",
+      "error": null,
+      "judge_latency_ms": 833.59
+    },
+    {
+      "id": "finance_expense_002",
+      "question": "What documents are required for an expense claim?",
+      "generated_answer": "Expense claims must include valid receipts and supporting documentation. [Source 1] [Source 2]",
+      "retrieved_chunk_ids": [
+        28,
+        29,
+        30
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer accurately reflects the retrieved context, stating that expense claims require valid receipts and supporting documentation, which is explicitly mentioned in Source 1 and Source 2.",
+      "error": null,
+      "judge_latency_ms": 699.3
+    },
+    {
+      "id": "finance_reimbursement_001",
+      "question": "Which business expenses can be reimbursed?",
+      "generated_answer": "Eligible business expenses may be reimbursed when they are submitted through the approved reimbursement process with the required receipts and supporting documents. This includes travel expenses that have been approved beforehand, are booked through the company’s approved travel booking process, comply with applicable expense limits, and are submitted with receipts after the trip. [Source 1] [Source 3]",
+      "retrieved_chunk_ids": [
+        29,
+        28,
+        30
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "All claims in the answer are directly supported by the retrieved sources: the reimbursement policy states eligible expenses require receipts and an approved process, and the travel policy details the conditions for reimbursable travel expenses.",
+      "error": null,
+      "judge_latency_ms": 7307.53
+    },
+    {
+      "id": "finance_reimbursement_002",
+      "question": "Who reviews reimbursement requests?",
+      "generated_answer": "Reimbursement requests are reviewed by the appropriate manager or the finance team. [Source 1]",
+      "retrieved_chunk_ids": [
+        29,
+        32,
+        30
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer directly cites Source 1, which states that reimbursement requests are reviewed by the appropriate manager or finance team, fully supporting the claim.",
+      "error": null,
+      "judge_latency_ms": 6189.3
+    },
+    {
+      "id": "finance_travel_001",
+      "question": "Does business travel require approval?",
+      "generated_answer": "Yes. Business travel must be approved before an employee makes travel arrangements. [Source 1]",
+      "retrieved_chunk_ids": [
+        30,
+        158,
+        167
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer directly cites the statement from Source 1 that business travel must be approved before arrangements, which is exactly what the retrieved context provides.",
+      "error": null,
+      "judge_latency_ms": 3834.25
+    },
+    {
+      "id": "finance_travel_002",
+      "question": "How should employees book business travel?",
+      "generated_answer": "Employees should use the company’s approved travel booking process for business trips and obtain approval before making any travel arrangements. [Source 1]",
+      "retrieved_chunk_ids": [
+        30,
+        29,
+        27
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer accurately reflects the statements in Source 1: it cites the requirement for prior approval and the use of the company’s approved booking process.",
+      "error": null,
+      "judge_latency_ms": 11238.27
+    },
+    {
+      "id": "it_security_001",
+      "question": "How should employees protect company systems and data?",
+      "generated_answer": "Employees should protect company systems and data by:\n\n- Using strong passwords and never sharing them with others. [Source 1]  \n- Accessing systems only with authorized accounts and approved devices. [Source 1]  \n- Reporting any suspected security incidents to the IT security team promptly. [Source 1]  \n- Ensuring that access to sensitive information is limited to authorized employees based on business requirements. [Source 1]",
+      "retrieved_chunk_ids": [
+        31,
+        32,
+        33
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "All claims in the answer are directly supported by the retrieved context.",
+      "error": null,
+      "judge_latency_ms": 9219.11
+    },
+    {
+      "id": "it_security_002",
+      "question": "Can employees share their passwords?",
+      "generated_answer": "No – employees must not share their passwords with other individuals. [Source 1]",
+      "retrieved_chunk_ids": [
+        31,
+        32,
+        27
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer directly cites Source 1, which explicitly states that employees must not share their passwords with other individuals, fully supporting the claim.",
+      "error": null,
+      "judge_latency_ms": 6979.9
+    },
+    {
+      "id": "it_security_003",
+      "question": "What should employees do if they suspect a security incident?",
+      "generated_answer": "Employees should report suspected security incidents to the IT security team as soon as possible and provide any relevant information when requested by the team. [Source 1] [Source 2]",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        25
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer states that employees should report suspected security incidents to the IT security team promptly and provide relevant information when requested, which is directly supported by both Source 1 and Source 2. No unsupported claims are made.",
+      "error": null,
+      "judge_latency_ms": 7044.41
+    },
+    {
+      "id": "it_access_001",
+      "question": "How is access to company systems granted?",
+      "generated_answer": "Access to company systems is granted through an approved access request process: managers submit requests based on an employee’s job responsibilities, the IT team reviews and provisions the approved requests, and administrator approval is required for the access to be granted. [Source 1] [Source 3]",
+      "retrieved_chunk_ids": [
+        32,
+        31,
+        167
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "All claims in the answer are directly supported by the retrieved sources: Source 1 confirms the approved access request process involving managers and the IT team, and Source 3 confirms that administrator approval is required.",
+      "error": null,
+      "judge_latency_ms": 5044.23
+    },
+    {
+      "id": "it_access_002",
+      "question": "Who requests system access for employees?",
+      "generated_answer": "Managers request system access for employees through the approved access request process. [Source 1]",
+      "retrieved_chunk_ids": [
+        32,
+        27,
+        31
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The claim that managers request system access for employees through the approved access request process is directly stated in Source 1.",
+      "error": null,
+      "judge_latency_ms": 4875.67
+    },
+    {
+      "id": "it_access_003",
+      "question": "Who provisions approved access requests?",
+      "generated_answer": "The IT team provisions approved access requests. [Source 1]",
+      "retrieved_chunk_ids": [
+        32,
+        185,
+        146
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer directly cites Source 1, which states that the IT team is responsible for reviewing and provisioning approved access requests, fully supporting the claim.",
+      "error": null,
+      "judge_latency_ms": 11912.25
+    },
+    {
+      "id": "it_incident_001",
+      "question": "What are examples of security incidents?",
+      "generated_answer": "Examples of security incidents include unauthorized access, suspected data exposure, malware activity, or compromised accounts. [Source 1]",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        177
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer lists examples that are explicitly mentioned in Source 1.",
+      "error": null,
+      "judge_latency_ms": 6116.54
+    },
+    {
+      "id": "it_incident_002",
+      "question": "Who investigates reported security incidents?",
+      "generated_answer": "The IT security team investigates reported security incidents. [Source 1]",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        176
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The generated answer directly cites Source 1, which states that the IT security team is responsible for investigating reported security incidents, fully supporting the claim.",
+      "error": null,
+      "judge_latency_ms": 2658.77
+    },
+    {
+      "id": "it_incident_003",
+      "question": "What information should employees provide during an incident investigation?",
+      "generated_answer": "Employees should provide **relevant information about the incident when requested by the IT security team**. [Source 1]",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        28
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The generated answer directly quotes the statement from Source 1, which explicitly says employees should provide relevant information about the incident when requested by the IT security team.",
+      "error": null,
+      "judge_latency_ms": 7901.52
+    },
+    {
+      "id": "ambiguous_001",
+      "question": "What approval is required for remote work?",
+      "generated_answer": "Remote work requires manager approval before an employee begins working remotely. [Source 1]",
+      "retrieved_chunk_ids": [
+        27,
+        167,
+        176
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer states that remote work requires manager approval, which is directly supported by Source 1, which explicitly says employees should obtain manager approval before working remotely.",
+      "error": null,
+      "judge_latency_ms": 7244.59
+    },
+    {
+      "id": "ambiguous_002",
+      "question": "Who reviews remote work requests?",
+      "generated_answer": "Managers review remote work requests. [Source 1]",
+      "retrieved_chunk_ids": [
+        27,
+        32,
+        181
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The answer correctly states that managers review remote work requests, which is directly supported by Source 1.",
+      "error": null,
+      "judge_latency_ms": 7519.17
+    },
+    {
+      "id": "ambiguous_003",
+      "question": "What should employees submit with their request?",
+      "generated_answer": "",
+      "retrieved_chunk_ids": [],
+      "should_clarify": true,
+      "faithfulness": null,
+      "reason": "Faithfulness scoring skipped because the RAG system correctly requested clarification.",
+      "error": null,
+      "judge_latency_ms": null
+    },
+    {
+      "id": "ambiguous_004",
+      "question": "Who is responsible for security-related issues?",
+      "generated_answer": "",
+      "retrieved_chunk_ids": [],
+      "should_clarify": true,
+      "faithfulness": null,
+      "reason": "Faithfulness scoring skipped because the RAG system correctly requested clarification.",
+      "error": null,
+      "judge_latency_ms": null
+    },
+    {
+      "id": "ambiguous_005",
+      "question": "What happens when access is not authorized?",
+      "generated_answer": "Employees must not attempt to access systems or information that they are not authorized to use. [Source 3]",
+      "retrieved_chunk_ids": [
+        31,
+        33,
+        32
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "The claim that employees must not attempt to access systems or information they are not authorized to use is directly supported by Source 1, which states exactly that. The answer’s claim is fully backed by the retrieved context.",
+      "error": null,
+      "judge_latency_ms": 7304.85
+    },
+    {
+      "id": "ambiguous_006",
+      "question": "What approval requirements apply to remote work, travel, and expenses?",
+      "generated_answer": "- **Remote work**: Employees must obtain manager approval before working remotely. Remote work requests are submitted through the approved remote‑work request process. [Source 1]  \n- **Business travel**: Travel must be approved before an employee makes arrangements, using the company’s approved travel booking process. [Source 2]  \n- **Business expenses**: Expense claims are submitted through the approved expense management system and must be reviewed and approved by a manager. [Source 3]",
+      "retrieved_chunk_ids": [
+        27,
+        30,
+        28
+      ],
+      "should_clarify": false,
+      "faithfulness": 5,
+      "reason": "All statements in the generated answer are directly supported by the retrieved sources: remote work requires manager approval and submission through the approved process (Source 1); travel must be approved before arrangements and use the approved booking process (Source 2); expense claims must be submitted via the approved system and approved by a manager (Source 3).",
+      "error": null,
+      "judge_latency_ms": 8265.3
+    }
+  ]
+}
