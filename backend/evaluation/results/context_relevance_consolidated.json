@@ -1,0 +1,501 @@
+{
+  "summary": {
+    "total_cases": 33,
+    "context_relevance_scored_cases": 17,
+    "clarification_cases": 2,
+    "pending_cases": 14,
+    "failed_attempts_pending_retry": 14,
+    "average_context_relevance": 4.8235,
+    "average_judge_latency_ms": 8570.46,
+    "note": "Partial evaluation. Rate-limited cases remain pending; the average represents scored cases only."
+  },
+  "results": [
+    {
+      "id": "hr_leave_001",
+      "question": "How many annual leave days do employees get?",
+      "retrieved_chunk_ids": [
+        26,
+        16,
+        407
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The retrieved sources explicitly state that employees receive 20 days of annual leave per year, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 589.26,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_leave_002",
+      "question": "How should annual leave be requested?",
+      "retrieved_chunk_ids": [
+        26,
+        16,
+        407
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The retrieved documents explicitly describe the process for requesting annual leave, including the need to use the approved leave system, submit to a manager, and follow the company's internal procedures.",
+      "error": null,
+      "judge_latency_ms": 876.99,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_leave_003",
+      "question": "What is the employee annual leave entitlement?",
+      "retrieved_chunk_ids": [
+        16,
+        407,
+        26
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "All retrieved chunks explicitly state the annual leave entitlement (20 days per year), directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 528.03,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_leave_004",
+      "question": "Who should approve an annual leave request?",
+      "retrieved_chunk_ids": [
+        26,
+        407,
+        16
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The retrieved context explicitly states that managers are responsible for reviewing and approving annual leave requests, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 1104.64,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_remote_001",
+      "question": "Can employees work remotely?",
+      "retrieved_chunk_ids": [
+        27,
+        25,
+        31
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The remote work policy directly addresses the question, stating employees may work remotely under certain conditions, while the other policies are unrelated.",
+      "error": null,
+      "judge_latency_ms": 984.58,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_remote_002",
+      "question": "What approval is required for remote work?",
+      "retrieved_chunk_ids": [
+        27,
+        167,
+        176
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The first source directly states that employees must obtain manager approval before working remotely, which directly answers the question. The other sources are unrelated, but the presence of the relevant information outweighs the irrelevant parts.",
+      "error": null,
+      "judge_latency_ms": 4367.31,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_remote_003",
+      "question": "What factors are considered when reviewing remote work requests?",
+      "retrieved_chunk_ids": [
+        27,
+        32,
+        182
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "Source 1 directly lists the factors managers consider when reviewing remote work requests, which fully answers the question. The other sources are unrelated.",
+      "error": null,
+      "judge_latency_ms": 2941.19,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_attendance_001",
+      "question": "How should employees record their attendance?",
+      "retrieved_chunk_ids": [
+        25,
+        28,
+        33
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The HR attendance policy explicitly states that employees should record attendance using the approved system, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 8192.67,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_attendance_002",
+      "question": "What should an employee do if they cannot attend work?",
+      "retrieved_chunk_ids": [
+        25,
+        27,
+        143
+      ],
+      "should_clarify": false,
+      "context_relevance": 4,
+      "reason": "The retrieved documents contain clear guidance on what an employee should do if they cannot attend work, including informing a manager and following the absence reporting process, as well as requesting leave through the approved system. The information is directly useful, though it does not cover every possible scenario or detail.",
+      "error": null,
+      "judge_latency_ms": 11497.51,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_attendance_003",
+      "question": "Who may review repeated attendance issues?",
+      "retrieved_chunk_ids": [
+        25,
+        29,
+        32
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "Groq returned an empty response.",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "hr_mixed_001",
+      "question": "What is the remote work policy?",
+      "retrieved_chunk_ids": [
+        27,
+        32,
+        25
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The first source contains the full remote work policy, directly answering the question. The other sources are unrelated, but the presence of the relevant policy keeps the overall relevance high.",
+      "error": null,
+      "judge_latency_ms": 15325.91,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "hr_mixed_002",
+      "question": "What is the attendance policy?",
+      "retrieved_chunk_ids": [
+        25,
+        183,
+        156
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The first source contains the full attendance policy text, directly answering the question. The other sources are unrelated finance policies.",
+      "error": null,
+      "judge_latency_ms": 1130.68,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "finance_expense_001",
+      "question": "How should employees submit business expense claims?",
+      "retrieved_chunk_ids": [
+        28,
+        29,
+        30
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The retrieved documents give detailed instructions on submitting business expense claims, including required systems, documentation, and approval steps, directly addressing the user’s question.",
+      "error": null,
+      "judge_latency_ms": 782.56,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "finance_expense_002",
+      "question": "What documents are required for an expense claim?",
+      "retrieved_chunk_ids": [
+        28,
+        29,
+        30
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "All three documents explicitly state that expense claims must include receipts and supporting documentation, directly addressing the question about required documents.",
+      "error": null,
+      "judge_latency_ms": 14446.8,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "finance_reimbursement_001",
+      "question": "Which business expenses can be reimbursed?",
+      "retrieved_chunk_ids": [
+        29,
+        28,
+        30
+      ],
+      "should_clarify": false,
+      "context_relevance": 3,
+      "reason": "The retrieved documents describe the reimbursement process and mention that eligible business expenses may be reimbursed, but they do not list specific types of expenses that qualify. Thus, the context provides some useful information but lacks the detailed answer the user seeks.",
+      "error": null,
+      "judge_latency_ms": 10723.78,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "finance_reimbursement_002",
+      "question": "Who reviews reimbursement requests?",
+      "retrieved_chunk_ids": [
+        29,
+        32,
+        30
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The retrieved context explicitly states that reimbursement requests are reviewed by the appropriate manager or finance team, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 11951.52,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "finance_travel_001",
+      "question": "Does business travel require approval?",
+      "retrieved_chunk_ids": [
+        30,
+        158,
+        167
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "Source 1 explicitly states that business travel must be approved before arrangements, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 11839.44,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "finance_travel_002",
+      "question": "How should employees book business travel?",
+      "retrieved_chunk_ids": [
+        30,
+        29,
+        27
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "Source 1 directly explains that employees must get approval and use the company’s approved booking process, which directly answers how employees should book business travel. The other sources are unrelated.",
+      "error": null,
+      "judge_latency_ms": 48415.02,
+      "evaluation_status": "scored"
+    },
+    {
+      "id": "it_security_001",
+      "question": "How should employees protect company systems and data?",
+      "retrieved_chunk_ids": [
+        31,
+        32,
+        33
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199005, Requested 1190. Please try again in 1m24.24s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_security_002",
+      "question": "Can employees share their passwords?",
+      "retrieved_chunk_ids": [
+        31,
+        32,
+        27
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199004, Requested 1872. Please try again in 6m18.432s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_security_003",
+      "question": "What should employees do if they suspect a security incident?",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        25
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199003, Requested 1877. Please try again in 6m20.16s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_access_001",
+      "question": "How is access to company systems granted?",
+      "retrieved_chunk_ids": [
+        32,
+        31,
+        167
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199368, Requested 2138. Please try again in 10m50.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_access_002",
+      "question": "Who requests system access for employees?",
+      "retrieved_chunk_ids": [
+        32,
+        27,
+        31
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199368, Requested 925. Please try again in 2m6.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_access_003",
+      "question": "Who provisions approved access requests?",
+      "retrieved_chunk_ids": [
+        32,
+        185,
+        146
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199367, Requested 789. Please try again in 1m7.391999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_incident_001",
+      "question": "What are examples of security incidents?",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        177
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199366, Requested 795. Please try again in 1m9.552s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_incident_002",
+      "question": "Who investigates reported security incidents?",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        176
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199365, Requested 789. Please try again in 1m6.527999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "it_incident_003",
+      "question": "What information should employees provide during an incident investigation?",
+      "retrieved_chunk_ids": [
+        33,
+        31,
+        28
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199365, Requested 1876. Please try again in 8m56.111999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "ambiguous_001",
+      "question": "What approval is required for remote work?",
+      "retrieved_chunk_ids": [
+        27,
+        167,
+        176
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199364, Requested 796. Please try again in 1m9.12s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "ambiguous_002",
+      "question": "Who reviews remote work requests?",
+      "retrieved_chunk_ids": [
+        27,
+        32,
+        181
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199363, Requested 1872. Please try again in 8m53.52s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "ambiguous_003",
+      "question": "What should employees submit with their request?",
+      "retrieved_chunk_ids": [],
+      "should_clarify": true,
+      "context_relevance": null,
+      "reason": "Context relevance scoring skipped because the RAG system requested clarification.",
+      "error": null,
+      "judge_latency_ms": null,
+      "evaluation_status": "clarification_skipped"
+    },
+    {
+      "id": "ambiguous_004",
+      "question": "Who is responsible for security-related issues?",
+      "retrieved_chunk_ids": [],
+      "should_clarify": true,
+      "context_relevance": null,
+      "reason": "Context relevance scoring skipped because the RAG system requested clarification.",
+      "error": null,
+      "judge_latency_ms": null,
+      "evaluation_status": "clarification_skipped"
+    },
+    {
+      "id": "ambiguous_005",
+      "question": "What happens when access is not authorized?",
+      "retrieved_chunk_ids": [
+        31,
+        33,
+        32
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199361, Requested 791. Please try again in 1m5.664s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    },
+    {
+      "id": "ambiguous_006",
+      "question": "What approval requirements apply to remote work, travel, and expenses?",
+      "retrieved_chunk_ids": [
+        27,
+        30,
+        28
+      ],
+      "should_clarify": false,
+      "context_relevance": null,
+      "reason": "",
+      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199358, Requested 2345. Please try again in 12m15.696s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
+      "judge_latency_ms": null,
+      "evaluation_status": "pending_rate_limit"
+    }
+  ]
+}

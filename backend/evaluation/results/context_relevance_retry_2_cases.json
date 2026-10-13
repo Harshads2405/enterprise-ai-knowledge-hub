@@ -1,0 +1,40 @@
+{
+  "summary": {
+    "total_cases": 2,
+    "context_relevance_scored_cases": 2,
+    "clarification_cases": 0,
+    "failed_cases": 0,
+    "average_context_relevance": 5.0,
+    "average_judge_latency_ms": 1057.63
+  },
+  "results": [
+    {
+      "id": "hr_remote_001",
+      "question": "Can employees work remotely?",
+      "retrieved_chunk_ids": [
+        27,
+        25,
+        31
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The remote work policy directly addresses the question, stating employees may work remotely under certain conditions, while the other policies are unrelated.",
+      "error": null,
+      "judge_latency_ms": 984.58
+    },
+    {
+      "id": "hr_mixed_002",
+      "question": "What is the attendance policy?",
+      "retrieved_chunk_ids": [
+        25,
+        183,
+        156
+      ],
+      "should_clarify": false,
+      "context_relevance": 5,
+      "reason": "The first source contains the full attendance policy text, directly answering the question. The other sources are unrelated finance policies.",
+      "error": null,
+      "judge_latency_ms": 1130.68
+    }
+  ]
+}
