@@ -1,13 +1,14 @@
 {
   "summary": {
     "total_cases": 33,
-    "context_relevance_scored_cases": 17,
+    "context_relevance_scored_cases": 31,
     "clarification_cases": 2,
-    "pending_cases": 14,
-    "failed_attempts_pending_retry": 14,
-    "average_context_relevance": 4.8235,
-    "average_judge_latency_ms": 8570.46,
-    "note": "Partial evaluation. Rate-limited cases remain pending; the average represents scored cases only."
+    "pending_cases": 0,
+    "failed_cases": 0,
+    "failed_attempts_pending_retry": 0,
+    "average_context_relevance": 4.7742,
+    "average_judge_latency_ms": 5668.57,
+    "note": "All eligible cases have been evaluated."
   },
   "results": [
     {
@@ -154,11 +155,11 @@
         32
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "Groq returned an empty response.",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The retrieved context from Source 1 directly states that repeated attendance issues may be reviewed by the employee's manager and the appropriate HR team, which precisely answers the question.",
+      "error": null,
+      "judge_latency_ms": 675.03,
+      "evaluation_status": "scored"
     },
     {
       "id": "hr_mixed_001",
@@ -289,11 +290,11 @@
         33
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199005, Requested 1190. Please try again in 1m24.24s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The retrieved documents provide direct, actionable guidance for employees on protecting company systems and data, covering password practices, authorized access, and incident reporting.",
+      "error": null,
+      "judge_latency_ms": 447.82,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_security_002",
@@ -304,11 +305,11 @@
         27
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199004, Requested 1872. Please try again in 6m18.432s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "Source 1 explicitly states that employees must not share passwords, directly addressing the question.",
+      "error": null,
+      "judge_latency_ms": 632.42,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_security_003",
@@ -319,11 +320,11 @@
         25
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199003, Requested 1877. Please try again in 6m20.16s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The retrieved sources explicitly state that employees must report suspected security incidents to the IT security team promptly and provide relevant information, directly addressing the user’s question.",
+      "error": null,
+      "judge_latency_ms": 814.05,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_access_001",
@@ -334,11 +335,11 @@
         167
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199368, Requested 2138. Please try again in 10m50.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The retrieved documents explicitly describe the process for granting access to company systems, including manager requests, IT review, provisioning, and administrator approval, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 4112.98,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_access_002",
@@ -349,11 +350,11 @@
         31
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199368, Requested 925. Please try again in 2m6.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The retrieved context explicitly states that managers should request system access for employees, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 3887.07,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_access_003",
@@ -364,11 +365,11 @@
         146
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199367, Requested 789. Please try again in 1m7.391999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "Source 1 explicitly states that the IT team is responsible for provisioning approved access requests, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 1096.46,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_incident_001",
@@ -379,11 +380,11 @@
         177
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199366, Requested 795. Please try again in 1m9.552s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The retrieved documents explicitly list examples of security incidents such as unauthorized access, data exposure, malware activity, and compromised accounts, directly answering the user's question.",
+      "error": null,
+      "judge_latency_ms": 1070.47,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_incident_002",
@@ -394,11 +395,11 @@
         176
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199365, Requested 789. Please try again in 1m6.527999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The retrieved sources explicitly state that the IT security team is responsible for investigating reported security incidents, directly answering the question.",
+      "error": null,
+      "judge_latency_ms": 1054.44,
+      "evaluation_status": "scored"
     },
     {
       "id": "it_incident_003",
@@ -409,11 +410,11 @@
         28
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199365, Requested 1876. Please try again in 8m56.111999999s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 3,
+      "reason": "The retrieved sources state that employees should provide relevant information during an incident investigation, but they do not specify what that information should be. Thus the context is partially relevant.",
+      "error": null,
+      "judge_latency_ms": 1189.27,
+      "evaluation_status": "scored"
     },
     {
       "id": "ambiguous_001",
@@ -424,11 +425,11 @@
         176
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199364, Requested 796. Please try again in 1m9.12s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "The first source explicitly states that employees must obtain manager approval before working remotely, directly answering the question. The other sources are unrelated, but the presence of the relevant information makes the overall context highly useful.",
+      "error": null,
+      "judge_latency_ms": 3734.98,
+      "evaluation_status": "scored"
     },
     {
       "id": "ambiguous_002",
@@ -439,11 +440,11 @@
         181
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199363, Requested 1872. Please try again in 8m53.52s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "Source 1 explicitly states that managers review remote work requests, directly answering the question. The other sources are unrelated.",
+      "error": null,
+      "judge_latency_ms": 1328.94,
+      "evaluation_status": "scored"
     },
     {
       "id": "ambiguous_003",
@@ -476,11 +477,11 @@
         32
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199361, Requested 791. Please try again in 1m5.664s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 3,
+      "reason": "The retrieved snippets mention that employees must not attempt to access systems they are not authorized to use, which is related to the question. However, they do not explain what actually happens when unauthorized access occurs, so key information is missing.",
+      "error": null,
+      "judge_latency_ms": 9055.03,
+      "evaluation_status": "scored"
     },
     {
       "id": "ambiguous_006",
@@ -491,11 +492,11 @@
         28
       ],
       "should_clarify": false,
-      "context_relevance": null,
-      "reason": "",
-      "error": "LLM generation failed: Error code: 429 - {'error': {'message': 'Rate limit reached for model `openai/gpt-oss-20b` in organization `org_01kcpe8x11es5spt35ahe24ymj` service tier `on_demand` on tokens per day (TPD): Limit 200000, Used 199358, Requested 2345. Please try again in 12m15.696s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing', 'type': 'tokens', 'code': 'rate_limit_exceeded'}}",
-      "judge_latency_ms": null,
-      "evaluation_status": "pending_rate_limit"
+      "context_relevance": 5,
+      "reason": "All three retrieved documents directly describe the approval processes for remote work, travel, and expenses, providing the specific requirements the user asked for.",
+      "error": null,
+      "judge_latency_ms": 928.79,
+      "evaluation_status": "scored"
     }
   ]
 }
