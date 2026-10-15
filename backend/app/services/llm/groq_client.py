@@ -1,4 +1,7 @@
+import time
 from typing import Optional
+
+from app.services.llm.llm_metrics import LLMRequestMetrics
 
 from groq import Groq
 
@@ -20,11 +23,15 @@ class GroqClient:
                 api_key=settings.groq_api_key,
             )
 
+        self.last_request_metrics: Optional[LLMRequestMetrics] = None
+
+
     def chat(
         self,
         message: str,
         model: str = DEFAULT_MODEL,
     ) -> str:
+        self.last_request_metrics = None
 
         if not message or not message.strip():
             raise LLMClientError(
@@ -32,7 +39,18 @@ class GroqClient:
             )
 
         if settings.llm_mode.lower() == "mock":
-            return self._mock_response(message)
+            started_at = time.perf_counter()
+            response = self._mock_response(message)
+
+            self.last_request_metrics = LLMRequestMetrics(
+                model="mock",
+                latency_ms=round(
+                    (time.perf_counter() - started_at) * 1000,
+                    2,
+                ),
+                success=True,
+            )
+            return response
 
         if settings.llm_mode.lower() != "groq":
             raise LLMClientError(
@@ -44,6 +62,8 @@ class GroqClient:
                 "Groq client is not configured."
             )
 
+        started_at = time.perf_counter()
+
         try:
             response = self.client.chat.completions.create(
                 model=model,
@@ -54,6 +74,28 @@ class GroqClient:
                     }
                 ],
                 temperature=0.1,
+            )
+
+            latency_ms = round(
+                (time.perf_counter() - started_at) * 1000,
+                2,
+            )
+
+            usage = getattr(response, "usage", None)
+
+            self.last_request_metrics = LLMRequestMetrics(
+                model=model,
+                latency_ms=latency_ms,
+                prompt_tokens=getattr(
+                    usage, "prompt_tokens", None
+                ),
+                completion_tokens=getattr(
+                    usage, "completion_tokens", None
+                ),
+                total_tokens=getattr(
+                    usage, "total_tokens", None
+                ),
+                success=True,
             )
 
             content = response.choices[0].message.content
@@ -69,9 +111,20 @@ class GroqClient:
             raise
 
         except Exception as exc:
+            self.last_request_metrics = LLMRequestMetrics(
+                model=model,
+                latency_ms=round(
+                    (time.perf_counter() - started_at) * 1000,
+                    2,
+                ),
+                success=False,
+                error_type=type(exc).__name__,
+            )
+
             raise LLMClientError(
                 f"LLM generation failed: {exc}"
             ) from exc
+
 
     def _mock_response(self, message: str) -> str:
         return (
