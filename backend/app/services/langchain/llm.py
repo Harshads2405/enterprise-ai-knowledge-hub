@@ -36,8 +36,7 @@ class EnterpriseChatModel(BaseChatModel):
 
         prompt = "\n\n".join(prompt_parts)
 
-        response = groq_client.chat(prompt)
-        metrics = groq_client.last_request_metrics
+        response, metrics = groq_client.chat_with_metrics(prompt)
 
         usage_metadata = None
         response_metadata = {

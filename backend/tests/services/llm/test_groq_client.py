@@ -1,6 +1,7 @@
 
 from types import SimpleNamespace
 from unittest.mock import MagicMock
+from typing import Optional, Tuple
 
 import pytest
 

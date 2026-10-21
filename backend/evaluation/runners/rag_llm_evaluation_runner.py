@@ -23,7 +23,52 @@ sys.path.insert(0, str(BASE_DIR))
 
 from app.services.rag.rag_service import rag_service
 from app.services.llm.groq_client import groq_client
+from app.services.llm.llm_metrics_collector import (
+    LLMRequestMetricsCollector,
+)
 
+
+def summarize_llm_metrics(metrics_list: list) -> dict:
+    """Aggregate metrics for all LLM calls in one RAG request."""
+    prompt_values = [
+        item.prompt_tokens for item in metrics_list
+        if item.prompt_tokens is not None
+    ]
+    completion_values = [
+        item.completion_tokens for item in metrics_list
+        if item.completion_tokens is not None
+    ]
+    total_values = [
+        item.total_tokens for item in metrics_list
+        if item.total_tokens is not None
+    ]
+
+    return {
+        "call_count": len(metrics_list),
+        "total_latency_ms": round(
+            sum(item.latency_ms for item in metrics_list), 2
+        ),
+        "prompt_tokens": sum(prompt_values) if prompt_values else None,
+        "completion_tokens": (
+            sum(completion_values) if completion_values else None
+        ),
+        "total_tokens": sum(total_values) if total_values else None,
+        "failed_calls": sum(
+            1 for item in metrics_list if not item.success
+        ),
+        "calls": [
+            {
+                "model": item.model,
+                "latency_ms": item.latency_ms,
+                "prompt_tokens": item.prompt_tokens,
+                "completion_tokens": item.completion_tokens,
+                "total_tokens": item.total_tokens,
+                "success": item.success,
+                "error_type": item.error_type,
+            }
+            for item in metrics_list
+        ],
+    }
 
 def load_dataset():
     with open(DATASET_PATH, "r", encoding="utf-8") as file:
@@ -56,22 +101,22 @@ def collect_llm_metrics() -> dict:
     }
 
 
+
 def evaluate_case(case: dict) -> dict:
     start = time.perf_counter()
 
-    # Prevent metrics from a previous case being reported for this one.
-    groq_client.last_request_metrics = None
+    response = None
+    error = None
 
-    try:
-        response = rag_service.generate(case["question"])
-        error = None
-
-    except Exception as exc:
-        response = None
-        error = f"{type(exc).__name__}: {exc}"
+    # Isolate metrics for this evaluation case.
+    with LLMRequestMetricsCollector() as collector:
+        try:
+            response = rag_service.generate(case["question"])
+        except Exception as exc:
+            error = "{}: {}".format(type(exc).__name__, exc)
 
     latency_ms = (time.perf_counter() - start) * 1000
-    llm_observability = collect_llm_metrics()
+    llm_observability = summarize_llm_metrics(collector.metrics)
 
     sources = []
 
@@ -110,24 +155,25 @@ def evaluate_case(case: dict) -> dict:
 def print_case(result: dict) -> None:
     print()
     print("-" * 80)
-    print(f"ID: {result['id']}")
-    print(f"Question: {result['question']}")
-    print(f"Expected chunks: {result['expected_chunk_ids']}")
-    print(f"Retrieved chunks: {result['retrieved_chunk_ids']}")
-    print(f"Should clarify: {result['should_clarify']}")
-    print(f"RAG latency: {result['latency_ms']:.2f} ms")
+    print("ID: {}".format(result["id"]))
+    print("Question: {}".format(result["question"]))
+    print("Expected chunks: {}".format(result["expected_chunk_ids"]))
+    print("Retrieved chunks: {}".format(result["retrieved_chunk_ids"]))
+    print("Should clarify: {}".format(result["should_clarify"]))
+    print("RAG latency: {:.2f} ms".format(result["latency_ms"]))
 
     metrics = result["llm_observability"]
-    print(f"LLM model: {metrics['model']}")
-    print(f"LLM latency: {metrics['latency_ms']} ms")
-    print(f"Prompt tokens: {metrics['prompt_tokens']}")
-    print(f"Completion tokens: {metrics['completion_tokens']}")
-    print(f"Total tokens: {metrics['total_tokens']}")
+    print("LLM calls: {}".format(metrics["call_count"]))
+    print("Total LLM latency: {} ms".format(metrics["total_latency_ms"]))
+    print("Prompt tokens: {}".format(metrics["prompt_tokens"]))
+    print("Completion tokens: {}".format(metrics["completion_tokens"]))
+    print("Total tokens: {}".format(metrics["total_tokens"]))
+    print("Failed LLM calls: {}".format(metrics["failed_calls"]))
 
     if result["error"]:
-        print(f"ERROR: {result['error']}")
+        print("ERROR: {}".format(result["error"]))
     else:
-        print(f"Answer: {result['answer']}")
+        print("Answer: {}".format(result["answer"]))
 
 
 def print_summary(results: list) -> None:
@@ -140,32 +186,41 @@ def print_summary(results: list) -> None:
         sum(latencies) / len(latencies) if latencies else 0.0
     )
 
-    token_records = [
-        r["llm_observability"]
-        for r in results
-        if r["llm_observability"]["total_tokens"] is not None
+    all_calls = [
+        call
+        for result in results
+        for call in result["llm_observability"]["calls"]
+    ]
+    token_calls = [
+        call for call in all_calls
+        if call["total_tokens"] is not None
     ]
 
-    total_tokens = sum(
-        record["total_tokens"] for record in token_records
+    recorded_tokens = sum(
+        call["total_tokens"] for call in token_calls
+    )
+    failed_llm_calls = sum(
+        1 for call in all_calls if not call["success"]
     )
 
     print()
     print("=" * 80)
     print("LLM RAG EVALUATION SUMMARY")
     print("=" * 80)
-    print(f"Evaluation cases: {total}")
-    print(f"Successful:       {len(successful)}")
-    print(f"Failed:           {len(failed)}")
-    print(f"Average RAG latency: {average_latency:.2f} ms")
-    print(f"Cases with token usage: {len(token_records)}")
-    print(f"Recorded token total:  {total_tokens}")
+    print("Evaluation cases: {}".format(total))
+    print("Successful RAG cases: {}".format(len(successful)))
+    print("Failed RAG cases: {}".format(len(failed)))
+    print("Average RAG latency: {:.2f} ms".format(average_latency))
+    print("Total LLM calls: {}".format(len(all_calls)))
+    print("Failed LLM calls: {}".format(failed_llm_calls))
+    print("Calls with token usage: {}".format(len(token_calls)))
+    print("Recorded token total: {}".format(recorded_tokens))
 
     if failed:
         print()
-        print("Failed cases:")
+        print("Failed RAG cases:")
         for result in failed:
-            print(f"- {result['id']}: {result['error']}")
+            print("- {}: {}".format(result["id"], result["error"]))
 
 
 def save_json(path: Path, data) -> None:
@@ -209,9 +264,9 @@ def main() -> None:
         "dataset": str(DATASET_PATH),
         "evaluation_cases": len(results),
         "note": (
-            "LLM metrics represent the latest LLM call captured per RAG "
-            "case, not necessarily all LLM calls in that case. Token totals "
-            "may therefore undercount multi-call RAG requests."
+            "LLM metrics include calls recorded within each RAG request. "
+            "Token totals "
+            "include only calls for which the provider returned token usage."
         ),
         "results": [
             {

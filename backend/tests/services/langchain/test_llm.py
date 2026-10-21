@@ -1,3 +1,4 @@
+
 from unittest.mock import patch
 
 from langchain_core.messages import HumanMessage
@@ -7,23 +8,29 @@ from app.services.llm.llm_metrics import LLMRequestMetrics
 
 
 def test_enterprise_chat_model_generates_response():
+    metrics = LLMRequestMetrics(
+        model="openai/gpt-oss-20b",
+        latency_ms=12.5,
+        success=True,
+    )
+
     with patch(
-        "app.services.langchain.llm.groq_client.chat",
-        return_value="RAG retrieves relevant information for an LLM.",
+        "app.services.langchain.llm.groq_client.chat_with_metrics",
+        return_value=(
+            "RAG retrieves relevant information for an LLM.",
+            metrics,
+        ),
     ):
         llm = EnterpriseChatModel()
         response = llm.invoke(
-            [
-                HumanMessage(
-                    content="Explain what RAG is."
-                )
-            ]
+            [HumanMessage(content="Explain what RAG is.")]
         )
 
     assert response.content == (
         "RAG retrieves relevant information for an LLM."
     )
     assert isinstance(response.content, str)
+    assert response.response_metadata["latency_ms"] == 12.5
 
 
 def test_enterprise_chat_model_forwards_usage_and_latency():
@@ -37,19 +44,15 @@ def test_enterprise_chat_model_forwards_usage_and_latency():
     )
 
     with patch(
-        "app.services.langchain.llm.groq_client.chat",
-        return_value="RAG is retrieval-augmented generation.",
-    ), patch(
-        "app.services.langchain.llm.groq_client.last_request_metrics",
-        metrics,
+        "app.services.langchain.llm.groq_client.chat_with_metrics",
+        return_value=(
+            "RAG is retrieval-augmented generation.",
+            metrics,
+        ),
     ):
         llm = EnterpriseChatModel()
         response = llm.invoke(
-            [
-                HumanMessage(
-                    content="Explain what RAG is."
-                )
-            ]
+            [HumanMessage(content="Explain what RAG is.")]
         )
 
     assert response.content == (
