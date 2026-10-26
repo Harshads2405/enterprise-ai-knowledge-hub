@@ -9,6 +9,7 @@ from app.services.langchain.retriever import EnterpriseRetriever
 
 
 def build_rag_chain(
+    organization_id: int,
     limit: int = 3,
     candidate_limit=None,
     department=None,
@@ -17,6 +18,7 @@ def build_rag_chain(
     access_level=None,
 ):
     retriever = EnterpriseRetriever(
+        organization_id=organization_id,
         limit=limit,
         candidate_limit=candidate_limit,
         department=department,

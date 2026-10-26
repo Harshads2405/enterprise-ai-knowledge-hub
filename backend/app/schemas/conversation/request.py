@@ -1,21 +1,10 @@
+
 from typing import Optional
 
 from pydantic import BaseModel, Field
 
 
 class ConversationCreateRequest(BaseModel):
-    organization_id: int = Field(
-        ...,
-        gt=0,
-        description="Organization that owns the conversation.",
-    )
-
-    user_id: int = Field(
-        ...,
-        gt=0,
-        description="User who owns the conversation.",
-    )
-
     title: Optional[str] = Field(
         default=None,
         max_length=255,

@@ -11,6 +11,7 @@ class RetrievalAmbiguityService:
     def retrieve_candidates(
         self,
         query: str,
+        organization_id: int,
         department: Optional[str] = None,
         candidate_limit: int = 10,
     ) -> List[RetrievalResult]:
@@ -20,6 +21,7 @@ class RetrievalAmbiguityService:
 
         return retrieval_pipeline.retrieve(
             search_queries=[query],
+            organization_id=organization_id,
             limit=candidate_limit,
             department=department,
         )

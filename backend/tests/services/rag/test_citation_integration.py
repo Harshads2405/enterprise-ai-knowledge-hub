@@ -23,6 +23,7 @@ def test_invalid_llm_citation_triggers_safe_fallback(monkeypatch):
     ):
         result = rag_service.generate(
             "Who investigates reported security incidents?",
+            organization_id=9,
             limit=3,
         )
 

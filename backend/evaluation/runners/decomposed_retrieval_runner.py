@@ -1,5 +1,6 @@
 from app.services.retrieval.retrieval_pipeline import retrieval_pipeline
 from app.services.retrieval.retrieval_result import RetrievalResult
+from app.core.config import get_evaluation_organization_id
 
 
 DECOMPOSED_CASES = [
@@ -78,6 +79,7 @@ def retrieve_decomposed(
     for query in queries:
         results = retrieval_pipeline.retrieve(
             search_queries=[query],
+            organization_id=get_evaluation_organization_id(),
             limit=limit,
             department=department,
         )

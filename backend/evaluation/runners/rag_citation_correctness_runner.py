@@ -6,6 +6,8 @@ from pathlib import Path
 from sqlalchemy import select
 
 from app.db.session import SessionLocal
+from app.core.config import get_evaluation_organization_id
+from app.models.document import Document
 from app.models.document_chunk import DocumentChunk
 from app.services.retrieval.retrieval_result import RetrievalResult
 
@@ -130,7 +132,11 @@ def build_retrieved_results(case):
 
     with SessionLocal() as db:
         statement = select(DocumentChunk).where(
-            DocumentChunk.id.in_(expected_chunk_ids)
+            DocumentChunk.id.in_(expected_chunk_ids),
+            Document.organization_id == get_evaluation_organization_id(),
+        ).join(
+            Document,
+            DocumentChunk.document_id == Document.id,
         )
 
         chunks = db.scalars(statement).all()

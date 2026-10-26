@@ -1,6 +1,8 @@
+
 from typing import List, Optional
 
 from app.services.embeddings.embedding_service import embedding_service
+from app.core.organization import validate_organization_id
 from app.services.retrieval.vector_search import vector_search
 from app.services.retrieval.retrieval_result import RetrievalResult
 from app.services.reranking.reranker_service import reranker_service
@@ -11,6 +13,7 @@ class RetrievalPipeline:
     def retrieve(
         self,
         search_queries: List[str],
+        organization_id: int,
         limit: int = 5,
         candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
@@ -19,6 +22,8 @@ class RetrievalPipeline:
         access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
+        validate_organization_id(organization_id)
+
         # Remove duplicate search formulations while preserving order.
         unique_search_queries = []
         seen_queries = set()
@@ -26,10 +31,7 @@ class RetrievalPipeline:
         for search_query in search_queries:
             normalized_query = search_query.strip().lower()
 
-            if not normalized_query:
-                continue
-
-            if normalized_query in seen_queries:
+            if not normalized_query or normalized_query in seen_queries:
                 continue
 
             seen_queries.add(normalized_query)
@@ -44,13 +46,12 @@ class RetrievalPipeline:
         unique_results = {}
 
         for search_query in unique_search_queries:
-            query_embedding = embedding_service.embed_query(
-                search_query
-            )
+            query_embedding = embedding_service.embed_query(search_query)
 
             candidates = vector_search.hybrid_search(
                 query_embedding=query_embedding,
                 query=search_query,
+                organization_id=organization_id,
                 limit=candidate_limit,
                 department=department,
                 document_type=document_type,
@@ -76,22 +77,17 @@ class RetrievalPipeline:
                     result.retrieval_ranks = [rank]
                     result.retrieval_count = 1
                     result.best_retrieval_rank = rank
-
                     result.reranker_scores = []
 
                     if current_score is not None:
-                        result.reranker_scores.append(
-                            float(current_score)
-                        )
+                        result.reranker_scores.append(float(current_score))
 
                     result.reranker_queries = [search_query]
-
                     result.best_reranker_score = (
                         float(current_score)
                         if current_score is not None
                         else None
                     )
-
                     result.best_reranker_query = (
                         search_query
                         if current_score is not None
@@ -102,11 +98,7 @@ class RetrievalPipeline:
 
                 else:
                     existing = unique_results[chunk_id]
-
-                    existing.retrieval_queries.append(
-                        search_query
-                    )
-
+                    existing.retrieval_queries.append(search_query)
                     existing.retrieval_ranks.append(rank)
                     existing.retrieval_count += 1
 
@@ -118,11 +110,8 @@ class RetrievalPipeline:
 
                     if current_score is not None:
                         score = float(current_score)
-
                         existing.reranker_scores.append(score)
-                        existing.reranker_queries.append(
-                            search_query
-                        )
+                        existing.reranker_queries.append(search_query)
 
                         if (
                             existing.best_reranker_score is None

@@ -7,6 +7,7 @@ from app.services.context_compression.context_compressor import (
     context_compressor,
 )
 from app.services.rag.rag_service import rag_service
+from app.core.config import get_evaluation_organization_id
 from evaluation.evaluators.context_relevance_judge import (
     ContextRelevanceJudge,
 )
@@ -64,6 +65,7 @@ def is_rate_limit_error(error: str) -> bool:
 def build_retrieved_context(case):
     results = rag_service.retrieve(
         query=case["question"],
+        organization_id=get_evaluation_organization_id(),
         limit=len(case.get("retrieved_chunk_ids", [])),
     )
 

@@ -1,5 +1,8 @@
+from types import SimpleNamespace
+
 from fastapi.testclient import TestClient
 
+from app.core.security import get_current_user
 from app.main import app
 from app.services.rag.rag_service import rag_service
 from app.schemas.rag.citation import Citation
@@ -10,7 +13,14 @@ client = TestClient(app)
 
 
 def test_rag_query_api_returns_page_in_citation(monkeypatch):
-    def fake_generate(question, limit=None, department=None):
+    current_user = SimpleNamespace(
+        id=9,
+        organization_id=3,
+        is_active=True,
+    )
+
+    def fake_generate(question, organization_id, limit=None, department=None):
+        assert organization_id == current_user.organization_id
         return RAGResponse(
             answer="The security team investigates reported incidents.",
             sources=[
@@ -32,13 +42,18 @@ def test_rag_query_api_returns_page_in_citation(monkeypatch):
         fake_generate,
     )
 
-    response = client.post(
-        "/api/v1/rag/query",
-        json={
-            "question": "Who investigates reported security incidents?",
-            "limit": 3,
-        },
-    )
+    app.dependency_overrides[get_current_user] = lambda: current_user
+
+    try:
+        response = client.post(
+            "/api/v1/rag/query",
+            json={
+                "question": "Who investigates reported security incidents?",
+                "limit": 3,
+            },
+        )
+    finally:
+        app.dependency_overrides.pop(get_current_user, None)
 
     assert response.status_code == 200
 

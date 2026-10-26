@@ -1,4 +1,7 @@
+
 from typing import List, Optional
+
+from app.core.organization import validate_organization_id
 
 from app.schemas.rag.response import (
     RAGResponse,
@@ -71,6 +74,7 @@ class RAGService:
     def retrieve(
         self,
         query: str,
+        organization_id: int,
         limit: Optional[int] = None,
         department: Optional[str] = None,
         document_type: Optional[str] = None,
@@ -78,12 +82,15 @@ class RAGService:
         access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
+        validate_organization_id(organization_id)
+
         final_top_k = limit if limit is not None else settings.rag_top_k
         candidate_limit = settings.rag_candidate_limit
 
         if decomposition_decision_service.should_decompose(query):
             return self.retrieve_with_decomposition(
                 query=query,
+                organization_id=organization_id,
                 limit=final_top_k,
                 candidate_limit=candidate_limit,
                 department=department,
@@ -128,6 +135,7 @@ class RAGService:
 
         return retrieval_pipeline.retrieve(
             search_queries=search_queries,
+            organization_id=organization_id,
             limit=final_top_k,
             candidate_limit=candidate_limit,
             department=department,
@@ -139,18 +147,22 @@ class RAGService:
     def retrieve_with_decomposition(
         self,
         query: str,
+        organization_id: int,
         limit: int = 5,
-	candidate_limit: Optional[int] = None,
+        candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
         document_type: Optional[str] = None,
         version: Optional[str] = None,
         access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
 
+        validate_organization_id(organization_id)
+
         return decomposed_retrieval_service.retrieve(
             query=query,
+            organization_id=organization_id,
             limit=limit,
-	    candidate_limit=candidate_limit,
+            candidate_limit=candidate_limit,
             department=department,
             document_type=document_type,
             version=version,
@@ -224,6 +236,7 @@ class RAGService:
     def generate(
         self,
         question: str,
+        organization_id: int,
         limit: Optional[int] = None,
         department: Optional[str] = None,
         document_type: Optional[str] = None,
@@ -231,8 +244,11 @@ class RAGService:
         access_level: Optional[str] = None,
     ) -> RAGResponse:
 
+        validate_organization_id(organization_id)
+
         results = self.retrieve(
             query=question,
+            organization_id=organization_id,
             limit=limit,
             department=department,
             document_type=document_type,
@@ -324,12 +340,15 @@ class RAGService:
             self,
             original_question: str,
             selected_topic: str,
+            organization_id: int,
             limit: int = 5,
             department: Optional[str] = None,
             document_type: Optional[str] = None,
             version: Optional[str] = None,
             access_level: Optional[str] = None,
     ) -> RAGResponse:
+
+        validate_organization_id(organization_id)
 
         resolution = clarification_resolver.resolve(
             original_query=original_question,
@@ -338,6 +357,7 @@ class RAGService:
 
         return self.generate(
             question=resolution.resolved_query,
+            organization_id=organization_id,
             limit=limit,
             department=department,
             document_type=document_type,

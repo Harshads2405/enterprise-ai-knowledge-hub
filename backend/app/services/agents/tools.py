@@ -6,10 +6,12 @@ from app.services.retrieval.retrieval_pipeline import (
     retrieval_pipeline,
 )
 
+from langgraph.prebuilt import ToolRuntime
 
 @tool
 def search_knowledge_base(
     query: str,
+    runtime: ToolRuntime,
     limit: int = 3,
     department: Optional[str] = None,
     document_type: Optional[str] = None,
@@ -33,8 +35,21 @@ def search_knowledge_base(
             "Knowledge-base search limit must be at least 1."
         )
 
+    organization_id = runtime.state.get("organization_id")
+
+    if (
+        not isinstance(organization_id, int)
+        or isinstance(organization_id, bool)
+        or organization_id <= 0
+    ):
+        raise ValueError(
+            "A valid authenticated organization ID is required "
+            "for knowledge-base search."
+        )
+
     results = retrieval_pipeline.retrieve(
         search_queries=[query],
+        organization_id=organization_id,
         limit=limit,
         department=department,
         document_type=document_type,

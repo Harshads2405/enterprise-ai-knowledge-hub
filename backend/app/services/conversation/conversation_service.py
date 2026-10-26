@@ -28,15 +28,22 @@ class ConversationService:
         return conversation
 
     def get_conversation(
-        self,
-        db: Session,
-        conversation_id: int,
+            self,
+            db: Session,
+            conversation_id: int,
+            organization_id: int,
+            user_id: int,
     ) -> Optional[Conversation]:
         return (
             db.query(Conversation)
-            .filter(Conversation.id == conversation_id)
+            .filter(
+                Conversation.id == conversation_id,
+                Conversation.organization_id == organization_id,
+                Conversation.user_id == user_id,
+            )
             .first()
         )
+
 
     def add_message(
         self,

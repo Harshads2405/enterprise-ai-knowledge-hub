@@ -34,10 +34,14 @@ class DocumentService:
         self,
         db: Session,
         document_id: int,
+        organization_id: int,
     ) -> Optional[Document]:
         return (
             db.query(Document)
-            .filter(Document.id == document_id)
+            .filter(
+                Document.id == document_id,
+                Document.organization_id == organization_id,
+            )
             .first()
         )
 

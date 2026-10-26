@@ -110,7 +110,8 @@ def test_evaluate_case_aggregates_multiple_llm_calls():
         "relevant_chunk_ids": ["chunk-1"],
     }
 
-    def fake_generate(question):
+    def fake_generate(question, organization_id):
+        assert organization_id == 7
         LLMRequestMetricsCollector.record(
             LLMRequestMetrics(
                 model="openai/gpt-oss-20b",
@@ -141,6 +142,9 @@ def test_evaluate_case_aggregates_multiple_llm_calls():
     with patch(
         "evaluation.runners.rag_llm_evaluation_runner.rag_service.generate",
         side_effect=fake_generate,
+    ), patch(
+        "evaluation.runners.rag_llm_evaluation_runner.get_evaluation_organization_id",
+        return_value=7,
     ):
         result = evaluate_case(case)
 

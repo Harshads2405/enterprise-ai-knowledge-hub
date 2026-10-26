@@ -1,33 +1,30 @@
+
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.core.security import get_current_user
 from app.db.session import get_db
-
+from app.models.user import User
 from app.schemas.conversation.request import (
     ConversationCreateRequest,
     ConversationMessageRequest,
 )
-
 from app.schemas.conversation.response import (
     ConversationMessageResponse,
     ConversationRAGResponse,
     ConversationResponse,
 )
-
-from app.services.conversation.conversation_service import (
-    conversation_service,
-)
-
-from app.services.rag.rag_service import (
-    rag_service,
-)
+from app.services.conversation.conversation_service import conversation_service
+from app.services.rag.rag_service import rag_service
 from app.services.conversation.conversation_state_service import (
     conversation_state_service,
 )
 from app.services.conversation.conversation_context_service import (
     conversation_context_service,
 )
-from typing import List
+
 
 router = APIRouter(
     prefix="/api/v1/conversations",
@@ -35,19 +32,37 @@ router = APIRouter(
 )
 
 
-@router.post(
-    "",
-    response_model=ConversationResponse,
-)
+def _get_owned_conversation(
+    db: Session,
+    conversation_id: int,
+    current_user: User,
+):
+    conversation = conversation_service.get_conversation(
+        db=db,
+        conversation_id=conversation_id,
+        organization_id=current_user.organization_id,
+        user_id=current_user.id,
+    )
+
+    if conversation is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found.",
+        )
+
+    return conversation
+
+
+@router.post("", response_model=ConversationResponse)
 def create_conversation(
     request: ConversationCreateRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> ConversationResponse:
-
     conversation = conversation_service.create_conversation(
         db=db,
-        organization_id=request.organization_id,
-        user_id=request.user_id,
+        organization_id=current_user.organization_id,
+        user_id=current_user.id,
         title=request.title,
     )
 
@@ -60,20 +75,16 @@ def create_conversation(
         updated_at=conversation.updated_at,
     )
 
-@router.get(
-    "",
-    response_model=List[ConversationResponse],
-)
-def list_conversations(
-    organization_id: int,
-    user_id: int,
-    db: Session = Depends(get_db),
-) -> List[ConversationResponse]:
 
+@router.get("", response_model=List[ConversationResponse])
+def list_conversations(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> List[ConversationResponse]:
     conversations = conversation_service.list_conversations(
         db=db,
-        organization_id=organization_id,
-        user_id=user_id,
+        organization_id=current_user.organization_id,
+        user_id=current_user.id,
     )
 
     return [
@@ -89,55 +100,17 @@ def list_conversations(
     ]
 
 
-@router.get(
-    "/{conversation_id}",
-    response_model=ConversationResponse,
-)
+@router.get("/{conversation_id}", response_model=ConversationResponse)
 def get_conversation(
     conversation_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> ConversationResponse:
-
-    conversation = conversation_service.get_conversation(
+    conversation = _get_owned_conversation(
         db=db,
         conversation_id=conversation_id,
+        current_user=current_user,
     )
-
-    if conversation is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Conversation not found.",
-        )
-
-    return ConversationResponse(
-        id=conversation.id,
-        organization_id=conversation.organization_id,
-        user_id=conversation.user_id,
-        title=conversation.title,
-        created_at=conversation.created_at,
-        updated_at=conversation.updated_at,
-    )
-
-
-@router.get(
-    "/{conversation_id}",
-    response_model=ConversationResponse,
-)
-def get_conversation(
-    conversation_id: int,
-    db: Session = Depends(get_db),
-) -> ConversationResponse:
-
-    conversation = conversation_service.get_conversation(
-        db=db,
-        conversation_id=conversation_id,
-    )
-
-    if conversation is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Conversation not found.",
-        )
 
     return ConversationResponse(
         id=conversation.id,
@@ -156,18 +129,13 @@ def get_conversation(
 def get_conversation_messages(
     conversation_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> List[ConversationMessageResponse]:
-
-    conversation = conversation_service.get_conversation(
+    _get_owned_conversation(
         db=db,
         conversation_id=conversation_id,
+        current_user=current_user,
     )
-
-    if conversation is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Conversation not found.",
-        )
 
     messages = conversation_service.get_messages(
         db=db,
@@ -194,23 +162,13 @@ def send_message(
     conversation_id: int,
     request: ConversationMessageRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ) -> ConversationRAGResponse:
-
-    conversation = conversation_service.get_conversation(
+    _get_owned_conversation(
         db=db,
         conversation_id=conversation_id,
+        current_user=current_user,
     )
-
-    if conversation is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Conversation not found.",
-        )
-
-    # ---------------------------------------------------------
-    # 1. Check whether the conversation has a pending
-    #    clarification from the previous assistant message.
-    # ---------------------------------------------------------
 
     messages = conversation_service.get_messages(
         db=db,
@@ -228,60 +186,33 @@ def send_message(
             ):
                 pending_clarification = latest_message
 
-    # ---------------------------------------------------------
-    # 2. Save the user's message.
-    # ---------------------------------------------------------
-
     conversation_service.add_message(
         db=db,
         conversation_id=conversation_id,
         role="user",
         content=request.content,
-        metadata={
-            "type": "user_message",
-        },
+        metadata={"type": "user_message"},
     )
 
-    # ---------------------------------------------------------
-    # 3. Run RAG.
-    #
-    #    If clarification is pending:
-    #      resolve the user's selection against the stored
-    #      clarification options.
-    #
-    #    Otherwise:
-    #      process the message normally.
-    # ---------------------------------------------------------
-
     if pending_clarification is not None:
-
-        clarification_metadata = (
-            pending_clarification.message_metadata
+        clarification_metadata = pending_clarification.message_metadata
+        options = conversation_state_service.get_options(
+            clarification_metadata
         )
 
-        options = (
-            conversation_state_service.get_options(
-                clarification_metadata
-            )
-        )
-
-        selected_topic = (
-            conversation_state_service.find_selected_topic(
-                user_input=request.content,
-                options=options,
-            )
+        selected_topic = conversation_state_service.find_selected_topic(
+            user_input=request.content,
+            options=options,
         )
 
         if selected_topic is None:
-
             rag_response = rag_service.generate(
                 question=request.content,
+                organization_id=current_user.organization_id,
                 limit=request.limit,
                 department=request.department,
             )
-
         else:
-
             original_query = (
                 conversation_state_service.get_original_query(
                     clarification_metadata
@@ -292,47 +223,33 @@ def send_message(
                 rag_response = rag_service.generate(
                     question=request.content,
                     limit=request.limit,
+                    organization_id=current_user.organization_id,
                     department=request.department,
                 )
-
             else:
                 rag_response = (
                     rag_service.generate_with_clarification(
                         original_question=original_query,
                         selected_topic=selected_topic,
+                        organization_id=current_user.organization_id,
                         limit=request.limit,
                         department=request.department,
                     )
                 )
-
-
     else:
-
         contextual_query = (
-
             conversation_context_service.build_contextual_query(
-
                 current_query=request.content,
-
                 messages=messages,
-
             )
-
         )
 
         rag_response = rag_service.generate(
-
             question=contextual_query,
-
             limit=request.limit,
-
+            organization_id=current_user.organization_id,
             department=request.department,
-
         )
-
-    # ---------------------------------------------------------
-    # 4. Build assistant metadata.
-    # ---------------------------------------------------------
 
     assistant_metadata = {
         "type": (
@@ -348,7 +265,6 @@ def send_message(
     }
 
     if rag_response.should_clarify:
-
         assistant_metadata.update(
             {
                 "original_query": request.content,
@@ -361,10 +277,6 @@ def send_message(
                 ],
             }
         )
-
-    # ---------------------------------------------------------
-    # 5. Persist assistant response.
-    # ---------------------------------------------------------
 
     assistant_content = (
         rag_response.clarification_question
@@ -379,10 +291,6 @@ def send_message(
         content=assistant_content,
         metadata=assistant_metadata,
     )
-
-    # ---------------------------------------------------------
-    # 6. Return the complete conversation RAG response.
-    # ---------------------------------------------------------
 
     return ConversationRAGResponse(
         message_id=assistant_message.id,

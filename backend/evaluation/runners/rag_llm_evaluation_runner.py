@@ -22,6 +22,7 @@ METRICS_OUTPUT_PATH = RESULTS_DIR / "llm_observability_baseline.json"
 sys.path.insert(0, str(BASE_DIR))
 
 from app.services.rag.rag_service import rag_service
+from app.core.config import get_evaluation_organization_id
 from app.services.llm.groq_client import groq_client
 from app.services.llm.llm_metrics_collector import (
     LLMRequestMetricsCollector,
@@ -111,7 +112,10 @@ def evaluate_case(case: dict) -> dict:
     # Isolate metrics for this evaluation case.
     with LLMRequestMetricsCollector() as collector:
         try:
-            response = rag_service.generate(case["question"])
+            response = rag_service.generate(
+                question=case["question"],
+                organization_id=get_evaluation_organization_id(),
+            )
         except Exception as exc:
             error = "{}: {}".format(type(exc).__name__, exc)
 

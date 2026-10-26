@@ -23,6 +23,17 @@ def test_agent_graph_builds():
     assert agent_graph is not None
 
 
+@pytest.mark.parametrize("organization_id", [None, 0, -1, True, "9"])
+def test_knowledge_base_tool_rejects_missing_or_invalid_organization_id(
+    organization_id,
+):
+    runtime = MagicMock()
+    runtime.state = {"organization_id": organization_id}
+
+    with pytest.raises(ValueError, match="authenticated organization ID"):
+        search_knowledge_base.func("leave policy", runtime)
+
+
 def test_agent_graph_executes_knowledge_base_tool():
     mock_result = [
         {
@@ -45,6 +56,7 @@ def test_agent_graph_executes_knowledge_base_tool():
         result = agent_graph.invoke(
             {
                 "question": "What is the employee leave policy?",
+                "organization_id": 9,
             },
             {
                 "configurable": {
@@ -386,6 +398,7 @@ def test_agent_graph_memory_is_isolated_by_thread_id():
     first_result = agent_graph.invoke(
         {
             "question": "What is the employee leave policy?",
+            "organization_id": 9,
         },
         first_thread_config,
     )
@@ -393,6 +406,7 @@ def test_agent_graph_memory_is_isolated_by_thread_id():
     second_result = agent_graph.invoke(
         {
             "question": "What is the employee leave policy?",
+            "organization_id": 9,
         },
         first_thread_config,
     )
@@ -400,6 +414,7 @@ def test_agent_graph_memory_is_isolated_by_thread_id():
     isolated_result = agent_graph.invoke(
         {
             "question": "What is the employee leave policy?",
+            "organization_id": 9,
         },
         second_thread_config,
     )

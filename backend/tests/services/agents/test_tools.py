@@ -1,4 +1,5 @@
 import sys
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -28,10 +29,9 @@ def test_search_knowledge_base_rejects_empty_query():
         ValueError,
         match="Knowledge-base search query cannot be empty.",
     ):
-        search_knowledge_base.invoke(
-            {
-                "query": "",
-            }
+        search_knowledge_base.func(
+            query="",
+            runtime=SimpleNamespace(state={"organization_id": 7}),
         )
 
 
@@ -40,11 +40,10 @@ def test_search_knowledge_base_rejects_invalid_limit():
         ValueError,
         match="Knowledge-base search limit must be at least 1.",
     ):
-        search_knowledge_base.invoke(
-            {
-                "query": "employee leave policy",
-                "limit": 0,
-            }
+        search_knowledge_base.func(
+            query="employee leave policy",
+            runtime=SimpleNamespace(state={"organization_id": 7}),
+            limit=0,
         )
 
 
@@ -56,21 +55,21 @@ def test_search_knowledge_base_delegates_to_retrieval_pipeline(
 ):
     mock_retrieve.return_value = []
 
-    result = search_knowledge_base.invoke(
-        {
-            "query": "employee leave policy",
-            "limit": 3,
-            "department": "HR",
-            "document_type": "policy",
-            "version": "v1",
-            "access_level": "internal",
-        }
+    result = search_knowledge_base.func(
+        query="employee leave policy",
+        runtime=SimpleNamespace(state={"organization_id": 7}),
+        limit=3,
+        department="HR",
+        document_type="policy",
+        version="v1",
+        access_level="internal",
     )
 
     assert result == []
 
     mock_retrieve.assert_called_once_with(
         search_queries=["employee leave policy"],
+        organization_id=7,
         limit=3,
         department="HR",
         document_type="policy",

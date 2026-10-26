@@ -11,12 +11,15 @@ from app.services.evaluation.retrieval_dataset import (
 from app.services.evaluation.retrieval_evaluator import (
     RetrievalEvaluator,
 )
+from app.core.config import get_evaluation_organization_id
 
 
 def run_evaluation():
     dataset = load_retrieval_evaluation_dataset()
 
-    evaluator = RetrievalEvaluator()
+    evaluator = RetrievalEvaluator(
+        organization_id=get_evaluation_organization_id(),
+    )
 
     return evaluator.evaluate(dataset)
 

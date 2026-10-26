@@ -10,6 +10,7 @@ class AgentState(TypedDict, total=False):
     """
     messages: Annotated[list[BaseMessage], add_messages]
     question: str
+    organization_id: int
     answer: str
     error: str
     tool_results: list

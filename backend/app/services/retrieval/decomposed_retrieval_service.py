@@ -1,8 +1,10 @@
+
 from typing import List, Optional
 
 from app.services.query_decomposition.query_decomposer_service import (
     query_decomposer_service,
 )
+from app.core.organization import validate_organization_id
 from app.services.retrieval.retrieval_pipeline import retrieval_pipeline
 from app.services.retrieval.retrieval_result import RetrievalResult
 
@@ -12,6 +14,7 @@ class DecomposedRetrievalService:
     def retrieve(
         self,
         query: str,
+        organization_id: int,
         limit: int = 5,
         candidate_limit: Optional[int] = None,
         department: Optional[str] = None,
@@ -19,6 +22,8 @@ class DecomposedRetrievalService:
         version: Optional[str] = None,
         access_level: Optional[str] = None,
     ) -> List[RetrievalResult]:
+
+        validate_organization_id(organization_id)
 
         decomposed_queries = query_decomposer_service.decompose(
             query=query,
@@ -28,11 +33,11 @@ class DecomposedRetrievalService:
         if not decomposed_queries:
             return []
 
-        # Single information need:
-        # use the normal retrieval pipeline with one query.
+        # Single information need: use the normal retrieval pipeline.
         if len(decomposed_queries) == 1:
             return retrieval_pipeline.retrieve(
                 search_queries=decomposed_queries,
+                organization_id=organization_id,
                 limit=limit,
                 candidate_limit=candidate_limit,
                 department=department,
@@ -43,12 +48,11 @@ class DecomposedRetrievalService:
 
         unique_results = {}
 
-        # Multiple information needs:
-        # retrieve each subquery independently.
+        # Retrieve each subquery independently, preserving organization scope.
         for subquery in decomposed_queries:
-
             results = retrieval_pipeline.retrieve(
                 search_queries=[subquery],
+                organization_id=organization_id,
                 limit=limit,
                 candidate_limit=candidate_limit,
                 department=department,
@@ -58,7 +62,6 @@ class DecomposedRetrievalService:
             )
 
             for result in results:
-
                 chunk_id = result.chunk.id
 
                 if chunk_id not in unique_results:
@@ -71,14 +74,10 @@ class DecomposedRetrievalService:
                 existing.retrieval_queries.extend(
                     result.retrieval_queries
                 )
-
                 existing.retrieval_ranks.extend(
                     result.retrieval_ranks
                 )
-
-                existing.retrieval_count += (
-                    result.retrieval_count
-                )
+                existing.retrieval_count += result.retrieval_count
 
                 if (
                     result.best_retrieval_rank is not None
@@ -96,7 +95,6 @@ class DecomposedRetrievalService:
                 existing.reranker_scores.extend(
                     result.reranker_scores
                 )
-
                 existing.reranker_queries.extend(
                     result.reranker_queries
                 )
@@ -112,7 +110,6 @@ class DecomposedRetrievalService:
                     existing.best_reranker_score = (
                         result.best_reranker_score
                     )
-
                     existing.best_reranker_query = (
                         result.best_reranker_query
                     )

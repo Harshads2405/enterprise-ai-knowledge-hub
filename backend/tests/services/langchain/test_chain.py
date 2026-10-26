@@ -2,13 +2,19 @@ from app.services.langchain.chain import build_rag_chain
 
 
 def test_build_rag_chain():
-    chain = build_rag_chain(limit=3)
+    chain = build_rag_chain(
+        organization_id=9,
+        limit=3,
+    )
 
     assert chain is not None
 
 
 def test_rag_chain_invocation():
-    chain = build_rag_chain(limit=3)
+    chain = build_rag_chain(
+        organization_id=9,
+        limit=3,
+    )
 
     result = chain.invoke(
         {

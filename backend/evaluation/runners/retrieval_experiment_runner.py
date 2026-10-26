@@ -8,6 +8,7 @@ from typing import Dict, List, Optional
 from app.services.embeddings.embedding_service import embedding_service
 from app.services.retrieval.vector_search import vector_search
 from app.services.reranking.reranker_service import reranker_service
+from app.core.config import get_evaluation_organization_id
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -31,6 +32,7 @@ def retrieve_vector(
 
     return vector_search.search(
         query_embedding=query_embedding,
+        organization_id=get_evaluation_organization_id(),
         limit=limit,
         department=department,
     )
@@ -43,6 +45,7 @@ def retrieve_keyword(
 ):
     return vector_search.keyword_search(
         query=query,
+        organization_id=get_evaluation_organization_id(),
         limit=limit,
         department=department,
     )
@@ -59,6 +62,7 @@ def retrieve_hybrid(
     return vector_search.hybrid_search(
         query_embedding=query_embedding,
         query=query,
+        organization_id=get_evaluation_organization_id(),
         limit=limit,
         department=department,
         vector_limit=candidate_limit,

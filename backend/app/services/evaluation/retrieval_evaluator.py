@@ -13,6 +13,7 @@ from app.services.evaluation.retrieval_metrics import (
 from app.services.retrieval.decomposed_retrieval_service import (
     decomposed_retrieval_service,
 )
+from app.core.organization import validate_organization_id
 
 
 @dataclass
@@ -32,7 +33,8 @@ class RetrievalEvaluationResult:
 
 class RetrievalEvaluator:
 
-    def __init__(self):
+    def __init__(self, organization_id: int):
+        self.organization_id = validate_organization_id(organization_id)
         self.retrieval_service = decomposed_retrieval_service
 
     def evaluate_case(
@@ -42,6 +44,7 @@ class RetrievalEvaluator:
 
         results = self.retrieval_service.retrieve(
             query=case.question,
+            organization_id=self.organization_id,
             limit=5,
             department=case.department,
         )

@@ -2,8 +2,9 @@ from typing import List, Optional
 
 from langchain_core.documents import Document
 from langchain_core.retrievers import BaseRetriever
-from pydantic import Field
+from pydantic import Field, StrictInt
 
+from app.core.organization import validate_organization_id
 from app.services.retrieval.retrieval_pipeline import (
     retrieval_pipeline,
 )
@@ -13,11 +14,16 @@ class EnterpriseRetriever(BaseRetriever):
     """LangChain adapter for the existing enterprise retrieval pipeline."""
 
     limit: int = 3
+    organization_id: StrictInt = Field(gt=0)
     candidate_limit: Optional[int] = None
     department: Optional[str] = None
     document_type: Optional[str] = None
     version: Optional[str] = None
     access_level: Optional[str] = None
+
+    def __init__(self, **data):
+        validate_organization_id(data.get("organization_id"))
+        super().__init__(**data)
 
     def _get_relevant_documents(
         self,
@@ -28,6 +34,7 @@ class EnterpriseRetriever(BaseRetriever):
 
         results = retrieval_pipeline.retrieve(
             search_queries=[query],
+            organization_id=self.organization_id,
             limit=self.limit,
             candidate_limit=self.candidate_limit,
             department=self.department,

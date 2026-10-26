@@ -11,6 +11,7 @@ from app.services.ambiguity.ambiguity_detector import (
 from app.services.retrieval.retrieval_pipeline import (
     retrieval_pipeline,
 )
+from app.core.config import get_evaluation_organization_id
 
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -52,6 +53,7 @@ def evaluate_case(case: Dict) -> Dict:
 
     results = retrieval_pipeline.retrieve(
         search_queries=[query],
+        organization_id=get_evaluation_organization_id(),
         limit=10,
         department=department,
     )
