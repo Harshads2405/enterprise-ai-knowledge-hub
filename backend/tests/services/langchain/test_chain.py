@@ -1,7 +1,11 @@
+
+from app.core.config import settings
 from app.services.langchain.chain import build_rag_chain
 
 
-def test_build_rag_chain():
+def test_build_rag_chain(monkeypatch):
+    monkeypatch.setattr(settings, "llm_mode", "mock")
+
     chain = build_rag_chain(
         organization_id=9,
         limit=3,
@@ -10,7 +14,9 @@ def test_build_rag_chain():
     assert chain is not None
 
 
-def test_rag_chain_invocation():
+def test_rag_chain_invocation(monkeypatch):
+    monkeypatch.setattr(settings, "llm_mode", "mock")
+
     chain = build_rag_chain(
         organization_id=9,
         limit=3,

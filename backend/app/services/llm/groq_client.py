@@ -87,7 +87,29 @@ class GroqClient:
             )
 
             usage = getattr(response, "usage", None)
-            content = response.choices[0].message.content
+            content = (
+                response.choices[0].message.content
+                if response.choices
+                else None
+            )
+
+            if not content or not content.strip():
+                metrics = LLMRequestMetrics(
+                    model=model,
+                    latency_ms=round(
+                        (time.perf_counter() - started_at) * 1000, 2
+                    ),
+                    prompt_tokens=getattr(usage, "prompt_tokens", None),
+                    completion_tokens=getattr(
+                        usage, "completion_tokens", None
+                    ),
+                    total_tokens=getattr(usage, "total_tokens", None),
+                    success=False,
+                    error_type="EmptyResponse",
+                )
+                self.last_request_metrics = metrics
+                LLMRequestMetricsCollector.record(metrics)
+                raise LLMClientError("Groq returned an empty response.")
 
             metrics = LLMRequestMetrics(
                 model=model,
@@ -101,11 +123,6 @@ class GroqClient:
                 total_tokens=getattr(usage, "total_tokens", None),
                 success=True,
             )
-
-            if not content or not content.strip():
-                self.last_request_metrics = metrics
-                LLMRequestMetricsCollector.record(metrics)
-                raise LLMClientError("Groq returned an empty response.")
 
             return content.strip(), metrics
 

@@ -103,7 +103,8 @@ def test_groq_client_rejects_empty_provider_response(monkeypatch):
     # The provider call succeeded, but the content was unusable.
     metrics = client.last_request_metrics
     assert metrics is not None
-    assert metrics.success is True
+    assert metrics.success is False
+    assert metrics.error_type == "EmptyResponse"
 
 
 def test_groq_client_mock_mode_records_metrics(monkeypatch):
